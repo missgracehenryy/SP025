@@ -973,7 +973,7 @@ const CHAPTERS = [
 },
 
 CH3,
-{ id:4, title:"Magnetism", open:true },
+{ id:4, title:"Magnetism", open:true, noDiag:true },
 { id:5, title:"Electromagnetic Induction", open:true },
 { id:6, title:"Alternating Current", open:true },
 { id:7, title:"Optics", open:true },
@@ -1900,7 +1900,7 @@ function renderHome(){
             const due = isDone ? "&#10003; Done" : (d ? (late ? `Overdue (was due before ${fmtDay(d)})` : `Finish before ${fmtDay(d)}`) : `${lessonQs(w)} questions`);
             return pg ? `<button class="btn sm ${late?"late":""}" data-go="theory" data-id="${c.id}" data-wk="${w.wk}">Continue Lesson ${w.n}<small>Part ${pg.idx+1} of ${pg.secs.length} &middot; ${due}</small></button><button class="btn sm ghost" data-go="theory-new" data-id="${c.id}" data-wk="${w.wk}">Restart Lesson ${w.n}<small>Clears your unfinished lesson</small></button>`
               : `<button class="btn sm ghost ${late?"late":""} ${isDone?"done":""}" data-go="theory" data-id="${c.id}" data-wk="${w.wk}">Lesson ${w.n} &middot; ${w.subs.join(", ")}<small>${due}</small></button>`; }).join("")}
-          ${c.diagnostic ? (prog.diag[c.id] ? `<button class="btn sm" data-go="diag" data-id="${c.id}">Continue diagnostic<small>Question ${prog.diag[c.id].i+1} of ${prog.diag[c.id].answers.length}</small></button><button class="btn sm ghost" data-go="diag-new" data-id="${c.id}">Start diagnostic again<small>Clears your unfinished attempt</small></button>` : `<button class="btn sm" data-go="diag" data-id="${c.id}">Diagnostic<small>${nParts(c)} questions &middot; at your own pace</small></button>`) : `<span class="cs">Diagnostic coming soon</span>`}</span>`
+          ${c.diagnostic ? (prog.diag[c.id] ? `<button class="btn sm" data-go="diag" data-id="${c.id}">Continue diagnostic<small>Question ${prog.diag[c.id].i+1} of ${prog.diag[c.id].answers.length}</small></button><button class="btn sm ghost" data-go="diag-new" data-id="${c.id}">Start diagnostic again<small>Clears your unfinished attempt</small></button>` : `<button class="btn sm" data-go="diag" data-id="${c.id}">Diagnostic<small>${nParts(c)} questions &middot; at your own pace</small></button>`) : (c.noDiag ? `<span class="cs">No diagnostic for this chapter (not in the exam)</span>` : `<span class="cs">Diagnostic coming soon</span>`)}</span>`
           : `<span class="cs">Not open yet</span>`}</div>`).join("")}
   </div>
   ${s.matric ? historyHTML() : ""}
