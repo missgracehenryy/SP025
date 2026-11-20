@@ -1232,7 +1232,7 @@ const CH9 = {
       <li>If the question gives the <b>atomic</b> mass, subtract the electrons first: m<sub>nucleus</sub> = m<sub>atom</sub> &minus; Zm<sub>e</sub>.</li>
       <li>&Delta;m in u: multiply by 931.5 for MeV. For joules, convert to kg (1 u = 1.66&times;10<sup>&minus;27</sup> kg) and use &Delta;mc<sup>2</sup>.</li>
       <li>Divide by A (all nucleons), not Z, for binding energy per nucleon. The larger E<sub>B</sub>/A, the more stable the nucleus.</li></ul>
-      <div class="ex"><b>Worked example.</b> Fe-56 (Z = 26), atomic mass 55.934937 u.<br>m<sub>nucleus</sub> = 55.934937 &minus; 26(0.000549)<br>m<sub>nucleus</sub> = 55.920663 u<br>&Delta;m = 26(1.007276) + 30(1.008665) &minus; 55.920663<br>&Delta;m = 0.528463 u<br>E<sub>B</sub> = 0.528463 &times; 931.5<br>E<sub>B</sub> = 492 MeV<br>E<sub>B</sub>/A = 492/56<br>E<sub>B</sub>/A = 8.79 MeV per nucleon</div>` },
+      <div class="ex"><b>Worked example.</b> Fe-56 (Z = 26), atomic mass 55.934937 u.<br>m<sub>nucleus</sub> = 55.934937 &minus; 26(0.000549)<br>m<sub>nucleus</sub> = 55.920663 u<br>&Delta;m = 26(1.007277) + 30(1.008665) &minus; 55.920663<br>&Delta;m = 0.528489 u<br>E<sub>B</sub> = 0.528489 &times; 931.5<br>E<sub>B</sub> = 492 MeV<br>E<sub>B</sub>/A = 492/56<br>E<sub>B</sub>/A = 8.79 MeV per nucleon</div>` },
     { id:"9.2", name:"Radioactive decay, decay law and half-life",
       note:`<p>Radioactive decay is spontaneous and random. The activity is proportional to the number of undecayed nuclei, so N and A fall exponentially.</p>
       <div class="formula" data-tex="A=\\lambda N||N=N_0e^{-\\lambda t}||A=A_0e^{-\\lambda t}||T_{1/2}=\\dfrac{\\ln2}{\\lambda}||N=\\dfrac{m}{M}N_A">A = &lambda;N &nbsp;&nbsp; N = N<sub>0</sub>e<sup>&minus;&lambda;t</sup> &nbsp;&nbsp; A = A<sub>0</sub>e<sup>&minus;&lambda;t</sup> &nbsp;&nbsp; T<sub>&frac12;</sub> = ln 2/&lambda; &nbsp;&nbsp; N = (m/M)N<sub>A</sub></div>
@@ -1249,16 +1249,16 @@ const CH9 = {
   ],
 
   diagnostic: [
-    { stem:"The atomic mass of iron-56 (Z = 26) is 55.934937 u. (m<sub>p</sub> = 1.007276 u, m<sub>n</sub> = 1.008665 u, m<sub>e</sub> = 0.000549 u, 1 u = 931.5 MeV/c<sup>2</sup>)", parts:[
+    { stem:"<b>Chapter 9 is marked strictly (within 1%), so keep all the decimal places in your working and round only at the end.</b> The atomic mass of iron-56 (Z = 26) is 55.934937 u. (m<sub>p</sub> = 1.007277 u, m<sub>n</sub> = 1.008665 u, m<sub>e</sub> = 0.000549 u, 1 u = 931.5 MeV/c<sup>2</sup>)", parts:[
       { sub:"9.1", skill:"calc", type:"num", prompt:"Calculate the mass defect of the nucleus.", unit:"u", ans:0.5285,
-        wrong:[],
-        exp:"m<sub>nucleus</sub> = 55.934937 &minus; 26(0.000549) = 55.920663 u. &Delta;m = 26(1.007276) + 30(1.008665) &minus; 55.920663 = 0.528463 u." },
+        wrong:[[0.5142,"You used the atomic mass as the nuclear mass. Subtract the mass of the 26 electrons first."]],
+        exp:"m<sub>nucleus</sub> = 55.934937 &minus; 26(0.000549) = 55.920663 u. &Delta;m = 26(1.007277) + 30(1.008665) &minus; 55.920663 = 0.528489 u." },
       { sub:"9.1", skill:"calc", type:"num", prompt:"Calculate the binding energy per nucleon.", unit:"MeV", ans:8.79,
-        wrong:[[18.9,"Divide by A = 56 (all nucleons), not Z."],[492,"That is the total binding energy. Divide by 56."]],
-        exp:"E<sub>B</sub> = 0.528463 &times; 931.5 = 492.3 MeV. E<sub>B</sub>/A = 492.3/56 = 8.79 MeV per nucleon." },
+        wrong:[[18.9,"Divide by A = 56 (all nucleons), not Z."],[8.55,"You did not subtract the electrons' mass from the atomic mass."],[492,"That is the total binding energy. Divide by 56."]],
+        exp:"E<sub>B</sub> = 0.528489 &times; 931.5 = 492.3 MeV. E<sub>B</sub>/A = 492.3/56 = 8.79 MeV per nucleon." },
       { sub:"9.1", skill:"calc", type:"num", prompt:"Calculate the total binding energy in joules.", unit:"J", ans:7.88e-11,
         wrong:[[2.63e-19,"Convert u to kg (1.66&times;10<sup>&minus;27</sup> kg) and multiply by c<sup>2</sup>, not c."],[492,"That is in MeV. Use 1 MeV = 1.60&times;10<sup>&minus;13</sup> J."]],
-        exp:"E<sub>B</sub> = &Delta;mc<sup>2</sup> = (0.528463 &times; 1.66&times;10<sup>&minus;27</sup>)(3.0&times;10<sup>8</sup>)<sup>2</sup> = 7.90&times;10<sup>&minus;11</sup> J (or 492.3 MeV &times; 1.60&times;10<sup>&minus;13</sup> = 7.88&times;10<sup>&minus;11</sup> J)." },
+        exp:"E<sub>B</sub> = &Delta;mc<sup>2</sup> = (0.528489 &times; 1.66&times;10<sup>&minus;27</sup>)(3.0&times;10<sup>8</sup>)<sup>2</sup> = 7.90&times;10<sup>&minus;11</sup> J (or 492.3 MeV &times; 1.60&times;10<sup>&minus;13</sup> = 7.88&times;10<sup>&minus;11</sup> J)." },
       { sub:"9.1", skill:"theory", type:"mcq", prompt:"Neon-20 has a binding energy per nucleon of about 8.0 MeV. Which nucleus is more stable?",
         opts:[ {t:"Iron-56, because its binding energy per nucleon is larger", ok:true},
                {t:"Neon-20, because it has fewer nucleons to hold together", mis:"Stability depends on binding energy <b>per nucleon</b>, and Fe-56 is near the peak of the curve."},
@@ -1344,8 +1344,8 @@ const CH9 = {
   practice: [
     { stem:"Gold-197 (Z = 79) has atomic mass 196.966569 u.", parts:[
       { sub:"9.1", skill:"calc", type:"num", prompt:"Calculate the binding energy per nucleon.", unit:"MeV", ans:7.92,
-        wrong:[[19.7,"Divide by A = 197, not Z."]],
-        exp:"m<sub>nucleus</sub> = 196.966569 &minus; 79(0.000549) = 196.923198 u. &Delta;m = 79(1.007276) + 118(1.008665) &minus; 196.923198 = 1.6747 u. E<sub>B</sub> = 1560 MeV, E<sub>B</sub>/A = 7.92 MeV." } ]},
+        wrong:[[7.71,"Subtract the electrons: m<sub>nucleus</sub> = m<sub>atom</sub> &minus; 79m<sub>e</sub>."],[19.7,"Divide by A = 197, not Z."]],
+        exp:"m<sub>nucleus</sub> = 196.966569 &minus; 79(0.000549) = 196.923198 u. &Delta;m = 79(1.007277) + 118(1.008665) &minus; 196.923198 = 1.6742 u. E<sub>B</sub> = 1560 MeV, E<sub>B</sub>/A = 7.92 MeV." } ]},
     { stem:"The binding energy per nucleon is plotted against nucleon number A.", parts:[
       { sub:"9.1", skill:"theory", type:"mcq", prompt:"Where is the peak of the curve, and what does it mean?",
         opts:[ {t:"Near A = 56 (iron); these nuclei are the most stable", ok:true}, {t:"At A = 1; hydrogen is the most stable", mis:"Hydrogen-1 has one nucleon and zero binding energy."}, {t:"At the largest A; heavy nuclei are the most stable", mis:"E<sub>B</sub>/A falls slowly for heavy nuclei, which is why they can undergo fission."} ],
@@ -2840,7 +2840,7 @@ function parseNum(s){
   const m = t.match(/^[+-]?(\d+\.?\d*|\.\d+)(e[+-]?\d+)?/i);
   return m ? Number(m[0]) : NaN;
 }
-function close(x, target){ return target===0 ? Math.abs(x) < 1e-12 : Math.abs(x-target) <= TOL*Math.abs(target); }
+function close(x, target, tol){ return target===0 ? Math.abs(x) < 1e-12 : Math.abs(x-target) <= (tol||TOL)*Math.abs(target); }
 function fmt(v){
   if(v===0) return "0";
   const a = Math.abs(v);
@@ -2853,9 +2853,9 @@ function gradePart(p, resp){
   const x = parseNum(resp);
   if(isNaN(x)) return {ok:false, mis:"That answer could not be read as a number.", shown:esc(resp)};
   const shown = fmt(x);
-  if(close(x, p.ans)) return {ok:true, shown};
-  for(const [v, m] of (p.wrong||[])) if(close(x, v)) return {ok:false, mis:m, shown};
-  if(p.ans!==0 && close(-x, p.ans)) return {ok:false, mis:"The size is right but the sign is wrong. Check the signs of the charges and the direction of the change.", shown};
+  if(close(x, p.ans, p.tol)) return {ok:true, shown};
+  for(const [v, m] of (p.wrong||[])) if(close(x, v, p.tol)) return {ok:false, mis:m, shown};
+  if(p.ans!==0 && close(-x, p.ans, p.tol)) return {ok:false, mis:"The size is right but the sign is wrong. Check the signs of the charges and the direction of the change.", shown};
   if(p.ans!==0 && x/p.ans>0){ const r = Math.log10(x/p.ans), n = Math.round(r);
     if(n!==0 && Math.abs(r-n) < 0.022) return {ok:false, mis:`Your digits are right but the answer is off by a factor of 10<sup>${n}</sup>. Check your unit conversions (cm to m, &mu;C or nC to C, g to kg).`, shown}; }
   return {ok:false, mis:"", shown};
@@ -3113,6 +3113,9 @@ addDiag(7, "7.9", { stem:"White light including wavelengths from 360 nm to 750 n
   { sub:"7.9", skill:"calc", type:"num", prompt:"Which visible wavelength has its third-order maximum at the same angle &theta;?", unit:"m", ans:4.0e-7,
     wrong:[[3.6e-6,"Same angle means the same d sin &theta;: 1 &times; 1200 nm = 3 &times; &lambda;. Divide, do not multiply."],[6.0e-7,"That would be the second order (m = 2). The question asks for the third order."]],
     exp:"d sin &theta; = m&lambda; is the same: 1 &times; 1200 = 3&lambda;, so &lambda; = 400 nm." } ]});
+
+/* Chapter 9: stricter marking (1%) so missed electron masses are caught */
+[CH9.diagnostic, CH9.practice].forEach(set => set.forEach(q => q.parts.forEach(p => { if(p.type==="num") p.tol = 0.01; })));
 
 /* Chapter 1 */
 addDiag(1, "1.1", { stem:"Three point charges are arranged as shown. Q<sub>3</sub> is 0.30 m from Q<sub>1</sub> and 0.37 m from Q<sub>2</sub>. The lines Q<sub>1</sub>Q<sub>3</sub> and Q<sub>2</sub>Q<sub>3</sub> make angles of 60&deg; and 45&deg; with the x-axis.", fig:FIG.ang3, parts:[
@@ -5087,7 +5090,7 @@ ${fig(f9_be, "Figure 9.2: Binding energy per nucleon against nucleon number. The
 <li>Nuclei near the peak (A around 50 to 60) are the most stable.</li>
 <li><b>Fusion:</b> very light nuclei can join to form a nucleus higher up the curve, releasing energy (as in the Sun).</li>
 <li><b>Fission:</b> very heavy nuclei, such as uranium-235, can split into two medium nuclei higher up the curve, releasing energy (as in nuclear power stations).</li></ul>
-${ex("helium-4", `<div class="exq"><div class="exh">Question</div><p>For a helium-4 nucleus, <sup>4</sup><sub>2</sub>He, calculate</p><ol class="parts"><li><span class="pl">(a)</span> the mass defect,</li><li><span class="pl">(b)</span> the binding energy in MeV,</li><li><span class="pl">(c)</span> the binding energy per nucleon.</li></ol><p class="given">Given: mass of proton = 1.007276 u, mass of neutron = 1.008665 u, mass of <sup>4</sup><sub>2</sub>He nucleus = 4.001506 u, 1 u = 931.5 MeV/c<sup>2</sup></p></div><div class="exh">Solution</div><div class="pl2">(a)</div><p>Z = 2 protons and A &minus; Z = 2 neutrons.</p><div class="calc"><div>&Delta;m = Zm<sub>p</sub> + (A &minus; Z)m<sub>n</sub> &minus; m<sub>nucleus</sub></div><div>&Delta;m = 2(1.007276) + 2(1.008665) &minus; 4.001506</div><div><b>&Delta;m = 0.030376 u</b></div></div><div class="pl2">(b)</div><div class="calc"><div>E<sub>B</sub> = &Delta;m &times; 931.5</div><div>E<sub>B</sub> = 0.030376 &times; 931.5</div><div><b>E<sub>B</sub> = 28.3 MeV</b></div></div><div class="pl2">(c)</div><div class="calc"><div>E<sub>B</sub>/A = 28.3/4</div><div><b>E<sub>B</sub>/A = 7.07 MeV per nucleon</b></div></div>`)}
+${ex("helium-4", `<div class="exq"><div class="exh">Question</div><p>For a helium-4 nucleus, <sup>4</sup><sub>2</sub>He, calculate</p><ol class="parts"><li><span class="pl">(a)</span> the mass defect,</li><li><span class="pl">(b)</span> the binding energy in MeV,</li><li><span class="pl">(c)</span> the binding energy per nucleon.</li></ol><p class="given">Given: mass of proton = 1.007277 u, mass of neutron = 1.008665 u, mass of <sup>4</sup><sub>2</sub>He nucleus = 4.001506 u, 1 u = 931.5 MeV/c<sup>2</sup></p></div><div class="exh">Solution</div><div class="pl2">(a)</div><p>Z = 2 protons and A &minus; Z = 2 neutrons.</p><div class="calc"><div>&Delta;m = Zm<sub>p</sub> + (A &minus; Z)m<sub>n</sub> &minus; m<sub>nucleus</sub></div><div>&Delta;m = 2(1.007277) + 2(1.008665) &minus; 4.001506</div><div><b>&Delta;m = 0.030378 u</b></div></div><div class="pl2">(b)</div><div class="calc"><div>E<sub>B</sub> = &Delta;m &times; 931.5</div><div>E<sub>B</sub> = 0.030378 &times; 931.5</div><div><b>E<sub>B</sub> = 28.3 MeV</b></div></div><div class="pl2">(c)</div><div class="calc"><div>E<sub>B</sub>/A = 28.3/4</div><div><b>E<sub>B</sub>/A = 7.07 MeV per nucleon</b></div></div>`)}
 ${trap(`Using the mass of the whole atom (including electrons) with the masses of bare protons, or forgetting to multiply by 931.5 when the mass is in u.`)}`;
 
 C9[1].html = `
