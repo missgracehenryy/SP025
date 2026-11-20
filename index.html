@@ -1524,7 +1524,7 @@ function renderHome(){
     }
     if(!st.name){ err.textContent = "Please enter your full name."; $("#f-name").focus(); return; }
     saveStudent(st); state.student = st;
-    if(signedIn()){ busy = true; err.innerHTML = `<span class="muted">Loading your saved work...</span>`; await withTimeout(pull(), 6000); busy = false; err.textContent = ""; }
+    if(signedIn()){ busy = true; err.innerHTML = `<span class="muted">Loading your saved work...</span>`; await withTimeout(pull(), 20000); busy = false; err.textContent = ""; }
     return true;
   }
   if($("#signin")) $("#signin").onclick = async () => { if(busy) return; if(await ready()) renderHome(); };
@@ -1614,9 +1614,10 @@ async function flushQueue(){
       const data = lsGet(qk, {})[key]; if(data == null) continue;
       const r = await api({action:"put", matric:st.matric, token:getTok(st.matric), key, data});
       if(r.ok){ const q = lsGet(qk, {}); if(q[key] === data){ delete q[key]; lsSet(qk, q); } }
-      else { if(r.auth === false) authFailed(); break; }
+      else { if(r.auth === false) authFailed(); clearTimeout(flushTimer); flushTimer = setTimeout(flushQueue, 15000); return; }
     }
   } finally { flushing = false; }
+  if(Object.keys(lsGet(mkey("queue"), {})).length){ clearTimeout(flushTimer); flushTimer = setTimeout(flushQueue, 1200); }
 }
 document.addEventListener("visibilitychange", () => { if(document.visibilityState === "hidden") flushQueue(); });
 async function pull(){
