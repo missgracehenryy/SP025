@@ -214,6 +214,12 @@ input{background:rgba(252,252,250,.55)}
 .btn.ghost{background:rgba(255,255,255,.35)}
 .bgcats{opacity:.6}
 @media(max-width:560px){.bgcats{opacity:.5}}
+figure.tfig{margin:16px 0 18px;text-align:center}
+.tsvg{display:block;margin:0 auto;max-width:100%;height:auto;background:rgba(255,255,255,.82);border:1px solid var(--line);border-radius:10px;padding:8px}
+figure.tfig figcaption{font-size:13px;color:var(--muted);margin-top:6px;line-height:1.4;padding:0 6px}
+.note h4{margin:18px 0 6px;color:var(--brand)}
+.note ol{padding-left:22px}.note ol li{margin:4px 0}
+.ex p,.trap p{margin:6px 0}
 </style>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
 <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js" onload="window.renderTex&&renderTex()"></script>
@@ -1601,6 +1607,329 @@ function renderHome(){
 
 
 
+
+
+
+/* ---------- Richer lessons with figures: Chapters 1 and 2 ---------- */
+(function(){
+const INK="#1b2232", MUT="#5b6476", RED="#c0392b", BLU="#2a6aa3", FLD="#1d7448";
+const DEFS = `<defs>${[INK,RED,BLU,FLD].map(c => `<marker id="m${c.slice(1)}" markerWidth="9" markerHeight="9" refX="7.5" refY="4.5" orient="auto" markerUnits="userSpaceOnUse"><path d="M0,0 L9,4.5 L0,9 z" fill="${c}"/></marker>`).join("")}</defs>`;
+const S = (w, h, body) => `<svg class="tsvg" viewBox="0 0 ${w} ${h}" width="${w}" xmlns="http://www.w3.org/2000/svg" font-family="system-ui,sans-serif">${DEFS}${body}</svg>`;
+const A = (x1,y1,x2,y2,c=INK,sw=2) => `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${c}" stroke-width="${sw}" marker-end="url(#m${c.slice(1)})"/>`;
+const L = (x1,y1,x2,y2,c=INK,sw=1.5,dash) => `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${c}" stroke-width="${sw}"${dash?` stroke-dasharray="${dash}"`:""}/>`;
+const T = (x,y,t,o={}) => `<text x="${x}" y="${y}" font-size="${o.s||13}" fill="${o.c||INK}" text-anchor="${o.a||"middle"}"${o.b?' font-weight="700"':""}${o.i?' font-style="italic"':""}>${t}</text>`;
+const Q = (x,y,s,r=13) => `<circle cx="${x}" cy="${y}" r="${r}" fill="${s==="+"?RED:BLU}"/>` + T(x, y+5, s==="+"?"+":"&#8722;", {c:"#fff", s:r>10?17:12, b:1});
+const P = (d,c=FLD,sw=1.6,mk) => `<path d="${d}" fill="none" stroke="${c}" stroke-width="${sw}"${mk?` marker-end="url(#m${c.slice(1)})"`:""}/>`;
+const tri = (x,y,c=FLD,dir=1) => `<path d="M${x-4*dir},${y-4} L${x+4*dir},${y} L${x-4*dir},${y+4} z" fill="${c}"/>`;
+const RES = (x,y,lab) => `<rect x="${x-18}" y="${y-7}" width="36" height="14" fill="#fff" stroke="${INK}" stroke-width="1.6"/>` + (lab?T(x,y-13,lab,{s:12}):"");
+const CAPV = (x,y,lab) => `<rect x="${x-16}" y="${y-6}" width="32" height="12" fill="#fff"/>${L(x-15,y-5,x+15,y-5,INK,2.5)}${L(x-15,y+5,x+15,y+5,INK,2.5)}` + (lab?T(x+22,y+4,lab,{s:12,a:"start"}):"");
+const fig = (svgStr, cap) => `<figure class="tfig">${svgStr}<figcaption>${cap}</figcaption></figure>`;
+const ex = (title, body) => `<div class="ex"><b>Worked example: ${title}</b>${body}</div>`;
+const trap = body => `<div class="trap"><b>Common mistake.</b> ${body}</div>`;
+const fx = (tex, html) => `<div class="formula" data-tex="${tex}">${html}</div>`;
+function expPath(x0, y0, w, h, kind){ // kind: "rise" or "decay"; tau at w/5
+  const pts = []; for(let i=0;i<=40;i++){ const t = i/40*5; const v = kind==="rise" ? 1-Math.exp(-t) : Math.exp(-t);
+    pts.push(`${(x0 + i/40*w).toFixed(1)},${(y0 - v*h).toFixed(1)}`); }
+  return "M" + pts.join(" L");
+}
+function graph(x0, y0, w, h, kind, ylab, title, mark){
+  const tauX = x0 + w/5, v = kind==="rise" ? 0.632 : 0.368, yv = y0 - v*h;
+  return L(x0,y0,x0+w+8,y0,INK,1.4) + L(x0,y0,x0,y0-h-12,INK,1.4) + T(x0+w+6,y0+14,"t",{s:12,i:1}) + T(x0-6,y0-h-14,ylab,{s:12,a:"end",i:1})
+    + P(expPath(x0,y0,w,h,kind), BLU, 2)
+    + L(x0, yv, tauX, yv, MUT, 1, "3 3") + L(tauX, yv, tauX, y0, MUT, 1, "3 3") + T(tauX, y0+14, "&#964;", {s:12,c:MUT})
+    + T(x0-4, yv+4, mark, {s:11,c:MUT,a:"end"})
+    + (kind==="rise" ? L(x0,y0-h,x0+w,y0-h,MUT,1,"2 4") : "")
+    + T(x0 + w/2 + 4, y0 - h - 30, title, {s:11,b:1});
+}
+
+/* ===== Figures, Chapter 1 ===== */
+const f_forces = S(360, 200,
+  [[40,"+","+","repel"],[100,"&#8722;","&#8722;","repel"],[160,"+","&#8722;","attract"]].map(([y,a,b,k]) => {
+    const sa = a==="+"?"+":"-", sb = b==="+"?"+":"-";
+    return Q(110,y,sa)+Q(200,y,sb)+(k==="repel" ? A(96,y,52,y,INK)+A(214,y,258,y,INK)+T(70,y-9,"F",{s:12,i:1})+T(240,y-9,"F",{s:12,i:1})
+      : A(124,y,150,y,INK)+A(186,y,160,y,INK)+T(140,y-12,"F",{s:12,i:1})+T(172,y-12,"F",{s:12,i:1}))
+      + T(285,y+5, k==="repel"?"repel":"attract",{a:"start",b:1,c:k==="repel"?RED:BLU});
+  }).join(""));
+const f_superpose = S(340, 210,
+  Q(60,150,"+") + T(60,180,"q&#8321; (+)",{s:12}) + Q(200,40,"-") + T(232,44,"q&#8322; (&#8722;)",{s:12,a:"start"})
+  + Q(200,150,"+",10) + T(186,175,"q at P",{s:12})
+  + L(73,150,188,150,MUT,1,"3 3") + L(200,53,200,140,MUT,1,"3 3")
+  + A(212,150,290,150,RED,2.4) + T(296,154,"F&#8321;",{s:13,a:"start",c:RED})
+  + A(200,138,200,80,BLU,2.4) + T(186,96,"F&#8322;",{s:13,a:"end",c:BLU})
+  + L(290,150,290,80,MUT,1,"4 3") + L(200,80,290,80,MUT,1,"4 3")
+  + A(208,143,286,84,INK,2.6) + T(296,78,"F",{s:14,a:"start",b:1}));
+const radial = (cx, cy, s) => { let o = ""; for(let k=0;k<8;k++){ const a = k*Math.PI/4, c=Math.cos(a), si=Math.sin(a);
+    o += s==="+" ? A(cx+18*c, cy+18*si, cx+70*c, cy+70*si, FLD, 1.6) : A(cx+70*c, cy+70*si, cx+20*c, cy+20*si, FLD, 1.6); }
+  return o + Q(cx,cy,s); };
+const f_radial = S(360, 190, radial(90,90,"+") + radial(270,90,"-") + T(90,182,"+Q: E outwards",{s:12}) + T(270,182,"&#8722;Q: E inwards",{s:12}));
+const f_dipole = (() => { let o = "";
+  for(let k=1;k<=3;k++){ const c1 = 95-50*k, c2 = 95+50*k;
+    o += P(`M118,86 Q180,${c1} 242,86`) + tri(180, 42.5+0.5*c1) + P(`M118,104 Q180,${c2} 242,104`) + tri(180, 52+0.5*c2); }
+  o += A(124,95,234,95,FLD,1.6) + A(96,95,28,95,FLD,1.6) + A(332,95,266,95,FLD,1.6);
+  return S(360, 190, o + Q(110,95,"+") + Q(250,95,"-")); })();
+const f_like = (() => { let o = "";
+  o += A(96,95,26,95,FLD,1.6) + A(264,95,334,95,FLD,1.6);
+  o += P("M118,86 Q160,62 150,14",FLD,1.6,1) + P("M118,104 Q160,128 150,176",FLD,1.6,1)
+     + P("M242,86 Q200,62 210,14",FLD,1.6,1) + P("M242,104 Q200,128 210,176",FLD,1.6,1)
+     + P("M102,84 Q70,40 52,22",FLD,1.6,1) + P("M102,106 Q70,150 52,168",FLD,1.6,1)
+     + P("M258,84 Q290,40 308,22",FLD,1.6,1) + P("M258,106 Q290,150 308,168",FLD,1.6,1);
+  o += T(180,100,"&#215;",{s:18,c:RED,b:1}) + T(180,120,"neutral point",{s:11,c:RED});
+  return S(360, 190, o + Q(110,95,"+") + Q(250,95,"+")); })();
+const f_plates = S(340, 170, `<rect x="40" y="22" width="260" height="8" fill="${RED}"/><rect x="40" y="138" width="260" height="8" fill="${BLU}"/>`
+  + T(316,31,"+",{s:16,c:RED,b:1}) + T(316,147,"&#8722;",{s:16,c:BLU,b:1})
+  + [70,115,160,205,250].map(x => A(x,34,x,132,FLD,1.6)).join("") + P("M42,32 Q24,84 42,136",FLD,1.2) + P("M298,32 Q316,84 298,136",FLD,1.2)
+  + T(278,88,"E",{s:14,i:1,b:1,c:FLD}) + L(22,30,22,138,MUT,1) + T(14,88,"d",{s:13,i:1,c:MUT}) + T(170,164,"Uniform field: parallel, equally spaced lines (edges bulge slightly)",{s:11,c:MUT}));
+const f_vr = S(340, 210, L(40,105,320,105,INK,1.4) + A(40,200,40,10,INK,1.4) + T(322,120,"r",{s:13,i:1}) + T(30,16,"V",{s:13,i:1,a:"end"})
+  + P("M52,15 Q70,70 110,82 T320,98", RED, 2.2) + P("M52,195 Q70,140 110,128 T320,112", BLU, 2.2)
+  + T(150,76,"+Q: V positive, falls as r increases",{s:11,c:RED,a:"start"}) + T(150,146,"&#8722;Q: V negative, rises towards 0",{s:11,c:BLU,a:"start"})
+  + T(30,109,"0",{s:12,a:"end"}));
+const f_equi = S(360, 190, (() => { let o = "";
+  [28,50,72].forEach(r => o += `<circle cx="90" cy="90" r="${r}" fill="none" stroke="${MUT}" stroke-width="1.2" stroke-dasharray="4 3"/>`);
+  for(let k=0;k<8;k++){ const a=k*Math.PI/4; o += A(90+16*Math.cos(a),90+16*Math.sin(a),90+84*Math.cos(a),90+84*Math.sin(a),FLD,1.3); }
+  o += Q(90,90,"+",11);
+  [210,250,290,330].forEach((x,i) => { o += L(x,20,x,160,MUT,1.2,"4 3") + T(x,176,["40 V","30 V","20 V","10 V"][i],{s:11,c:MUT}); });
+  [45,90,135].forEach(y => o += A(196,y,346,y,FLD,1.4));
+  return o + T(90,186,"Point charge: spheres",{s:11}) + T(270,14,"Uniform field: parallel planes",{s:11}); })());
+const f_charges_field = S(340, 190, `<rect x="30" y="20" width="280" height="8" fill="${RED}"/><rect x="30" y="160" width="280" height="8" fill="${BLU}"/>`
+  + T(322,29,"+",{s:16,c:RED,b:1}) + T(322,169,"&#8722;",{s:16,c:BLU,b:1}) + A(40,40,40,150,FLD,1.4) + T(52,100,"E",{s:13,i:1,b:1,c:FLD,a:"start"})
+  + Q(110,94,"+",10) + A(110,106,110,146,INK,2.2) + T(122,140,"F = qE",{s:11,a:"start"}) + T(110,76,"proton",{s:11})
+  + Q(190,94,"-",8) + A(190,84,190,44,INK,2.2) + T(202,52,"F = eE",{s:11,a:"start"}) + T(190,120,"electron",{s:11})
+  + `<circle cx="270" cy="94" r="9" fill="#f0c36d" stroke="${INK}"/>` + T(270,98,"&#8722;",{s:11,b:1})
+  + A(270,84,270,48,INK,2.2) + T(280,56,"qE",{s:11,a:"start"}) + A(270,104,270,140,INK,2.2) + T(280,138,"mg",{s:11,a:"start"}) + T(270,128,"",{}) + T(270,184,"oil drop at rest: qE = mg",{s:11}));
+const f_deflect = S(360, 170, `<rect x="90" y="20" width="200" height="7" fill="${RED}"/><rect x="90" y="140" width="200" height="7" fill="${BLU}"/>`
+  + T(300,28,"+",{s:15,c:RED,b:1,a:"start"}) + T(300,148,"&#8722;",{s:15,c:BLU,b:1,a:"start"})
+  + P("M20,95 L90,95 Q200,95 290,45 L340,18", INK, 2) + Q(20,95,"-",7) + A(30,112,70,112,INK,1.6) + T(50,128,"u",{s:13,i:1})
+  + L(90,95,290,95,MUT,1,"3 3") + L(290,95,290,45,MUT,1,"3 3") + T(298,76,"y",{s:13,i:1,a:"start",c:MUT})
+  + T(190,162,"constant u horizontally, constant a = eE/m vertically",{s:11,c:MUT}));
+
+/* ===== Figures, Chapter 2 ===== */
+const f_cap = S(340, 200, L(150,30,150,120,INK,4) + L(190,30,190,120,INK,4)
+  + [40,62,84,106].map(y => T(140,y+4,"+",{s:13,c:RED,b:1}) + T(200,y+4,"&#8722;",{s:13,c:BLU,b:1})).join("")
+  + T(150,22,"+Q",{s:12,c:RED,b:1}) + T(190,22,"&#8722;Q",{s:12,c:BLU,b:1}) + L(150,135,190,135,MUT,1) + T(170,150,"d",{s:12,i:1,c:MUT})
+  + L(150,75,80,75) + L(80,75,80,180) + L(190,75,260,75) + L(260,75,260,180) + L(80,180,260,180) + bat(170,180,"V")
+  + A(120,170,96,170,BLU,1.5) + T(108,160,"e&#8315;",{s:11,c:BLU}) + A(230,86,206,86,BLU,1.5)
+  + T(300,40,"symbol",{s:11,c:MUT}) + L(280,60,296,60) + L(296,48,296,72,INK,2.5) + L(306,48,306,72,INK,2.5) + L(306,60,322,60));
+const f_series = S(340, 200, w(40,50,300,50) + w(40,50,40,160) + w(300,50,300,160) + w(40,160,300,160)
+  + cap(100,50,"C&#8321;") + cap(170,50,"C&#8322;") + cap(240,50,"C&#8323;") + bat(170,160,"V")
+  + T(100,86,"V&#8321;",{s:12,c:MUT}) + T(170,86,"V&#8322;",{s:12,c:MUT}) + T(240,86,"V&#8323;",{s:12,c:MUT})
+  + T(170,112,"same charge Q on every capacitor",{s:12,c:BLU}));
+const f_parallel = S(390, 220, w(70,30,270,30) + w(70,80,270,80) + w(70,130,270,130) + w(70,30,70,190) + w(270,30,270,190) + w(70,190,270,190)
+  + cap(170,30,"") + cap(170,80,"") + cap(170,130,"") + T(196,24,"C&#8321;",{s:12,a:"start"}) + T(196,74,"C&#8322;",{s:12,a:"start"}) + T(196,124,"C&#8323;",{s:12,a:"start"})
+  + bat(170,190,"V") + T(305,84,"same V",{s:12,c:BLU,a:"start"}) + T(305,100,"across",{s:12,c:BLU,a:"start"}) + T(305,116,"each",{s:12,c:BLU,a:"start"}));
+const f_qv = S(320, 200, L(50,170,300,170,INK,1.4) + L(50,170,50,20,INK,1.4) + T(300,188,"V",{s:13,i:1}) + T(40,26,"Q",{s:13,i:1,a:"end"})
+  + `<path d="M50,170 L250,50 L250,170 z" fill="${BLU}" fill-opacity=".16"/>` + L(50,170,250,50,BLU,2.2)
+  + L(250,50,250,170,MUT,1,"3 3") + L(50,50,250,50,MUT,1,"3 3") 
+  + T(190,140,"area = &#189;QV",{s:13,b:1,c:BLU}) + T(120,90,"gradient = C",{s:12,c:MUT}));
+const f_rc = S(340, 200, L(40,40,40,160) + L(40,40,125,40) + bat(82,40,"") + T(82,22,"&#949;",{s:13,i:1})
+  + `<circle cx="125" cy="40" r="3.5" fill="#fff" stroke="${INK}"/><circle cx="125" cy="90" r="3.5" fill="#fff" stroke="${INK}"/><circle cx="165" cy="40" r="3.5" fill="${INK}"/>`
+  + L(165,40,129,33,INK,2) + T(118,28,"A",{s:12,b:1,a:"end"}) + T(116,94,"B",{s:12,b:1,a:"end"})
+  + L(125,94,125,160) + L(165,40,300,40) + RES(230,40,"R") + L(300,40,300,160) + CAPV(300,100,"C") + L(40,160,300,160)
+  + T(170,185,"switch to A: charges   |   switch to B: discharges through R",{s:11,c:MUT}));
+const f_rcgraphs = S(360, 320, graph(40,130,120,80,"rise","Q","Charging: Q against t","0.63Q&#8320;")
+  + graph(220,130,120,80,"decay","I","Charging: I against t","0.37I&#8320;")
+  + graph(40,295,120,80,"decay","Q","Discharging: Q against t","0.37Q&#8320;")
+  + graph(220,295,120,80,"decay","|I|","Discharging: |I| against t","0.37I&#8320;"));
+const dip = (x,y) => `<ellipse cx="${x}" cy="${y}" rx="10" ry="5.5" fill="#fff" stroke="${MUT}"/>` + T(x-4.5,y+3.5,"&#8722;",{s:8,c:BLU,b:1}) + T(x+4.5,y+3.5,"+",{s:8,c:RED,b:1});
+const f_dielectric = S(360, 200, (() => { let o = "";
+  [[30,"Air: field E&#8320;",5],[200,"With dielectric: field E &lt; E&#8320;",3]].forEach(([x0,lab,n]) => {
+    o += L(x0+10,20,x0+10,160,RED,4) + L(x0+120,20,x0+120,160,BLU,4);
+    for(let y=30;y<=150;y+=24){ o += T(x0+2,y+4,"+",{s:12,c:RED,b:1}) + T(x0+128,y+4,"&#8722;",{s:12,c:BLU,b:1}); }
+    const ys = n===5 ? [36,63,90,117,144] : [53,79,105,131];
+    if(n===3){ o += `<rect x="${x0+22}" y="24" width="86" height="132" fill="#f0c36d" fill-opacity=".25" stroke="${MUT}" stroke-dasharray="3 2"/>`;
+      for(let y=40;y<=145;y+=26) for(let xx=x0+40; xx<=x0+92; xx+=26) o += dip(xx,y);
+      for(let y=34;y<=150;y+=29){ o += T(x0+27,y+4,"&#8722;",{s:10,c:BLU,b:1}) + T(x0+104,y+4,"+",{s:10,c:RED,b:1}); } }
+    ys.forEach(y => o += A(x0+16,y + (n===3?0:0),x0+112,y,FLD,1.6));
+    o += T(x0+65,182,lab,{s:11.5});
+  });
+  return o; })());
+
+/* ===== Chapter 1 lessons ===== */
+const C1 = THEORY[1];
+C1[0].html = `
+<p>Everything around you contains electric <b>charge</b>. There are two kinds: <b>positive</b> (protons) and <b>negative</b> (electrons). Charge is measured in coulombs (C). It is <b>quantised</b>: any charge is a whole-number multiple of the elementary charge e = 1.60 &times; 10<sup>&minus;19</sup> C. Charge is also <b>conserved</b>: it can be moved from one object to another, but never created or destroyed.</p>
+<h4>Attraction and repulsion</h4>
+<p>Charges push or pull on each other without touching. <b>Like charges repel. Unlike charges attract.</b></p>
+${fig(f_forces, "Figure 1.1: The forces between two point charges. The two forces are always equal in size and opposite in direction.")}
+<p>Notice in Figure 1.1 that each pair of arrows is the same length. Even if one charge is much bigger than the other, the two forces are equal and opposite. They are a Newton's third law pair.</p>
+<h4>Coulomb's law</h4>
+<p><b>Coulomb's law</b> states that the magnitude of the electrostatic force between two point charges is <b>directly proportional to the product of the magnitudes of the charges</b> and <b>inversely proportional to the square of the distance</b> between them.</p>
+${fx("F=\\dfrac{kq_1q_2}{r^2}||k=\\dfrac{1}{4\\pi\\varepsilon_0}=9.0\\times10^{9}\\ \\text{N m}^2\\,\\text{C}^{-2}||\\varepsilon_0=8.85\\times10^{-12}\\ \\text{C}^2\\,\\text{N}^{-1}\\,\\text{m}^{-2}", "F = kq<sub>1</sub>q<sub>2</sub>/r<sup>2</sup>")}
+<p>What the formula tells you:</p>
+<ul><li><b>Double one charge</b> and the force doubles. Double both and it becomes 4 times bigger.</li>
+<li><b>Double the distance</b> and the force becomes one quarter (2<sup>2</sup> = 4). Triple it and the force becomes one ninth. This is an <b>inverse-square law</b>.</li>
+<li>The force acts <b>along the straight line</b> joining the two charges.</li></ul>
+<p><b>How to use it:</b> put in the <b>sizes</b> of the charges only (ignore their signs). Then decide the direction separately, using "like repel, unlike attract".</p>
+${ex("force between two charges", `<p>A +3.0 &mu;C charge and a &minus;2.0 &mu;C charge are 30 cm apart. Find the force between them.</p>
+<p>Convert first: 3.0 &mu;C = 3.0 &times; 10<sup>&minus;6</sup> C, 2.0 &mu;C = 2.0 &times; 10<sup>&minus;6</sup> C, 30 cm = 0.30 m.</p>
+<p>F = (9.0 &times; 10<sup>9</sup>)(3.0 &times; 10<sup>&minus;6</sup>)(2.0 &times; 10<sup>&minus;6</sup>) / (0.30)<sup>2</sup> = <b>0.60 N</b>, attractive (unlike charges).</p>`)}
+<h4>More than two charges</h4>
+<p>When several charges act on one charge, work out each force on its own, as if the others were not there. Then add the forces as <b>vectors</b>. This is the <b>principle of superposition</b>.</p>
+${fig(f_superpose, "Figure 1.2: q is repelled by q&#8321; and attracted by q&#8322;. The resultant force is the vector sum of F&#8321; and F&#8322;.")}
+<ol><li>Find the size of each force with Coulomb's law.</li>
+<li>Draw each force on a diagram, pointing towards or away from the charge that causes it.</li>
+<li>Resolve each force into x and y components.</li>
+<li>Add the x components, then the y components.</li>
+<li>Find the resultant: F = &radic;(F<sub>x</sub><sup>2</sup> + F<sub>y</sub><sup>2</sup>), and its direction from tan &theta; = F<sub>y</sub>/F<sub>x</sub>.</li></ol>
+${trap(`Putting the negative sign of a charge into F = kq<sub>1</sub>q<sub>2</sub>/r<sup>2</sup> and then treating the minus sign as a direction. A negative answer only tells you the force is attractive. Always draw the direction on a diagram.`)}
+<p class="small muted">Prefixes you will meet: m = 10<sup>&minus;3</sup>, &mu; = 10<sup>&minus;6</sup>, n = 10<sup>&minus;9</sup>, p = 10<sup>&minus;12</sup>. Distances must be in metres.</p>`;
+
+C1[1].html = `
+<p>A charge does not need to touch another charge to push or pull it. We say the charge sets up an <b>electric field</b> around it: a region in which another charge experiences an electric force.</p>
+<h4>Electric field strength</h4>
+<p>To measure the field at a point, imagine placing a very small <b>positive test charge</b> q<sub>0</sub> there and measuring the force on it. <b>Electric field strength</b> at a point is the electric force per unit <b>positive</b> charge at that point.</p>
+${fx("E=\\dfrac{F}{q_0}||\\text{point charge: } E=\\dfrac{kQ}{r^2}", "E = F/q<sub>0</sub> &nbsp;&nbsp; point charge: E = kQ/r<sup>2</sup>")}
+<ul><li>E is a <b>vector</b>. Its direction is the direction of the force on a <b>positive</b> charge.</li>
+<li>Unit: N C<sup>&minus;1</sup> (which is the same as V m<sup>&minus;1</sup>).</li>
+<li>For a point charge, divide Coulomb's law by q<sub>0</sub>: E = kQq<sub>0</sub>/(r<sup>2</sup>q<sub>0</sub>) = kQ/r<sup>2</sup>. The field also follows an inverse-square law.</li>
+<li>Once you know E, the force on <b>any</b> charge q at that point is F = qE. A negative charge feels a force <b>opposite</b> to E.</li></ul>
+${fig(f_radial, "Figure 1.3: Field lines of single point charges. Lines leave positive charges and enter negative charges.")}
+<h4>Electric field lines</h4>
+<p>Field lines are a picture of the field. Learn these rules:</p>
+<ul><li>They start on positive charges and end on negative charges.</li>
+<li>The arrow (or the tangent to a curved line) shows the direction of E at that point.</li>
+<li>Where lines are <b>closer together</b>, the field is <b>stronger</b>.</li>
+<li>Lines <b>never cross</b>, because the field can only have one direction at each point.</li></ul>
+${fig(f_dipole, "Figure 1.4: A positive and a negative charge (unlike charges). Lines run from + to &#8722;, and the field between them is strong.")}
+${fig(f_like, "Figure 1.5: Two positive charges (like charges). The lines push away from each other. At the neutral point midway between equal charges, E = 0.")}
+${fig(f_plates, "Figure 1.6: Between two parallel plates the field lines are parallel and equally spaced, so the field is uniform.")}
+${ex("field of a point charge", `<p>Find the electric field 0.20 m from a +5.0 nC charge, and the force on an electron placed there.</p>
+<p>E = (9.0 &times; 10<sup>9</sup>)(5.0 &times; 10<sup>&minus;9</sup>) / (0.20)<sup>2</sup> = <b>1.1 &times; 10<sup>3</sup> N C<sup>&minus;1</sup></b>, pointing away from the charge.</p>
+<p>F = eE = (1.60 &times; 10<sup>&minus;19</sup>)(1125) = <b>1.8 &times; 10<sup>&minus;16</sup> N</b>, towards the charge (the electron is negative, so the force is opposite to E).</p>`)}
+<h4>Field from several charges</h4>
+<p>Fields add as <b>vectors</b>, exactly like forces. Find E from each charge, draw its direction (away from +, towards &minus;), then add the components. Between two like charges there is a point where the fields cancel, called a <b>neutral point</b>.</p>
+${trap(`Drawing E towards a positive charge. E always points <b>away</b> from a positive charge and <b>towards</b> a negative charge, whatever charge you later place in the field.`)}`;
+
+C1[2].html = `
+<p>Think of lifting a book: you do work against gravity, and the book gains gravitational potential energy. In the same way, pushing a positive charge towards another positive charge needs work, and the charge gains <b>electric potential energy</b>.</p>
+<h4>Electric potential</h4>
+<p><b>Electric potential</b> at a point is the work done by an external force in bringing a unit positive charge from infinity to that point. At infinity, V = 0.</p>
+${fx("V=\\dfrac{kQ}{r}||U=qV=\\dfrac{kq_1q_2}{r}||W=q\\Delta V", "V = kQ/r &nbsp;&nbsp; U = qV = kq<sub>1</sub>q<sub>2</sub>/r &nbsp;&nbsp; W = q&Delta;V")}
+<ul><li>Potential is a <b>scalar</b>. Unit: the volt, V = J C<sup>&minus;1</sup>.</li>
+<li>In V = kQ/r you <b>keep the sign</b> of Q. Near a positive charge V is positive. Near a negative charge V is negative.</li>
+<li>V falls off as 1/r, more slowly than E, which falls off as 1/r<sup>2</sup>.</li></ul>
+${fig(f_vr, "Figure 1.7: How potential changes with distance from a positive and a negative point charge. Both approach zero far away.")}
+<h4>Potential difference and work</h4>
+<p>The <b>potential difference</b> between two points is the work done per unit charge in moving a charge from one point to the other. So the work done on a charge q is W = q&Delta;V.</p>
+<ul><li>A positive charge, left alone, moves from <b>high to low</b> potential, like a ball rolling downhill.</li>
+<li>An electron, left alone, moves from <b>low to high</b> potential.</li></ul>
+<h4>Electric potential energy</h4>
+<p>The <b>electric potential energy</b> of a charge at a point is the work done in bringing that charge from infinity to the point: U = qV = kq<sub>1</sub>q<sub>2</sub>/r. A positive U (like charges) means work was needed to push them together. A negative U (unlike charges) means the charges are bound together.</p>
+${ex("potential and work", `<p>Find the potential 0.30 m from a +6.0 nC charge, and the work needed to bring a +2.0 &mu;C charge from infinity to that point.</p>
+<p>V = (9.0 &times; 10<sup>9</sup>)(6.0 &times; 10<sup>&minus;9</sup>) / 0.30 = <b>180 V</b>.</p>
+<p>W = qV = (2.0 &times; 10<sup>&minus;6</sup>)(180) = <b>3.6 &times; 10<sup>&minus;4</sup> J</b>.</p>`)}
+<h4>Several charges: add potentials as numbers</h4>
+<p>Potential is a scalar, so potentials from several charges are simply added, <b>with their signs</b>. There are no components.</p>
+<p>Example: +4.0 nC and &minus;4.0 nC are 0.20 m apart. At the midpoint, V = kQ/0.10 &minus; kQ/0.10 = <b>0</b>. But the field there is <b>not</b> zero: both fields point towards the negative charge and add up to 7.2 &times; 10<sup>3</sup> N C<sup>&minus;1</sup>. Zero potential does not mean zero field.</p>
+<h4>Equipotential surfaces</h4>
+<p>An <b>equipotential surface</b> is a surface on which every point has the same potential.</p>
+${fig(f_equi, "Figure 1.8: Equipotentials (dashed) are always perpendicular to the field lines (solid). The field points from higher to lower potential.")}
+<ul><li>No work is done moving a charge along an equipotential, because &Delta;V = 0.</li>
+<li>Field lines cross equipotentials at <b>right angles</b>, pointing towards <b>lower</b> potential.</li>
+<li>Point charge: concentric spheres. Uniform field: parallel, equally spaced planes.</li></ul>
+${trap(`Adding potentials as vectors, or ignoring their signs. Potentials are added as ordinary numbers, and a negative charge gives a negative potential.`)}`;
+
+C1[3].html = `
+<p>Two parallel metal plates connected to a battery give the simplest field of all: a <b>uniform</b> field, with the same size and direction everywhere between the plates.</p>
+<h4>Field strength between plates</h4>
+<p>Move a charge q from one plate to the other. The work done is W = qV, and also W = Fd = qEd. Setting these equal gives:</p>
+${fx("E=\\dfrac{V}{d}||F=qE||a=\\dfrac{qE}{m}", "E = V/d &nbsp;&nbsp; F = qE &nbsp;&nbsp; a = qE/m")}
+<ul><li>E = V/d shows why the unit V m<sup>&minus;1</sup> is the same as N C<sup>&minus;1</sup>.</li>
+<li>A bigger voltage, or a smaller gap, gives a stronger field.</li>
+<li>Because E is the same everywhere, the force on a charge is the same wherever it is between the plates.</li></ul>
+${fig(f_charges_field, "Figure 1.9: In the field, a positive charge is pushed towards the negative plate, and an electron towards the positive plate. A charged oil drop can float when qE balances mg.")}
+${ex("field between plates", `<p>Two plates 4.0 mm apart are connected to 200 V. Find E.</p>
+<p>E = V/d = 200 / (4.0 &times; 10<sup>&minus;3</sup>) = <b>5.0 &times; 10<sup>4</sup> V m<sup>&minus;1</sup></b>.</p>`)}
+<h4>Moving along the field</h4>
+<p>A charge released between the plates accelerates in a straight line with constant acceleration a = qE/m, just like an object falling freely. The work done by the field becomes kinetic energy: <b>qV = &frac12;mv<sup>2</sup></b>.</p>
+<p>A proton and an electron feel forces of the same size, because they have the same size of charge. But the electron is about 1800 times lighter, so its acceleration is about 1800 times bigger.</p>
+${ex("electron accelerated from rest", `<p>An electron is accelerated from rest through 100 V. Find its final speed.</p>
+<p>&frac12;mv<sup>2</sup> = eV, so v = &radic;(2eV/m) = &radic;(2 &times; 1.60 &times; 10<sup>&minus;19</sup> &times; 100 / 9.11 &times; 10<sup>&minus;31</sup>) = <b>5.9 &times; 10<sup>6</sup> m s<sup>&minus;1</sup></b>.</p>`)}
+<h4>Entering at right angles to the field</h4>
+${fig(f_deflect, "Figure 1.10: An electron entering between the plates at right angles to the field follows a parabola, bending towards the positive plate.")}
+<p>This is the same as projectile motion. Horizontally there is no force, so the velocity u stays constant: x = ut. Vertically there is a constant force, so y = &frac12;at<sup>2</sup> with a = eE/m. Together these give a <b>parabola</b>. After leaving the plates, the electron travels in a straight line.</p>
+${trap(`Giving the electron's force the same direction as E. Electrons are negative, so they are always pushed <b>against</b> the field, towards the positive plate.`)}`;
+
+/* ===== Chapter 2 lessons ===== */
+const C2 = THEORY[2];
+C2[0].html = `
+<p>A <b>capacitor</b> is a device that stores electric charge, and so stores electric potential energy. It is made of two conductors (usually metal plates) separated by a small gap of air or an insulator called a <b>dielectric</b>.</p>
+${fig(f_cap, "Figure 2.1: A parallel-plate capacitor connected to a battery. Electrons are pulled off one plate and pushed onto the other, leaving +Q and &#8722;Q.")}
+<h4>How a capacitor charges</h4>
+<p>When a capacitor is connected to a battery, the battery pulls electrons off one plate and pushes the same number onto the other plate. No charge crosses the gap. One plate ends up with +Q and the other with &minus;Q. The "charge on a capacitor" means Q, the charge on <b>either</b> plate. The total charge is still zero.</p>
+<h4>Capacitance</h4>
+<p><b>Capacitance</b> is the ratio of the charge on either plate to the potential difference between the plates. It tells you how much charge is stored for every volt.</p>
+${fx("C=\\dfrac{Q}{V}", "C = Q/V")}
+<ul><li>Unit: the <b>farad</b>, F = C V<sup>&minus;1</sup>. One farad is very large, so you will usually see &mu;F, nF and pF.</li>
+<li>1 farad is the capacitance when 1 coulomb is stored on each plate with a potential difference of 1 volt.</li>
+<li>C depends only on the capacitor's construction, not on Q or V. Doubling V doubles Q, and C stays the same.</li></ul>
+<h4>Capacitors in series</h4>
+${fig(f_series, "Figure 2.2: Capacitors in series. The same charge Q is on every capacitor, and the voltages add up.")}
+<p>Charge moved onto the first plate induces equal charges along the chain, so <b>every capacitor carries the same charge Q</b>. The battery voltage is shared: V = V<sub>1</sub> + V<sub>2</sub> + V<sub>3</sub>. Since V = Q/C:</p>
+${fx("\\dfrac{1}{C_{\\text{eff}}}=\\dfrac{1}{C_1}+\\dfrac{1}{C_2}+\\dfrac{1}{C_3}", "1/C<sub>eff</sub> = 1/C<sub>1</sub> + 1/C<sub>2</sub> + 1/C<sub>3</sub>")}
+<p>The effective capacitance in series is always <b>smaller</b> than the smallest capacitor.</p>
+<h4>Capacitors in parallel</h4>
+${fig(f_parallel, "Figure 2.3: Capacitors in parallel. Each capacitor has the same voltage V, and the charges add up.")}
+<p>Each capacitor is connected straight across the battery, so <b>each has the same voltage V</b>. The total charge is Q = Q<sub>1</sub> + Q<sub>2</sub> + Q<sub>3</sub>, which gives:</p>
+${fx("C_{\\text{eff}}=C_1+C_2+C_3", "C<sub>eff</sub> = C<sub>1</sub> + C<sub>2</sub> + C<sub>3</sub>")}
+${ex("series and parallel", `<p>A 2.0 &mu;F and a 3.0 &mu;F capacitor are connected to a 10 V supply.</p>
+<p><b>In series:</b> 1/C<sub>eff</sub> = 1/2.0 + 1/3.0, so C<sub>eff</sub> = 1.2 &mu;F. Q = C<sub>eff</sub>V = 12 &mu;C on each. V<sub>1</sub> = 12/2.0 = 6.0 V and V<sub>2</sub> = 12/3.0 = 4.0 V (they add to 10 V).</p>
+<p><b>In parallel:</b> C<sub>eff</sub> = 5.0 &mu;F. Each has 10 V, so Q<sub>1</sub> = 20 &mu;C and Q<sub>2</sub> = 30 &mu;C (total 50 &mu;C).</p>`)}
+${trap(`Using the resistor rules. For capacitors it is the other way round: the <b>reciprocal</b> formula is for <b>series</b>, and simple adding is for <b>parallel</b>.`)}
+<h4>Energy stored</h4>
+<p>As the capacitor charges, each extra bit of charge has to be pushed onto a plate against the growing voltage, so work is done. That work is stored as electric potential energy. On a graph of Q against V, the energy is the <b>area under the line</b>.</p>
+${fig(f_qv, "Figure 2.4: Q against V is a straight line through the origin with gradient C. The shaded area is the energy stored.")}
+${fx("U=\\tfrac12QV=\\tfrac12CV^2=\\dfrac{Q^2}{2C}", "U = &frac12;QV = &frac12;CV<sup>2</sup> = Q<sup>2</sup>/2C")}
+${ex("energy stored", `<p>A 470 &mu;F capacitor is charged to 12 V. U = &frac12;CV<sup>2</sup> = &frac12;(470 &times; 10<sup>&minus;6</sup>)(12)<sup>2</sup> = <b>3.4 &times; 10<sup>&minus;2</sup> J</b>.</p>`)}`;
+
+C2[1].html = `
+<p>A capacitor connected through a resistor does not charge instantly. The resistor limits the current, so the charge builds up gradually. Discharging is gradual in the same way.</p>
+${fig(f_rc, "Figure 2.5: An RC circuit. With the switch at A, the battery charges C through R. At B, C discharges through R.")}
+<h4>Charging (switch at A)</h4>
+<ol><li>At the instant the switch closes, the capacitor is empty, so V<sub>C</sub> = 0. All of the battery voltage is across R, and the current is at its <b>maximum</b>: I<sub>0</sub> = &epsilon;/R.</li>
+<li>As charge builds up, V<sub>C</sub> grows. It opposes the battery, so the voltage across R gets smaller and the <b>current decreases</b>.</li>
+<li>When V<sub>C</sub> equals the battery voltage, there is no voltage left across R. The current is <b>zero</b> and the capacitor is <b>fully charged</b>, with Q<sub>0</sub> = C&epsilon;.</li></ol>
+<h4>Discharging (switch at B)</h4>
+<ol><li>At the start V<sub>C</sub> is at its maximum, so the current I<sub>0</sub> = V<sub>0</sub>/R is at its maximum. It flows in the <b>opposite direction</b> to the charging current.</li>
+<li>As charge leaves the plates, V<sub>C</sub> falls, so the current falls too, until both reach zero.</li></ol>
+${fig(f_rcgraphs, "Figure 2.6: Charging and discharging graphs. All the curves are exponential, and the time constant &#964; is marked on each.")}
+${fx("\\tau=RC||\\text{charging: } Q=Q_0\\left(1-e^{-t/RC}\\right)||\\text{discharging: } Q=Q_0e^{-t/RC}||I=I_0e^{-t/RC}", "&tau; = RC &nbsp;&nbsp; charging: Q = Q<sub>0</sub>(1 &minus; e<sup>&minus;t/RC</sup>) &nbsp;&nbsp; discharging: Q = Q<sub>0</sub>e<sup>&minus;t/RC</sup> &nbsp;&nbsp; I = I<sub>0</sub>e<sup>&minus;t/RC</sup>")}
+<p>V across the capacitor follows the same shape as Q, because V = Q/C. The current always decays as I<sub>0</sub>e<sup>&minus;t/RC</sup>, whether charging or discharging.</p>
+<h4>The time constant</h4>
+<ul><li>&tau; = RC has the unit of time: &Omega; &times; F = (V/A) &times; (C/V) = C/A = s.</li>
+<li><b>Charging:</b> &tau; is the time for the charge (or V<sub>C</sub>) to reach <b>63%</b> of its final value, because 1 &minus; e<sup>&minus;1</sup> = 0.63.</li>
+<li><b>Discharging:</b> &tau; is the time for the charge to fall to <b>37%</b> of its starting value, because e<sup>&minus;1</sup> = 0.37.</li>
+<li>A bigger R or a bigger C gives a bigger &tau;, so charging and discharging are slower. After about 5&tau;, the process is practically complete.</li></ul>
+${ex("charging a capacitor", `<p>A 47 &mu;F capacitor charges through a 100 k&Omega; resistor from a 9.0 V battery.</p>
+<p>&tau; = RC = (100 &times; 10<sup>3</sup>)(47 &times; 10<sup>&minus;6</sup>) = <b>4.7 s</b>.</p>
+<p>The starting current is I<sub>0</sub> = 9.0 / (100 &times; 10<sup>3</sup>) = 9.0 &times; 10<sup>&minus;5</sup> A. After one time constant, V<sub>C</sub> = 9.0(1 &minus; e<sup>&minus;1</sup>) = <b>5.7 V</b> and I = 0.37 &times; I<sub>0</sub> = <b>3.3 &times; 10<sup>&minus;5</sup> A</b>.</p>`)}
+${trap(`Forgetting to convert k&Omega; and &mu;F before working out RC, or leaving t in minutes. Use ohms, farads and seconds.`)}`;
+
+C2[2].html = `
+<p>A <b>dielectric</b> is an insulating (non-conducting) material, such as paper, plastic, mica or ceramic, placed between the plates of a capacitor. Putting a dielectric in <b>increases the capacitance</b>.</p>
+<h4>Capacitance of a parallel-plate capacitor</h4>
+${fx("\\text{air: } C_0=\\dfrac{\\varepsilon_0A}{d}||\\text{with dielectric: } C=\\dfrac{\\varepsilon_r\\varepsilon_0A}{d}=\\varepsilon_rC_0", "air: C<sub>0</sub> = &epsilon;<sub>0</sub>A/d &nbsp;&nbsp; with dielectric: C = &epsilon;<sub>r</sub>&epsilon;<sub>0</sub>A/d = &epsilon;<sub>r</sub>C<sub>0</sub>")}
+<ul><li>A <b>bigger plate area A</b> gives a bigger C: there is more room for charge.</li>
+<li>A <b>smaller separation d</b> gives a bigger C.</li>
+<li>A dielectric with a <b>bigger &epsilon;<sub>r</sub></b> gives a bigger C.</li></ul>
+<h4>Why a dielectric increases C</h4>
+${fig(f_dielectric, "Figure 2.7: The molecules of the dielectric become small dipoles that line up with the field. Their charges at the surfaces of the dielectric oppose the plate charges, so the field inside is weaker.")}
+<p>The field between the plates <b>polarises</b> the dielectric: its molecules become tiny dipoles, with their negative ends towards the positive plate. Along the surfaces of the dielectric this leaves a layer of negative charge next to the positive plate, and positive charge next to the negative plate. These induced charges create a field in the opposite direction, so the total field inside drops from E<sub>0</sub> to E. For the same charge Q, a weaker field means a smaller V, and C = Q/V is larger.</p>
+<p>The <b>dielectric constant</b> (relative permittivity) &epsilon;<sub>r</sub> is the ratio of the permittivity of the material to the permittivity of free space. It has <b>no unit</b> and is always greater than 1 (air is about 1).</p>
+${fx("\\varepsilon_r=\\dfrac{\\varepsilon}{\\varepsilon_0}=\\dfrac{C}{C_0}=\\dfrac{V_0}{V}=\\dfrac{E_0}{E}", "&epsilon;<sub>r</sub> = &epsilon;/&epsilon;<sub>0</sub> = C/C<sub>0</sub> = V<sub>0</sub>/V = E<sub>0</sub>/E")}
+<h4>Two situations to compare</h4>
+<table class="cmp"><tr><th>Dielectric inserted...</th><th>Q</th><th>V</th><th>E</th><th>C</th><th>U</th></tr>
+<tr><td>after the battery is <b>disconnected</b></td><td>stays the same</td><td>decreases</td><td>decreases</td><td>increases</td><td>decreases</td></tr>
+<tr><td>while still <b>connected</b> to the battery</td><td>increases</td><td>stays the same</td><td>stays the same</td><td>increases</td><td>increases</td></tr></table>
+<p>With the battery disconnected, the charge has nowhere to go, so Q is fixed. With the battery connected, the battery holds V fixed and pushes more charge on.</p>
+<h4>Advantages of a dielectric</h4>
+<ul><li>It increases the capacitance.</li>
+<li>It allows a higher working voltage before a spark jumps between the plates.</li>
+<li>It holds the plates apart, so they can be very close without touching.</li></ul>
+${ex("adding a dielectric", `<p>Air-filled plates have A = 0.010 m<sup>2</sup> and d = 1.0 mm.</p>
+<p>C<sub>0</sub> = (8.85 &times; 10<sup>&minus;12</sup>)(0.010) / (1.0 &times; 10<sup>&minus;3</sup>) = <b>8.9 &times; 10<sup>&minus;11</sup> F</b> (89 pF).</p>
+<p>With a dielectric of &epsilon;<sub>r</sub> = 4.0: C = 4.0 &times; C<sub>0</sub> = <b>3.5 &times; 10<sup>&minus;10</sup> F</b>. If it had first been charged to 100 V and then disconnected, inserting the dielectric would drop the voltage to 100/4.0 = <b>25 V</b>.</p>`)}
+${trap(`Assuming the charge always stays the same. It only stays the same when the capacitor is <b>disconnected</b>. Read the question carefully.`)}`;
+})();
 
 /* ---------- Cats (original line drawings) ---------- */
 const CAT = {
