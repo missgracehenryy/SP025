@@ -200,6 +200,20 @@ main.wrap,header.top{position:relative;z-index:1}
 .formula.tex .fl{font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;font-size:14px;color:var(--muted)}
 .formula.tex .katex{font-size:1.15em}
 @media(max-width:560px){.formula.tex .katex{font-size:1.02em}.formula.tex{gap:8px 22px}.bgcats{opacity:.28}}
+/* see-through cards so the background cats show behind the questions */
+.card,.chap{background:rgba(255,255,255,.5);-webkit-backdrop-filter:blur(1px);backdrop-filter:blur(1px)}
+input{background:rgba(252,252,250,.55)}
+.opt{background:rgba(252,252,250,.5)}
+.opt.sel{background:rgba(234,242,250,.75)}
+.opt.right,.numrow input.right,.fb.good,.save.ok{background:rgba(229,243,235,.82)}
+.opt.wrong,.numrow input.wrong,.fb.bad,.save.bad{background:rgba(251,232,229,.82)}
+.formula,.ex,table.sym th,table.cmp th{background:rgba(243,246,250,.6)}
+.trap{background:rgba(252,241,219,.75)}
+.save{background:rgba(240,239,233,.7)}
+.pill{background:rgba(255,255,255,.6)}
+.btn.ghost{background:rgba(255,255,255,.35)}
+.bgcats{opacity:.6}
+@media(max-width:560px){.bgcats{opacity:.5}}
 </style>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
 <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js" onload="window.renderTex&&renderTex()"></script>
