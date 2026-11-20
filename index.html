@@ -1561,7 +1561,7 @@ function renderHome(){
   app.innerHTML = `
   <section class="card">
     <h1>Find out what you really understand</h1>
-    <p class="muted"><b>Every Tuesday:</b> do the <b>Theory lesson</b> for that week's chapter (definitions and concepts). <b>After the tutorial:</b> take the <b>Diagnostic</b> to find out which calculations and skills need work, then get targeted notes and practice.</p>
+    <p class="muted"><b>Every Tuesday:</b> do that week's <b>lesson</b>. It replaces the 1-hour lecture: concepts, definitions, figures and worked examples. <b>After the tutorial:</b> take the <b>Diagnostic</b> to find out which calculations and skills need work, then get targeted notes and practice.</p>
     ${HAS_BACKEND ? "" : `<p class="muted small">Your progress is saved automatically on this device, so you can stop and continue later.</p>`}
     <p class="muted small">Have a calculator and paper ready. Type numerical answers to 3 significant figures in SI units. Say honestly when you are guessing.</p>
     <div class="grid3">
@@ -1581,7 +1581,9 @@ function renderHome(){
     ${CHAPTERS.map(c => `<div class="chap ${c.open?"":"locked"}">
         <span class="num">${c.id}</span><span class="ct">${esc(c.title)}</span>
         ${c.open ? `<span class="acts">
-          ${THEORY[c.id] ? (prog.theory[c.id] ? `<button class="btn sm" data-go="theory" data-id="${c.id}">Continue lesson<small>Part ${prog.theory[c.id].idx+1} of ${prog.theory[c.id].secs.length}</small></button><button class="btn sm ghost" data-go="theory-new" data-id="${c.id}">Start lesson again<small>Clears your unfinished lesson</small></button>` : `<button class="btn sm ghost" data-go="theory" data-id="${c.id}">Theory lesson<small>${THEORY[c.id].reduce((t,s)=>t+s.qs.length,0)+SYMQ_N} questions, ~50 min</small></button>`) : ""}
+          ${WEEKS.filter(w => w.ch === c.id && THEORY[c.id]).map(w => { const pg = prog.theory[100+w.wk];
+            return pg ? `<button class="btn sm" data-go="theory" data-id="${c.id}" data-wk="${w.wk}">Continue Week ${w.wk} lesson<small>Part ${pg.idx+1} of ${pg.secs.length}</small></button><button class="btn sm ghost" data-go="theory-new" data-id="${c.id}" data-wk="${w.wk}">Restart Week ${w.wk}<small>Clears your unfinished lesson</small></button>`
+              : `<button class="btn sm ghost" data-go="theory" data-id="${c.id}" data-wk="${w.wk}">Week ${w.wk} lesson &middot; ${w.date}<small>${w.subs.join(", ")} &middot; ${lessonQs(w)} questions</small></button>`; }).join("")}
           ${c.diagnostic ? (prog.diag[c.id] ? `<button class="btn sm" data-go="diag" data-id="${c.id}">Continue diagnostic<small>Question ${prog.diag[c.id].i+1} of ${prog.diag[c.id].answers.length}</small></button><button class="btn sm ghost" data-go="diag-new" data-id="${c.id}">Start diagnostic again<small>Clears your unfinished attempt</small></button>` : `<button class="btn sm" data-go="diag" data-id="${c.id}">Diagnostic<small>${nParts(c)} questions, ~30 min</small></button>`) : `<span class="cs">Diagnostic coming soon</span>`}</span>`
           : `<span class="cs">Not open yet</span>`}</div>`).join("")}
   </div>
@@ -1620,8 +1622,9 @@ function renderHome(){
   app.querySelectorAll("[data-go]").forEach(b => b.onclick = async () => {
     if(busy || !(await ready())) return;
     const ch = CHAPTERS.find(c => String(c.id) === b.dataset.id), go = b.dataset.go;
-    if(go.endsWith("-new")){ if(!confirm("Clear your unfinished attempt and start again?")) return; setProg(go.startsWith("theory")?"theory":"diag", ch.id, null); }
-    if(go.startsWith("theory")) startTheory(ch); else startDiagnostic(ch);
+    const wk = +b.dataset.wk;
+    if(go.endsWith("-new")){ if(!confirm("Clear your unfinished attempt and start again?")) return; if(go.startsWith("theory")) setProg("theory", 100+wk, null); else setProg("diag", ch.id, null); }
+    if(go.startsWith("theory")) startTheory(ch, wk); else startDiagnostic(ch);
   });
   app.querySelectorAll("[data-hist]").forEach(b => b.onclick = () => openAttempt(getHist()[+b.dataset.hist]));
   if($("#cattog")) $("#cattog").onclick = toggleCats;
@@ -3301,6 +3304,130 @@ ${fig(f9_tree, "Figure 9.8: How particles are classified. Quarks and leptons are
 ${trap(`Calling the proton a fundamental particle. It is a baryon made of three quarks. The electron is fundamental, because it is a lepton.`)}`;
 
 })();
+(function(){
+const INK="#1b2232", MUT="#5b6476", RED="#c0392b", BLU="#2a6aa3", FLD="#1d7448";
+const DEFS = `<defs>${[INK,RED,BLU,FLD,MUT].map(c => `<marker id="m${c.slice(1)}" markerWidth="9" markerHeight="9" refX="7.5" refY="4.5" orient="auto" markerUnits="userSpaceOnUse"><path d="M0,0 L9,4.5 L0,9 z" fill="${c}"/></marker>`).join("")}</defs>`;
+const S = (w, h, body) => `<svg class="tsvg" viewBox="0 0 ${w} ${h}" width="${w}" xmlns="http://www.w3.org/2000/svg" font-family="system-ui,sans-serif">${DEFS}${body}</svg>`;
+const A = (x1,y1,x2,y2,c=INK,sw=2) => `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${c}" stroke-width="${sw}" marker-end="url(#m${c.slice(1)})"/>`;
+const L = (x1,y1,x2,y2,c=INK,sw=1.5,dash) => `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${c}" stroke-width="${sw}"${dash?` stroke-dasharray="${dash}"`:""}/>`;
+const T = (x,y,t,o={}) => `<text x="${x}" y="${y}" font-size="${o.s||13}" fill="${o.c||INK}" text-anchor="${o.a||"middle"}"${o.b?' font-weight="700"':""}${o.i?' font-style="italic"':""}>${t}</text>`;
+const Q = (x,y,s,r=13) => `<circle cx="${x}" cy="${y}" r="${r}" fill="${s==="+"?RED:BLU}"/>` + T(x, y+5, s==="+"?"+":"&#8722;", {c:"#fff", s:r>10?17:12, b:1});
+const P = (d,c=FLD,sw=1.6,mk) => `<path d="${d}" fill="none" stroke="${c}" stroke-width="${sw}"${mk?` marker-end="url(#m${c.slice(1)})"`:""}/>`;
+const tri = (x,y,c=FLD,dir=1) => `<path d="M${x-4*dir},${y-4} L${x+4*dir},${y} L${x-4*dir},${y+4} z" fill="${c}"/>`;
+const RES = (x,y,lab) => `<rect x="${x-18}" y="${y-7}" width="36" height="14" fill="#fff" stroke="${INK}" stroke-width="1.6"/>` + (lab?T(x,y-13,lab,{s:12}):"");
+const CAPV = (x,y,lab) => `<rect x="${x-16}" y="${y-6}" width="32" height="12" fill="#fff"/>${L(x-15,y-5,x+15,y-5,INK,2.5)}${L(x-15,y+5,x+15,y+5,INK,2.5)}` + (lab?T(x+22,y+4,lab,{s:12,a:"start"}):"");
+const fig = (svgStr, cap) => `<figure class="tfig">${svgStr}<figcaption>${cap}</figcaption></figure>`;
+const ex = (title, body) => `<div class="ex"><b>Worked example: ${title}</b>${body}</div>`;
+const trap = body => `<div class="trap"><b>Common mistake.</b> ${body}</div>`;
+const fx = (tex, html) => `<div class="formula" data-tex="${tex}">${html}</div>`;
+function expPath(x0, y0, w, h, kind){ // kind: "rise" or "decay"; tau at w/5
+  const pts = []; for(let i=0;i<=40;i++){ const t = i/40*5; const v = kind==="rise" ? 1-Math.exp(-t) : Math.exp(-t);
+    pts.push(`${(x0 + i/40*w).toFixed(1)},${(y0 - v*h).toFixed(1)}`); }
+  return "M" + pts.join(" L");
+}
+function graph(x0, y0, w, h, kind, ylab, title, mark){
+  const tauX = x0 + w/5, v = kind==="rise" ? 0.632 : 0.368, yv = y0 - v*h;
+  return L(x0,y0,x0+w+8,y0,INK,1.4) + L(x0,y0,x0,y0-h-12,INK,1.4) + T(x0+w+6,y0+14,"t",{s:12,i:1}) + T(x0-6,y0-h-14,ylab,{s:12,a:"end",i:1})
+    + P(expPath(x0,y0,w,h,kind), BLU, 2)
+    + L(x0, yv, tauX, yv, MUT, 1, "3 3") + L(tauX, yv, tauX, y0, MUT, 1, "3 3") + T(tauX, y0+14, "&#964;", {s:12,c:MUT})
+    + T(x0-4, yv+4, mark, {s:11,c:MUT,a:"end"})
+    + (kind==="rise" ? L(x0,y0-h,x0+w,y0-h,MUT,1,"2 4") : "")
+    + T(x0 + w/2 + 4, y0 - h - 30, title, {s:11,b:1});
+}
+
+const RESV = (x,y,lab) => `<rect x="${x-7}" y="${y-18}" width="14" height="36" fill="#fff" stroke="${INK}" stroke-width="1.6"/>` + (lab?T(x+12,y+4,lab,{s:12,a:"start"}):"");
+const BATV = (x,y,lab) => `<rect x="${x-16}" y="${y-8}" width="32" height="16" fill="#fff"/>${L(x-15,y-5,x+15,y-5,INK,1.8)}${L(x-8,y+5,x+8,y+5,INK,4)}` + (lab?T(x+20,y+4,lab,{s:12,a:"start"}):"");
+const BAT = (x,y,lab,ly) => `<rect x="${x-8}" y="${y-16}" width="16" height="32" fill="#fff"/>${L(x-5,y-15,x-5,y+15,INK,1.8)}${L(x+5,y-8,x+5,y+8,INK,4)}` + (lab?T(x,y+(ly||30),lab,{s:12}):"");
+const GAL = (x,y) => `<circle cx="${x}" cy="${y}" r="11" fill="#fff" stroke="${INK}" stroke-width="1.6"/>` + T(x,y+4.5,"G",{s:12,b:1});
+const MET = (x,y,t) => `<circle cx="${x}" cy="${y}" r="11" fill="#fff" stroke="${INK}" stroke-width="1.6"/>` + T(x,y+4.5,t,{s:12,b:1});
+const DOT = (x,y) => `<circle cx="${x}" cy="${y}" r="3" fill="${INK}"/>`;
+const PL = (pts,c=INK,sw=1.5) => `<polyline points="${pts}" fill="none" stroke="${c}" stroke-width="${sw}"/>`;
+const AXES = (x0,y0,w,h,xl,yl) => L(x0,y0,x0+w,y0,INK,1.4) + L(x0,y0,x0,y0-h,INK,1.4) + `<path d="M${x0+w},${y0} l-7,-3.5 l0,7 z M${x0},${y0-h} l-3.5,7 l7,0 z" fill="${INK}"/>` + T(x0+w+4,y0+15,xl,{s:12,i:1,a:"end"}) + T(x0-6,y0-h+10,yl,{s:12,i:1,a:"end"});
+
+/* ===== Extra questions so every weekly lesson has at least 10 (planner: one 50-min lecture per week) ===== */
+const Qz = window.Q;
+const addQ = (ch, sub, ...qs) => { const s = (THEORY[ch]||[]).find(x => x.sub === sub); if(s) s.qs.push(...qs); };
+
+addQ(2,"2.1",
+  Qz("C1","The farad, the SI unit of capacitance, is equivalent to","C V<sup>&minus;1</sup>",[["V C<sup>&minus;1</sup>","C = Q/V, so the unit is coulomb per volt."],["C V","Capacitance is a ratio, Q divided by V."],["J C<sup>&minus;1</sup>","J C<sup>&minus;1</sup> is the volt."]],"C = Q/V, so 1 F = 1 C V<sup>&minus;1</sup>."),
+  Qz("C2","Two identical capacitors, each of capacitance C, are connected in series. Their effective capacitance is","C/2",[["2C","That is for parallel."],["C","Adding a capacitor in series reduces the total."],["C<sup>2</sup>","1/C<sub>eff</sub> = 1/C + 1/C = 2/C."]],"In series, the effective capacitance is smaller than either capacitor."),
+  Qz("C2","The potential difference across a capacitor is doubled. Which statement is correct?","The charge stored doubles, and the capacitance stays the same",[["The capacitance doubles","C depends only on the construction of the capacitor."],["The charge stays the same","Q = CV, so Q doubles."],["The charge is halved","Q = CV, so Q doubles."]],"C is fixed. Q = CV is proportional to V."),
+  Qz("C2","For capacitors connected in parallel, which quantity is the same for every capacitor?","The potential difference",[["The charge","In parallel the charges add up. Equal charge is the series rule."],["The energy stored","U = &frac12;CV<sup>2</sup> depends on each C."],["The capacitance","The capacitors can have different values."]],"Each capacitor is connected directly across the same two points."),
+  Qz("C2","The potential difference across a capacitor is doubled. The energy stored becomes","four times as large",[["twice as large","U = &frac12;CV<sup>2</sup> depends on V<sup>2</sup>."],["the same","More charge at a higher voltage stores more energy."],["half as large","Energy increases with V."]],"U &prop; V<sup>2</sup>: 2<sup>2</sup> = 4.")
+);
+addQ(4,"4.4",
+  Qz("C2","A current-carrying wire lies parallel to a uniform magnetic field. The magnetic force on the wire is","zero",[["maximum","The force is maximum when the wire is perpendicular to B."],["IlB","IlB is the force at 90&deg;."],["along the wire","The force, when there is one, is perpendicular to the wire."]],"F = IlB sin &theta;, and &theta; = 0&deg; gives F = 0."),
+  Qz("C1","Which rule gives the direction of the force on a current-carrying conductor in a magnetic field?","Fleming's left-hand rule",[["Fleming's right-hand rule","That gives the direction of an induced current."],["The right-hand grip rule","That gives the direction of the field around a current."],["Lenz's law","That gives the direction of an induced current."]],"Left hand: first finger = field, second finger = current, thumb = force.")
+);
+addQ(4,"4.5",
+  Qz("C2","Two long parallel wires carry currents 2I and I in the same direction. Compared with the force on the wire carrying I, the force on the wire carrying 2I is","equal in size and opposite in direction",[["twice as large","Both forces depend on the product I<sub>1</sub>I<sub>2</sub>."],["half as large","The forces are a Newton's third law pair."],["four times as large","F/l = &mu;<sub>0</sub>I<sub>1</sub>I<sub>2</sub>/2&pi;d is the same for both."]],"The two wires exert equal and opposite forces on each other.")
+);
+addQ(4,"4.6",
+  Qz("C2","In a velocity selector, the electric field is doubled while the magnetic field stays the same. The speed of the particles that pass straight through","doubles",[["halves","v = E/B, so v is proportional to E."],["stays the same","v depends on E and B."],["becomes four times larger","v = E/B, not E<sup>2</sup>/B."]],"v = E/B."),
+  Qz("C1","In a velocity selector, the electric field and the magnetic field are","perpendicular to each other and to the velocity of the particles",[["parallel to each other and to the velocity","Then the magnetic force would be zero."],["parallel to each other but perpendicular to the velocity","The two forces would then not be in opposite directions."],["both along the velocity","A magnetic field along v exerts no force."]],"Crossed fields make qE and qvB act along the same line in opposite directions.")
+);
+addQ(5,"5.1",
+  Qz("C2","A coil is turned from a position where its plane is perpendicular to B to a position where its plane is parallel to B. The flux through the coil","decreases from maximum to zero",[["increases from zero to maximum","Perpendicular plane means the normal is along B: maximum flux."],["stays the same","The angle between B and the normal changes."],["changes from maximum to minus maximum","That would need a half turn."]],"&phi; = BA cos &theta;: &theta; goes from 0&deg; to 90&deg;.")
+);
+addQ(5,"5.2",
+  Qz("C2","A magnet is held at rest inside a coil connected to a galvanometer. The galvanometer reading is","zero, because the flux through the coil is not changing",[["maximum, because the flux is largest","A large flux does not induce an emf. A changing flux does."],["constant and not zero","A steady flux gives no emf."],["alternating","Nothing is changing, so there is no emf."]],"An emf is induced only while the flux changes."),
+  Qz("C2","Which change does NOT increase the emf induced when a magnet is pushed into a coil?","Using thicker wire for the same coil",[["Pushing the magnet in faster","This increases d&phi;/dt."],["Using a stronger magnet","This increases the flux change."],["Using a coil with more turns","&epsilon; = &minus;N d&phi;/dt increases with N."]],"The emf depends on N and d&phi;/dt, not on the thickness of the wire.")
+);
+addQ(5,"5.3",
+  Qz("C1","The henry, the SI unit of self-inductance, is equivalent to","V s A<sup>&minus;1</sup>",[["V A s<sup>&minus;1</sup>","L = &epsilon;/(dI/dt): volts divided by amperes per second."],["A s V<sup>&minus;1</sup>","That is the reciprocal."],["V A","That is the unit of power."]],"L = &epsilon;/(dI/dt), so 1 H = 1 V s A<sup>&minus;1</sup>."),
+  Qz("C2","The number of turns of a solenoid is doubled, while its length and area stay the same. Its self-inductance","becomes four times larger",[["doubles","L depends on N<sup>2</sup>."],["stays the same","L depends on the number of turns."],["halves","More turns give more flux linkage."]],"L = &mu;<sub>0</sub>N<sup>2</sup>A/l, and 2<sup>2</sup> = 4.")
+);
+addQ(5,"5.4",
+  Qz("C1","In an inductor carrying a steady current, the energy is stored in","the magnetic field",[["the electric field","That is how a capacitor stores energy."],["the resistance, as heat","Heat is lost, not stored."],["the battery","The energy has been transferred to the inductor's field."]],"U = &frac12;LI<sup>2</sup> is stored in the magnetic field."),
+  Qz("C2","The steady current in an inductor is doubled. The energy stored becomes","four times as large",[["twice as large","U = &frac12;LI<sup>2</sup> depends on I<sup>2</sup>."],["the same","More current means a stronger field and more energy."],["half as large","Energy increases with current."]],"U &prop; I<sup>2</sup>: 2<sup>2</sup> = 4.")
+);
+addQ(5,"5.5",
+  Qz("C2","A steady direct current flows in the primary coil of two coils placed close together. The emf induced in the secondary coil is","zero",[["constant and not zero","A steady current gives a steady flux, so no emf."],["at its maximum","Only a changing current induces an emf."],["alternating","The primary current is not changing."]],"&epsilon;<sub>2</sub> = &minus;M dI<sub>1</sub>/dt, and dI<sub>1</sub>/dt = 0."),
+  Qz("C1","Mutual induction is","the production of an emf in one coil by a changing current in a neighbouring coil",[["the production of an emf in a coil by a changing current in the same coil","That is self-induction."],["the force between two current-carrying coils","That is a magnetic force, not induction."],["the flow of charge from one coil to the other","The coils are not connected."]],"The changing flux from coil 1 links coil 2.")
+);
+addQ(6,"6.1",
+  Qz("C2","One complete cycle of an alternating current takes 20 ms. Its frequency is","50 Hz",[["20 Hz","f = 1/T = 1/0.020 s."],["0.05 Hz","Convert 20 ms to 0.020 s first."],["500 Hz","f = 1/0.020 = 50 Hz."]],"f = 1/T."),
+  Qz("C2","For V = V<sub>0</sub> sin &omega;t, the voltage is zero","at t = 0 and every half period after that",[["only at t = 0","The sine is zero twice in every cycle."],["at t = T/4","At T/4 the voltage is at its peak."],["every quarter period","At odd quarter periods it is at a peak."]],"sin &omega;t = 0 when &omega;t = 0, &pi;, 2&pi;, ..."),
+  Qz("C1","The angular frequency &omega; and the frequency f of an AC are related by","&omega; = 2&pi;f",[["&omega; = f/2&pi;","One cycle is 2&pi; radians."],["&omega; = &pi;f","One cycle is 2&pi; radians, not &pi;."],["&omega; = 2&pi;/f","&omega; = 2&pi;/T, and T = 1/f."]],"&omega; = 2&pi;f = 2&pi;/T.")
+);
+addQ(6,"6.2",
+  Qz("C2","An alternating current has a peak value of 2.0 A. Its rms value is","1.4 A",[["2.8 A","That is the peak multiplied by &radic;2."],["1.0 A","That is half the peak."],["2.0 A","The rms value is less than the peak."]],"I<sub>rms</sub> = I<sub>0</sub>/&radic;2 = 2.0/1.414."),
+  Qz("C2","An AC ammeter reads 3.0 A. The peak current is","4.2 A",[["3.0 A","Meters read rms values."],["2.1 A","That is the reading divided by &radic;2."],["6.0 A","The peak is &radic;2 times the rms value."]],"I<sub>0</sub> = &radic;2 &times; I<sub>rms</sub>."),
+  Qz("C1","Rms values of current and voltage are also called","effective values",[["peak values","The peak is &radic;2 times the rms value."],["average values","The average over a cycle is zero."],["instantaneous values","These change at every instant."]],"They give the same heating effect as the same steady DC.")
+);
+addQ(7,"7.2",
+  Qz("C2","An object in air faces a curved glass surface. In n<sub>1</sub>/u + n<sub>2</sub>/v = (n<sub>2</sub> &minus; n<sub>1</sub>)/R, n<sub>1</sub> is","the refractive index of air",[["the refractive index of glass","n<sub>2</sub> is the glass, the medium the light enters."],["always 1.5","n<sub>1</sub> depends on where the object is."],["the refractive index of the medium where the image forms","n<sub>1</sub> goes with the object."]],"n<sub>1</sub> is the medium containing the object.")
+);
+addQ(7,"7.3",
+  Qz("C2","An object is placed at the focal point of a convex lens. The image is formed","at infinity",[["at 2F on the other side","That is for an object at 2F."],["at the focal point on the other side","That is for an object at infinity."],["on the same side, magnified","That is for an object inside F."]],"1/v = 1/f &minus; 1/f = 0, so v is infinite: the rays leave parallel.")
+);
+addQ(7,"7.4",
+  Qz("C2","A plane wavefront passes through a gap much wider than its wavelength. Beyond the gap, the wavefront","stays almost plane, with very little spreading",[["spreads out into semicircles","That happens when the gap is about the size of the wavelength."],["disappears","The wave carries on through the gap."],["is reflected back","It passes through the gap."]],"Diffraction is significant only when the gap is close to the wavelength.")
+);
+addQ(7,"7.6",
+  Qz("C2","In Young's double-slit experiment, one slit is covered. The pattern on the screen becomes","a single-slit diffraction pattern with no two-slit fringes",[["brighter, with the same fringes","Interference needs two coherent sources."],["fringes closer together","There is no second source to interfere with."],["completely dark","Light still passes through the open slit."]],"With only one source, there is no two-source interference.")
+);
+addQ(7,"7.7",
+  Qz("C1","At normal incidence, the optical path difference between light reflected from the top and the bottom of a thin film of thickness t and refractive index n is","2nt",[["nt","The light crosses the film twice."],["2t","Inside the film, the path is multiplied by n."],["t/n","The optical path is n times the distance."]],"Down and back is 2t, and the optical path is n &times; 2t.")
+);
+addQ(7,"7.9",
+  Qz("C2","White light passes through a diffraction grating. Within each order, the colour deviated through the largest angle is","red",[["violet","Violet has the shortest wavelength, so the smallest angle."],["green","Green is in the middle of the spectrum."],["no colour, since all are deviated equally","sin &theta; = m&lambda;/d depends on &lambda;."]],"Red has the longest wavelength, so the largest sin &theta;.")
+);
+addQ(8,"8.1",
+  Qz("C2","An electron and a proton move at the same speed. Which has the longer de Broglie wavelength?","The electron, because it has less momentum",[["The proton, because it has more mass","More mass at the same speed means more momentum and a shorter &lambda;."],["Both, equally","&lambda; = h/mv depends on m."],["The proton, because it is positive","Charge does not appear in &lambda; = h/p."]],"&lambda; = h/mv: a smaller m gives a longer &lambda;.")
+);
+addQ(8,"8.2",
+  Qz("C2","In an electron diffraction tube, the accelerating voltage is increased. The diffraction rings","become smaller",[["become larger","Faster electrons have a shorter wavelength and diffract less."],["disappear","The electrons still diffract."],["do not change","&lambda; depends on V."]],"&lambda; = h/&radic;(2meV): a larger V gives a shorter &lambda;, so smaller rings."),
+  Qz("C1","Which is an advantage of an electron microscope over an optical microscope?","It has a much higher resolving power",[["It uses visible light","An optical microscope uses visible light."],["It can view living specimens in open air","An electron microscope works in a vacuum."],["Its resolving power cannot be changed","It can be changed by changing the accelerating voltage."]],"Electron wavelengths are much shorter than light wavelengths.")
+);
+addQ(9,"9.3",
+  Qz("C1","In a cyclotron, the particle is accelerated","each time it crosses the gap between the dees",[["while it moves inside the dees","There is no electric field inside the dees."],["by the magnetic field","The magnetic field only bends the path."],["only once, as it leaves","It gains energy at every crossing of the gap."]],"The alternating voltage across the gap speeds it up twice per revolution.")
+);
+addQ(9,"9.4",
+  Qz("C2","A meson is made of an up quark and an anti-down quark. Its charge is","+e",[["0","Anti-down has charge +&#8531;e, not &minus;&#8531;e."],["&minus;e","Up is +&#8532;e and anti-down is +&#8531;e."],["+2e","+&#8532;e + &#8531;e = +1e."]],"+&#8532;e + &#8531;e = +e (this is the pion &pi;<sup>+</sup>).")
+);
+
+})();
 
 /* ---------- Cats (original line drawings) ---------- */
 const CAT = {
@@ -3433,7 +3560,7 @@ function permOf(shuffled, orig){ return shuffled.map(o => orig.indexOf(o)); }
 /* theory snapshot */
 function theorySnap(){
   const T = state.theory, ch = state.chapter;
-  return { ch: ch.id, idx: T.idx, startedAt: T.startedAt, ans: T.ans,
+  return { ch: ch.id, wk: (state.lesson||{}).wk, idx: T.idx, startedAt: T.startedAt, ans: T.ans,
     secs: T.secs.map((s,si) => {
       const base = (THEORY[ch.id]||[]).find(x => x.sub === s.sub);
       if(s.review) return { sub:s.sub, symqs:s.qs };
@@ -3445,7 +3572,7 @@ function theoryFromSnap(snap){
   try{
     const secs = snap.secs.map(s => {
       if(s.full) return s.full;
-      if(s.symqs){ const sym = symbolsSection(snap.ch)[0]; return Object.assign({}, sym, {qs: s.symqs}); }
+      if(s.symqs){ const L = weekOf(snap.wk); const sym = symbolsSection(snap.ch, L && L.subs)[0]; return Object.assign({}, sym, {qs: s.symqs}); }
       const base = THEORY[snap.ch].find(x => x.sub === s.sub);
       return Object.assign({}, base, { qs: s.perms.map((perm,qi) => { const oq = base.qs[qi];
         if(!oq || perm.some(j => j < 0 || !oq.opts[j])) throw 0;
@@ -3475,6 +3602,7 @@ function openAttempt(h){
   const ch = CHAPTERS.find(c => c.id === h.ch); if(!ch) return;
   state.chapter = ch; state.student = state.student || loadStudent();
   if(h.type === "Theory"){
+    state.lesson = weekOf(h.wk || (h.snap||{}).wk) || null;
     const T = theoryFromSnap(h.snap); if(!T){ alert("This attempt can no longer be opened because the lesson has been updated."); return; }
     T.reviewing = true; T.doneAt = h.at; state.theory = T; finishTheory(true);
   } else {
@@ -3487,12 +3615,27 @@ function historyHTML(){
   const H = getHist(); if(!H.length) return "";
   return `<h2 class="sec">My past attempts</h2>
   <section class="card hist">${H.map((h,k) => { const ch = CHAPTERS.find(c => c.id===h.ch) || {title:""};
-    return `<div class="hrow"><div><b>${h.type==="Theory"?"Theory lesson":"Diagnostic"}</b>, Chapter ${h.ch}<div class="muted small">${esc(ch.title)} · ${fmtDate(h.at)}</div></div>
+    return `<div class="hrow"><div><b>${h.type==="Theory"?(h.wk?`Week ${h.wk} lesson`:"Theory lesson"):"Diagnostic"}</b>, Chapter ${h.ch}<div class="muted small">${esc(ch.title)} · ${fmtDate(h.at)}</div></div>
       <span class="hs">${h.score}/${h.total}</span><button class="btn sm ghost" data-hist="${k}">Open</button></div>`; }).join("")}</section>`;
 }
 
 /* ---------- Symbols and units ---------- */
-const SYMQ_N = 10;
+const SYMQ_N = 6;
+/* Weekly lessons, following the SP025 2026/2027 planner (one 1-hour lecture per week, Tuesday) */
+const WEEKS = [
+  {wk:1, date:"17 Nov", ch:1, subs:["1.1","1.2"]}, {wk:2, date:"24 Nov", ch:1, subs:["1.3","1.4"]},
+  {wk:3, date:"1 Dec", ch:2, subs:["2.1"]}, {wk:4, date:"8 Dec", ch:2, subs:["2.2","2.3"]},
+  {wk:5, date:"15 Dec", ch:3, subs:["3.1","3.2","3.3","3.4"]}, {wk:6, date:"22 Dec", ch:3, subs:["3.5","3.6","3.7","3.8","3.9"]},
+  {wk:7, date:"5 Jan", ch:4, subs:["4.1","4.2","4.3"]}, {wk:8, date:"12 Jan", ch:4, subs:["4.4","4.5","4.6"]},
+  {wk:9, date:"19 Jan", ch:5, subs:["5.1","5.2"]}, {wk:10, date:"26 Jan", ch:5, subs:["5.3","5.4","5.5"]},
+  {wk:11, date:"2 Feb", ch:6, subs:["6.1","6.2"]}, {wk:12, date:"16 Feb", ch:6, subs:["6.3","6.4"]},
+  {wk:13, date:"23 Feb", ch:7, subs:["7.1","7.2","7.3"]}, {wk:14, date:"2 Mar", ch:7, subs:["7.4","7.5","7.6"]}, {wk:15, date:"16 Mar", ch:7, subs:["7.7","7.8","7.9"]},
+  {wk:16, date:"23 Mar", ch:8, subs:["8.1","8.2"]},
+  {wk:17, date:"30 Mar", ch:9, subs:["9.1","9.2"]}, {wk:18, date:"6 Apr", ch:9, subs:["9.3","9.4"]}
+];
+const weekOf = wk => WEEKS.find(w => w.wk === wk);
+const lessonSecs = L => (THEORY[L.ch]||[]).filter(s => L.subs.includes(s.sub));
+const lessonQs = L => lessonSecs(L).reduce((t,s)=>t+s.qs.length,0) + SYMQ_N;
 const UNIT_POOL = ["N","J","W","C","V","Ω","T","Hz","m","s","kg","A","F","H","Wb","m s<sup>−1</sup>","no unit"];
 function symTable(sym, title){
   if(!sym || !sym.length) return "";
@@ -3501,14 +3644,14 @@ function symTable(sym, title){
 function noUnit(u){ return String(u).charAt(0) === "—"; }
 function baseSym(x){ return String(x).split(" (")[0].trim(); }
 function baseUnit(u){ return String(u).split(" (")[0].trim(); }
-function chapterSyms(id){
+function chapterSyms(id, subs){
   const seen = {}, out = [];
-  (THEORY[id]||[]).forEach(s => (s.sym||[]).forEach(r => { const k = r[0]+"|"+r[1]; if(!seen[k]){ seen[k]=1; out.push(r); } }));
+  (THEORY[id]||[]).filter(s => !subs || subs.includes(s.sub)).forEach(s => (s.sym||[]).forEach(r => { const k = r[0]+"|"+r[1]; if(!seen[k]){ seen[k]=1; out.push(r); } }));
   return out;
 }
-function symbolsSection(id){
-  const all = chapterSyms(id); if(all.length < 4) return [];
-  const pick = shuffle(all.slice()), qs = [];
+function symbolsSection(id, subs){
+  const mine = chapterSyms(id, subs), all = chapterSyms(id); if(mine.length < 2) return [];
+  const pick = shuffle(mine.slice()), qs = [];
   for(const r of pick){
     if(qs.length >= SYMQ_N) break;
     const askUnit = qs.length % 2 === 1 && !noUnit(r[2]);
@@ -3526,16 +3669,16 @@ function symbolsSection(id){
     }
   }
   return [{ sub:"Sym", title:"Symbols and units check", review:true,
-    html:`<p>Before you finish, check that you know what every symbol in this chapter means and what it is measured in. PSPM questions expect the correct SI unit in every final answer.</p>`,
-    sym: all, qs }];
+    html:`<p>Before you finish, check that you know what every symbol in this lesson means and what it is measured in. PSPM questions expect the correct SI unit in every final answer.</p>`,
+    sym: mine, qs }];
 }
 
 /* ---------- Theory lesson ---------- */
-function startTheory(ch){
-  state.chapter = ch;
-  const saved = getProg().theory[ch.id], T0 = saved && theoryFromSnap(saved);
+function startTheory(ch, wk){
+  state.chapter = ch; const L = state.lesson = weekOf(wk);
+  const saved = getProg().theory[100+wk], T0 = saved && theoryFromSnap(saved);
   if(T0){ state.theory = T0; renderTheory(); return; }
-  const secs = THEORY[ch.id].concat(symbolsSection(ch.id)).map(s => Object.assign({}, s, { qs: s.qs.map(q => Object.assign({type:"mcq", sub:s.sub, skill:"theory"}, q, {opts: shuffle(q.opts)})) }));
+  const secs = lessonSecs(L).concat(symbolsSection(ch.id, L.subs)).map(s => Object.assign({}, s, { qs: s.qs.map(q => Object.assign({type:"mcq", sub:s.sub, skill:"theory"}, q, {opts: shuffle(q.opts)})) }));
   state.theory = { secs, idx:0, ans: secs.map(s => s.qs.map(() => null)), startedAt: Date.now() };
   renderTheory();
 }
@@ -3543,11 +3686,12 @@ function renderTheory(keep){
   const y = window.scrollY; if(!keep) toTop();
   const T = state.theory, ch = state.chapter, sec = T.secs[T.idx], ans = T.ans[T.idx];
   const last = T.idx === T.secs.length-1, done = ans.every(a => a!=null);
-  if(!T.reviewing) setProg("theory", ch.id, theorySnap());
+  const LW = state.lesson || {wk:0};
+  if(!T.reviewing && LW.wk) setProg("theory", 100+LW.wk, theorySnap());
   app.innerHTML = `
-  <div class="qhead"><span>${T.reviewing?"Reviewing":"Theory lesson"}: Chapter ${ch.id}</span><span>Part ${T.idx+1} of ${T.secs.length}</span></div>
+  <div class="qhead"><span>${T.reviewing?"Reviewing":"Lesson"}: ${LW.wk?`Week ${LW.wk}, `:""}Chapter ${ch.id}</span><span>Part ${T.idx+1} of ${T.secs.length}</span></div>
   ${catBar(T.idx/T.secs.length)}
-  <section class="card note"><span class="tag">${sec.sub}</span><h2>${esc(sec.title)}</h2>${sec.html}${symTable(sec.sym, sec.review ? "All symbols in this chapter" : "Symbols and units")}</section>
+  <section class="card note"><span class="tag">${sec.sub}</span><h2>${esc(sec.title)}</h2>${sec.html}${symTable(sec.sym, sec.review ? "All symbols in this lesson" : "Symbols and units")}</section>
   <h2 class="sec">Check your understanding</h2>
   <section class="card">
     ${sec.qs.map((q,qi) => partHTML(q, qi, ans[qi], {locked: ans[qi]!=null, feedback: ans[qi]!=null, tag: q.bloom==="C1" ? "C1 Remember" : "C2 Understand"})).join("")}
@@ -3574,7 +3718,7 @@ function finishTheory(review){
   <section class="card">
     ${cheer(score===total ? "Purr-fect! Every answer right." : "Lesson done. Nice work!")}
     <h1>Theory lesson complete</h1>
-    <p>Chapter ${ch.id}: ${esc(ch.title)}. You got <b>${score} of ${total}</b> right first time.</p>
+    <p>${(state.lesson||{}).wk ? `Week ${state.lesson.wk} lesson, ` : ""}Chapter ${ch.id}: ${esc(ch.title)}. You got <b>${score} of ${total}</b> right first time.</p>
     ${rows.map(r => `<div class="subrow"><div class="subline"><div class="subname"><small>${r.id}</small>${esc(r.name)}</div><b>${r.correct}/${r.total}</b></div></div>`).join("")}
     <div class="subrow"><div class="subline"><div class="subname">C1 Remember (definitions, units)</div><b>${bl.C1.c}/${bl.C1.t}</b></div></div>
     <div class="subrow"><div class="subline"><div class="subname">C2 Understand (explain, interpret)</div><b>${bl.C2.c}/${bl.C2.t}</b></div></div>
@@ -3584,12 +3728,13 @@ function finishTheory(review){
   </section>`;
   $("#home").onclick = renderHome;
   $("#rev").onclick = () => { T.reviewing = true; T.doneAt = T.doneAt || Date.now(); T.idx = 0; renderTheory(); };
-  $("#again").onclick = () => { setProg("theory", ch.id, null); startTheory(ch); };
+  const wk = (state.lesson||{}).wk;
+  $("#again").onclick = () => { if(wk){ setProg("theory", 100+wk, null); startTheory(ch, wk); } else renderHome(); };
   if(review) return;
-  setProg("theory", ch.id, null);
+  if(wk) setProg("theory", 100+wk, null);
   T.doneAt = Date.now();
-  addHist({ type:"Theory", ch: ch.id, at: T.doneAt, score, total, snap: theorySnap() });
-  send({ type:"Theory", name:st.name, matric:st.matric, group:st.group, chapter: ch.id+" "+ch.title, score, total,
+  addHist({ type:"Theory", ch: ch.id, wk, at: T.doneAt, score, total, snap: theorySnap() });
+  send({ type:"Theory", name:st.name, matric:st.matric, group:st.group, chapter: ch.id+" "+ch.title+(wk?` (Week ${wk} lesson)`:""), score, total,
          subtopics: rows.map(r => Object.assign({status:""}, r)),
          skills: [{name:"C1 Remember", correct:bl.C1.c, total:bl.C1.t, status:""},{name:"C2 Understand", correct:bl.C2.c, total:bl.C2.t, status:""}],
          weak:[], confidentWrong:"", misconceptions:[], minutes: Math.round((Date.now()-T.startedAt)/6000)/10 })
