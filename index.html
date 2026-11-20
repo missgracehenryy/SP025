@@ -1091,6 +1091,136 @@ const CH7 = {
   ]
 };
 
+const CH8 = {
+  id: 8, title: "Wave Properties of Particle", open: true,
+  subtopics: [
+    { id:"8.1", name:"Wave-particle duality and de Broglie wavelength",
+      note:`<p>Wave-particle duality: light and matter can behave as waves in some situations and as particles in others, but we never observe both at once. Any particle with momentum p has a de Broglie wavelength.</p>
+      <div class="formula" data-tex="\\lambda=\\dfrac hp=\\dfrac h{mv}||p=\\sqrt{2mK}||K=\\dfrac{p^2}{2m}">&lambda; = h/p = h/(mv) &nbsp;&nbsp; p = &radic;(2mK) &nbsp;&nbsp; K = p<sup>2</sup>/2m</div>
+      <h4>Problem-solving steps</h4>
+      <ul><li>Use the right mass: m<sub>e</sub> = 9.11&times;10<sup>&minus;31</sup> kg, m<sub>p</sub> = 1.67&times;10<sup>&minus;27</sup> kg.</li>
+      <li>Ratios: &lambda; &prop; 1/&radic;(mK). Same K: &lambda;<sub>e</sub>/&lambda;<sub>p</sub> = &radic;(m<sub>p</sub>/m<sub>e</sub>). K multiplied by n: &lambda; divided by &radic;n.</li>
+      <li>A photon and a particle with the same &lambda; have the same momentum, but not the same energy: photon E = hc/&lambda;, particle K = p<sup>2</sup>/2m.</li>
+      <li>Energy in eV: divide joules by 1.60&times;10<sup>&minus;19</sup>.</li></ul>
+      <div class="ex"><b>Worked example.</b> Electron at 1.0&times;10<sup>8</sup> m s<sup>&minus;1</sup>.<br>&lambda; = h / (mv)<br>&lambda; = 6.63&times;10<sup>&minus;34</sup> / (9.11&times;10<sup>&minus;31</sup> &times; 1.0&times;10<sup>8</sup>)<br>&lambda; = 7.28&times;10<sup>&minus;12</sup> m</div>` },
+    { id:"8.2", name:"Electron diffraction and the electron microscope",
+      note:`<p>In the Davisson&ndash;Germer experiment, electrons passed through a thin layer of graphite give diffraction rings, which proves that electrons behave as waves. A higher accelerating voltage gives faster electrons, a shorter wavelength and smaller rings.</p>
+      <div class="formula" data-tex="eV=\\tfrac12mv^2||\\lambda=\\dfrac{h}{\\sqrt{2meV}}">eV = &frac12;mv<sup>2</sup> &nbsp;&nbsp; &lambda; = h/&radic;(2meV)</div>
+      <h4>Problem-solving steps</h4>
+      <ul><li>Accelerated from rest through V: use &lambda; = h/&radic;(2meV) directly, or find v from eV = &frac12;mv<sup>2</sup> first.</li>
+      <li>Ratios: &lambda; &prop; 1/&radic;V. Voltage &times; 4 gives &lambda; &divide; 2.</li>
+      <li>An electron microscope uses electrons with &lambda; around 10<sup>&minus;10</sup> m, far shorter than visible light, so it has a much higher resolving power.</li></ul>
+      <div class="ex"><b>Worked example.</b> Electron accelerated through 2000 V.<br>&lambda; = h / &radic;(2meV)<br>&lambda; = 6.63&times;10<sup>&minus;34</sup> / &radic;(2 &times; 9.11&times;10<sup>&minus;31</sup> &times; 1.60&times;10<sup>&minus;19</sup> &times; 2000)<br>&lambda; = 2.75&times;10<sup>&minus;11</sup> m</div>` }
+  ],
+
+  diagnostic: [
+    { stem:"An electron moves at 1.0 &times; 10<sup>6</sup> m s<sup>&minus;1</sup>. (h = 6.63 &times; 10<sup>&minus;34</sup> J s, m<sub>e</sub> = 9.11 &times; 10<sup>&minus;31</sup> kg)", parts:[
+      { sub:"8.1", skill:"calc", type:"num", prompt:"Calculate its de Broglie wavelength.", unit:"m", ans:7.28e-10,
+        wrong:[[3.97e-13,"You used the proton mass. Use m<sub>e</sub> = 9.11&times;10<sup>&minus;31</sup> kg."]],
+        exp:"&lambda; = h/(mv) = 6.63&times;10<sup>&minus;34</sup>/[(9.11&times;10<sup>&minus;31</sup>)(1.0&times;10<sup>6</sup>)] = 7.28&times;10<sup>&minus;10</sup> m." },
+      { sub:"8.1", skill:"theory", type:"mcq", prompt:"Which quantity in &lambda; = h/p describes the particle nature, and which the wave nature?",
+        opts:[ {t:"p is the particle property, &lambda; is the wave property", ok:true},
+               {t:"&lambda; is the particle property, p is the wave property", mis:"Momentum belongs to particles; wavelength belongs to waves."},
+               {t:"h is the particle property, &lambda; is the wave property", mis:"h is a constant. Momentum p is the particle property."} ],
+        exp:"The equation links a particle property (momentum) to a wave property (wavelength)." } ]},
+
+    { stem:"An electron moves at 2300 m s<sup>&minus;1</sup>.", parts:[
+      { sub:"8.1", skill:"calc", type:"num", prompt:"Calculate the wavelength of a photon that has the same momentum as the electron.", unit:"m", ans:3.16e-7,
+        wrong:[[1.73e-10,"You used the proton mass. Use the electron mass, 9.11&times;10<sup>&minus;31</sup> kg."]],
+        exp:"Same momentum means the same wavelength: &lambda; = h/(mv) = 6.63&times;10<sup>&minus;34</sup>/[(9.11&times;10<sup>&minus;31</sup>)(2300)] = 3.16&times;10<sup>&minus;7</sup> m." } ]},
+
+    { stem:"An electron and a photon each have a wavelength of 0.21 nm. (c = 3.0 &times; 10<sup>8</sup> m s<sup>&minus;1</sup>, e = 1.60 &times; 10<sup>&minus;19</sup> C)", parts:[
+      { sub:"8.1", skill:"calc", type:"num", prompt:"Calculate the energy of the photon in eV.", unit:"eV", ans:5920,
+        wrong:[[9.47e-16,"That is in joules. Divide by 1.60&times;10<sup>&minus;19</sup> to get eV."],[34.2,"That is the electron's kinetic energy. The photon's energy is hc/&lambda;."]],
+        exp:"E = hc/&lambda; = (6.63&times;10<sup>&minus;34</sup>)(3.0&times;10<sup>8</sup>)/(0.21&times;10<sup>&minus;9</sup>) = 9.47&times;10<sup>&minus;16</sup> J = 5.92&times;10<sup>3</sup> eV." },
+      { sub:"8.1", skill:"calc", type:"num", prompt:"Calculate the kinetic energy of the electron in eV.", unit:"eV", ans:34.2,
+        wrong:[[5920,"The electron is not a photon. Its kinetic energy is p<sup>2</sup>/2m, with p = h/&lambda;."],[68.4,"K = p<sup>2</sup>/2m. You left out the 2."]],
+        exp:"p = h/&lambda; = 3.16&times;10<sup>&minus;24</sup> kg m s<sup>&minus;1</sup>. K = p<sup>2</sup>/2m = 5.47&times;10<sup>&minus;18</sup> J = 34.2 eV." } ]},
+
+    { stem:"The de Broglie wavelength of an electron is 2.2 nm.", parts:[
+      { sub:"8.1", skill:"calc", type:"num", prompt:"Calculate its kinetic energy in eV.", unit:"eV", ans:0.312,
+        wrong:[[4.98e-20,"That is in joules. Convert to eV."],[0.623,"K = p<sup>2</sup>/2m. You left out the 2."],[565,"You used E = hc/&lambda;, which is for photons only."]],
+        exp:"p = h/&lambda; = 3.01&times;10<sup>&minus;25</sup> kg m s<sup>&minus;1</sup>. K = p<sup>2</sup>/2m = 4.98&times;10<sup>&minus;20</sup> J = 0.312 eV." } ]},
+
+    { stem:"An electron and a proton have the same kinetic energy.", parts:[
+      { sub:"8.1", skill:"calc", type:"num", prompt:"Calculate the ratio &lambda;<sub>electron</sub> / &lambda;<sub>proton</sub>.", unit:"", ans:42.8,
+        wrong:[[1833,"&lambda; = h/&radic;(2mK) depends on &radic;m, so take the square root of the mass ratio."],[0.0234,"You inverted the ratio. The lighter electron has the longer wavelength."]],
+        exp:"&lambda; = h/&radic;(2mK). Same K: &lambda;<sub>e</sub>/&lambda;<sub>p</sub> = &radic;(m<sub>p</sub>/m<sub>e</sub>) = &radic;(1.67&times;10<sup>&minus;27</sup>/9.11&times;10<sup>&minus;31</sup>) = 42.8." } ]},
+
+    { stem:"A particle has de Broglie wavelength &lambda;. Its kinetic energy is then tripled.", parts:[
+      { sub:"8.1", skill:"calc", type:"num", prompt:"Calculate the new wavelength as a multiple of &lambda; (for example, type 0.5 for &lambda;/2).", unit:"&times; &lambda;", ans:0.577,
+        wrong:[[0.333,"&lambda; &prop; 1/&radic;K, not 1/K. Divide by &radic;3."],[1.732,"More kinetic energy means more momentum, so the wavelength gets shorter."]],
+        exp:"&lambda; = h/&radic;(2mK) &prop; 1/&radic;K. New &lambda; = &lambda;/&radic;3 = 0.577&lambda;." } ]},
+
+    { stem:"Wave behaviour is easy to detect for electrons but not for a moving cricket ball.", parts:[
+      { sub:"8.1", skill:"theory", type:"mcq", prompt:"Why?",
+        opts:[ {t:"The ball's momentum is so large that its wavelength is far too small to produce diffraction", ok:true},
+               {t:"Only charged particles have a de Broglie wavelength", mis:"Every moving particle has &lambda; = h/p, charged or not."},
+               {t:"Large objects travel too slowly to have a wavelength", mis:"Any non-zero momentum gives a wavelength. A large mass makes it tiny."} ],
+        exp:"Diffraction needs a wavelength comparable with the gap. For a ball, &lambda; = h/(mv) is around 10<sup>&minus;34</sup> m." } ]},
+
+    { stem:"An electron is accelerated from rest through a potential difference of 1500 V.", parts:[
+      { sub:"8.2", skill:"calc", type:"num", prompt:"Calculate its de Broglie wavelength.", unit:"m", ans:3.17e-11,
+        wrong:[[4.48e-11,"You used eV = mv<sup>2</sup>. The kinetic energy is &frac12;mv<sup>2</sup>, so p = &radic;(2meV)."],[1.00e-9,"Use V = 1500 V, not 1.5."]],
+        exp:"&lambda; = h/&radic;(2meV) = 6.63&times;10<sup>&minus;34</sup>/&radic;[2(9.11&times;10<sup>&minus;31</sup>)(1.60&times;10<sup>&minus;19</sup>)(1500)] = 3.17&times;10<sup>&minus;11</sup> m." },
+      { sub:"8.2", skill:"calc", type:"num", prompt:"Calculate its speed.", unit:"m s<sup>&minus;1</sup>", ans:2.30e7,
+        wrong:[[1.62e7,"eV = &frac12;mv<sup>2</sup>, so v = &radic;(2eV/m). You left out the 2."],[5.27e14,"Take the square root to get v."]],
+        exp:"v = &radic;(2eV/m) = &radic;[2(1.60&times;10<sup>&minus;19</sup>)(1500)/9.11&times;10<sup>&minus;31</sup>] = 2.30&times;10<sup>7</sup> m s<sup>&minus;1</sup>." } ]},
+
+    { stem:"An electron microscope needs electrons with a de Broglie wavelength of 0.50 nm.", parts:[
+      { sub:"8.2", skill:"calc", type:"num", prompt:"Calculate the accelerating voltage.", unit:"V", ans:6.03,
+        wrong:[[12.1,"&lambda; = h/&radic;(2meV), so V = h<sup>2</sup>/(2me&lambda;<sup>2</sup>). You left out the 2."]],
+        exp:"V = h<sup>2</sup>/(2me&lambda;<sup>2</sup>) = (6.63&times;10<sup>&minus;34</sup>)<sup>2</sup>/[2(9.11&times;10<sup>&minus;31</sup>)(1.60&times;10<sup>&minus;19</sup>)(0.50&times;10<sup>&minus;9</sup>)<sup>2</sup>] = 6.03 V." } ]},
+
+    { stem:"Electron beam S is accelerated from rest through 500 V and beam T through 1000 V.", parts:[
+      { sub:"8.2", skill:"calc", type:"num", prompt:"Calculate the ratio &lambda;<sub>S</sub> / &lambda;<sub>T</sub>.", unit:"", ans:1.414,
+        wrong:[[2,"&lambda; &prop; 1/&radic;V, so the ratio is &radic;(1000/500), not 1000/500."],[0.707,"You inverted it. The lower voltage gives the longer wavelength."]],
+        exp:"&lambda; &prop; 1/&radic;V: &lambda;<sub>S</sub>/&lambda;<sub>T</sub> = &radic;(V<sub>T</sub>/V<sub>S</sub>) = &radic;2 = 1.41." },
+      { sub:"8.2", skill:"theory", type:"mcq", prompt:"In the Davisson&ndash;Germer experiment, the accelerating voltage is increased. The diffraction rings",
+        opts:[ {t:"become smaller, because the electrons' wavelength decreases", ok:true},
+               {t:"become larger, because the electrons have more energy", mis:"More energy means more momentum and a shorter wavelength, so less spreading."},
+               {t:"stay the same, because the graphite spacing has not changed", mis:"The ring size depends on &lambda; as well as the atomic spacing."} ],
+        exp:"Higher V &rarr; larger v &rarr; smaller &lambda; = h/(mv) &rarr; less diffraction, smaller rings." } ]},
+
+    { stem:"Electron diffraction and electron microscopes both depend on the wave nature of electrons.", parts:[
+      { sub:"8.2", skill:"theory", type:"mcq", prompt:"What did the Davisson&ndash;Germer experiment show?",
+        opts:[ {t:"Electrons produce a diffraction pattern, so they behave as waves", ok:true},
+               {t:"Electrons are ejected from a metal by light, so light is made of particles", mis:"That is the photoelectric effect."},
+               {t:"Electrons have a negative charge", mis:"That was known earlier. Diffraction rings show wave behaviour."} ],
+        exp:"Diffraction is a wave property, and the measured &lambda; matched h/p." },
+      { sub:"8.2", skill:"theory", type:"mcq", prompt:"Why does an electron microscope have a much higher resolving power than an optical microscope?",
+        opts:[ {t:"The electrons' de Broglie wavelength (about 10<sup>&minus;10</sup> m) is much shorter than the wavelength of visible light", ok:true},
+               {t:"Electrons travel faster than light", mis:"Nothing travels faster than light. The key is the short wavelength."},
+               {t:"Its lenses have a larger magnification", mis:"Resolution is limited by wavelength, not just by magnification."} ],
+        exp:"A shorter wavelength can resolve smaller details. Increasing V shortens &lambda; further." } ]}
+  ],
+
+  practice: [
+    { stem:"A particle has momentum 5.5 &times; 10<sup>&minus;25</sup> kg m s<sup>&minus;1</sup>.", parts:[
+      { sub:"8.1", skill:"calc", type:"num", prompt:"Calculate its de Broglie wavelength.", unit:"m", ans:1.21e-9,
+        wrong:[[3.65e-58,"&lambda; = h/p: divide, do not multiply."]],
+        exp:"&lambda; = h/p = 6.63&times;10<sup>&minus;34</sup>/5.5&times;10<sup>&minus;25</sup> = 1.21&times;10<sup>&minus;9</sup> m." } ]},
+    { stem:"An electron moves at 1.0 &times; 10<sup>8</sup> m s<sup>&minus;1</sup>.", parts:[
+      { sub:"8.1", skill:"calc", type:"num", prompt:"Calculate its de Broglie wavelength.", unit:"m", ans:7.28e-12,
+        wrong:[[3.97e-15,"Use the electron mass, not the proton mass."]],
+        exp:"&lambda; = h/(mv) = 7.28&times;10<sup>&minus;12</sup> m." },
+      { sub:"8.1", skill:"theory", type:"mcq", prompt:"Wave-particle duality means that",
+        opts:[ {t:"matter and light can show wave or particle behaviour, but not both in the same observation", ok:true}, {t:"light is a wave and matter is a particle", mis:"De Broglie showed matter also has wave properties."}, {t:"every particle is a wave and a particle at the same time in every experiment", mis:"We never observe both behaviours at once."} ],
+        exp:"Which behaviour appears depends on the experiment." } ]},
+    { stem:"Electrons in an old television tube are accelerated through 28 kV.", parts:[
+      { sub:"8.2", skill:"calc", type:"num", prompt:"Calculate their de Broglie wavelength.", unit:"m", ans:7.34e-12,
+        wrong:[[2.32e-10,"28 kV = 28 000 V."]],
+        exp:"&lambda; = h/&radic;(2meV) with V = 2.8&times;10<sup>4</sup> V: 7.34&times;10<sup>&minus;12</sup> m." } ]},
+    { stem:"The electron wavelength in an electron microscope is 0.23 nm.", parts:[
+      { sub:"8.2", skill:"calc", type:"num", prompt:"Calculate the speed of the electrons.", unit:"m s<sup>&minus;1</sup>", ans:3.16e6,
+        wrong:[[1.73e3,"Use the electron mass, 9.11&times;10<sup>&minus;31</sup> kg."]],
+        exp:"v = h/(m&lambda;) = 6.63&times;10<sup>&minus;34</sup>/[(9.11&times;10<sup>&minus;31</sup>)(0.23&times;10<sup>&minus;9</sup>)] = 3.16&times;10<sup>6</sup> m s<sup>&minus;1</sup>." },
+      { sub:"8.2", skill:"theory", type:"mcq", prompt:"The accelerating voltage is made four times larger. The electron wavelength",
+        opts:[ {t:"halves", ok:true}, {t:"becomes a quarter", mis:"&lambda; &prop; 1/&radic;V: &radic;4 = 2."}, {t:"doubles", mis:"Higher voltage gives faster electrons and a shorter wavelength."} ],
+        exp:"&lambda; &prop; 1/&radic;V, so &times;4 in V gives &divide;2 in &lambda;." } ]}
+  ]
+};
+
 const CH3 = {
   id: 3, title: "Electric Current and Direct-Current Circuits", open: true,
   subtopics: [
@@ -1734,7 +1864,7 @@ CH3,
 CH5,
 CH6,
 CH7,
-{ id:8, title:"Wave Properties of Particle", open:true },
+CH8,
 { id:9, title:"Nuclear and Particle Physics", open:true }
 ];
 
