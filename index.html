@@ -1610,10 +1610,10 @@ function renderHome(){
 
 
 
-/* ---------- Richer lessons with figures: Chapters 1 and 2 ---------- */
+/* ---------- Richer lessons with figures ---------- */
 (function(){
 const INK="#1b2232", MUT="#5b6476", RED="#c0392b", BLU="#2a6aa3", FLD="#1d7448";
-const DEFS = `<defs>${[INK,RED,BLU,FLD].map(c => `<marker id="m${c.slice(1)}" markerWidth="9" markerHeight="9" refX="7.5" refY="4.5" orient="auto" markerUnits="userSpaceOnUse"><path d="M0,0 L9,4.5 L0,9 z" fill="${c}"/></marker>`).join("")}</defs>`;
+const DEFS = `<defs>${[INK,RED,BLU,FLD,MUT].map(c => `<marker id="m${c.slice(1)}" markerWidth="9" markerHeight="9" refX="7.5" refY="4.5" orient="auto" markerUnits="userSpaceOnUse"><path d="M0,0 L9,4.5 L0,9 z" fill="${c}"/></marker>`).join("")}</defs>`;
 const S = (w, h, body) => `<svg class="tsvg" viewBox="0 0 ${w} ${h}" width="${w}" xmlns="http://www.w3.org/2000/svg" font-family="system-ui,sans-serif">${DEFS}${body}</svg>`;
 const A = (x1,y1,x2,y2,c=INK,sw=2) => `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${c}" stroke-width="${sw}" marker-end="url(#m${c.slice(1)})"/>`;
 const L = (x1,y1,x2,y2,c=INK,sw=1.5,dash) => `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${c}" stroke-width="${sw}"${dash?` stroke-dasharray="${dash}"`:""}/>`;
@@ -1641,6 +1641,15 @@ function graph(x0, y0, w, h, kind, ylab, title, mark){
     + (kind==="rise" ? L(x0,y0-h,x0+w,y0-h,MUT,1,"2 4") : "")
     + T(x0 + w/2 + 4, y0 - h - 30, title, {s:11,b:1});
 }
+
+const RESV = (x,y,lab) => `<rect x="${x-7}" y="${y-18}" width="14" height="36" fill="#fff" stroke="${INK}" stroke-width="1.6"/>` + (lab?T(x+12,y+4,lab,{s:12,a:"start"}):"");
+const BATV = (x,y,lab) => `<rect x="${x-16}" y="${y-8}" width="32" height="16" fill="#fff"/>${L(x-15,y-5,x+15,y-5,INK,1.8)}${L(x-8,y+5,x+8,y+5,INK,4)}` + (lab?T(x+20,y+4,lab,{s:12,a:"start"}):"");
+const BAT = (x,y,lab,ly) => `<rect x="${x-8}" y="${y-16}" width="16" height="32" fill="#fff"/>${L(x-5,y-15,x-5,y+15,INK,1.8)}${L(x+5,y-8,x+5,y+8,INK,4)}` + (lab?T(x,y+(ly||30),lab,{s:12}):"");
+const GAL = (x,y) => `<circle cx="${x}" cy="${y}" r="11" fill="#fff" stroke="${INK}" stroke-width="1.6"/>` + T(x,y+4.5,"G",{s:12,b:1});
+const MET = (x,y,t) => `<circle cx="${x}" cy="${y}" r="11" fill="#fff" stroke="${INK}" stroke-width="1.6"/>` + T(x,y+4.5,t,{s:12,b:1});
+const DOT = (x,y) => `<circle cx="${x}" cy="${y}" r="3" fill="${INK}"/>`;
+const PL = (pts,c=INK,sw=1.5) => `<polyline points="${pts}" fill="none" stroke="${c}" stroke-width="${sw}"/>`;
+const AXES = (x0,y0,w,h,xl,yl) => L(x0,y0,x0+w,y0,INK,1.4) + L(x0,y0,x0,y0-h,INK,1.4) + `<path d="M${x0+w},${y0} l-7,-3.5 l0,7 z M${x0},${y0-h} l-3.5,7 l7,0 z" fill="${INK}"/>` + T(x0+w+4,y0+15,xl,{s:12,i:1,a:"end"}) + T(x0-6,y0-h+10,yl,{s:12,i:1,a:"end"});
 
 /* ===== Figures, Chapter 1 ===== */
 const f_forces = S(360, 200,
@@ -1929,6 +1938,1415 @@ ${ex("adding a dielectric", `<p>Air-filled plates have A = 0.010 m<sup>2</sup> a
 <p>C<sub>0</sub> = (8.85 &times; 10<sup>&minus;12</sup>)(0.010) / (1.0 &times; 10<sup>&minus;3</sup>) = <b>8.9 &times; 10<sup>&minus;11</sup> F</b> (89 pF).</p>
 <p>With a dielectric of &epsilon;<sub>r</sub> = 4.0: C = 4.0 &times; C<sub>0</sub> = <b>3.5 &times; 10<sup>&minus;10</sup> F</b>. If it had first been charged to 100 V and then disconnected, inserting the dielectric would drop the voltage to 100/4.0 = <b>25 V</b>.</p>`)}
 ${trap(`Assuming the charge always stays the same. It only stays the same when the capacitor is <b>disconnected</b>. Read the question carefully.`)}`;
+
+})();
+(function(){
+const INK="#1b2232", MUT="#5b6476", RED="#c0392b", BLU="#2a6aa3", FLD="#1d7448";
+const DEFS = `<defs>${[INK,RED,BLU,FLD,MUT].map(c => `<marker id="m${c.slice(1)}" markerWidth="9" markerHeight="9" refX="7.5" refY="4.5" orient="auto" markerUnits="userSpaceOnUse"><path d="M0,0 L9,4.5 L0,9 z" fill="${c}"/></marker>`).join("")}</defs>`;
+const S = (w, h, body) => `<svg class="tsvg" viewBox="0 0 ${w} ${h}" width="${w}" xmlns="http://www.w3.org/2000/svg" font-family="system-ui,sans-serif">${DEFS}${body}</svg>`;
+const A = (x1,y1,x2,y2,c=INK,sw=2) => `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${c}" stroke-width="${sw}" marker-end="url(#m${c.slice(1)})"/>`;
+const L = (x1,y1,x2,y2,c=INK,sw=1.5,dash) => `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${c}" stroke-width="${sw}"${dash?` stroke-dasharray="${dash}"`:""}/>`;
+const T = (x,y,t,o={}) => `<text x="${x}" y="${y}" font-size="${o.s||13}" fill="${o.c||INK}" text-anchor="${o.a||"middle"}"${o.b?' font-weight="700"':""}${o.i?' font-style="italic"':""}>${t}</text>`;
+const Q = (x,y,s,r=13) => `<circle cx="${x}" cy="${y}" r="${r}" fill="${s==="+"?RED:BLU}"/>` + T(x, y+5, s==="+"?"+":"&#8722;", {c:"#fff", s:r>10?17:12, b:1});
+const P = (d,c=FLD,sw=1.6,mk) => `<path d="${d}" fill="none" stroke="${c}" stroke-width="${sw}"${mk?` marker-end="url(#m${c.slice(1)})"`:""}/>`;
+const tri = (x,y,c=FLD,dir=1) => `<path d="M${x-4*dir},${y-4} L${x+4*dir},${y} L${x-4*dir},${y+4} z" fill="${c}"/>`;
+const RES = (x,y,lab) => `<rect x="${x-18}" y="${y-7}" width="36" height="14" fill="#fff" stroke="${INK}" stroke-width="1.6"/>` + (lab?T(x,y-13,lab,{s:12}):"");
+const CAPV = (x,y,lab) => `<rect x="${x-16}" y="${y-6}" width="32" height="12" fill="#fff"/>${L(x-15,y-5,x+15,y-5,INK,2.5)}${L(x-15,y+5,x+15,y+5,INK,2.5)}` + (lab?T(x+22,y+4,lab,{s:12,a:"start"}):"");
+const fig = (svgStr, cap) => `<figure class="tfig">${svgStr}<figcaption>${cap}</figcaption></figure>`;
+const ex = (title, body) => `<div class="ex"><b>Worked example: ${title}</b>${body}</div>`;
+const trap = body => `<div class="trap"><b>Common mistake.</b> ${body}</div>`;
+const fx = (tex, html) => `<div class="formula" data-tex="${tex}">${html}</div>`;
+function expPath(x0, y0, w, h, kind){ // kind: "rise" or "decay"; tau at w/5
+  const pts = []; for(let i=0;i<=40;i++){ const t = i/40*5; const v = kind==="rise" ? 1-Math.exp(-t) : Math.exp(-t);
+    pts.push(`${(x0 + i/40*w).toFixed(1)},${(y0 - v*h).toFixed(1)}`); }
+  return "M" + pts.join(" L");
+}
+function graph(x0, y0, w, h, kind, ylab, title, mark){
+  const tauX = x0 + w/5, v = kind==="rise" ? 0.632 : 0.368, yv = y0 - v*h;
+  return L(x0,y0,x0+w+8,y0,INK,1.4) + L(x0,y0,x0,y0-h-12,INK,1.4) + T(x0+w+6,y0+14,"t",{s:12,i:1}) + T(x0-6,y0-h-14,ylab,{s:12,a:"end",i:1})
+    + P(expPath(x0,y0,w,h,kind), BLU, 2)
+    + L(x0, yv, tauX, yv, MUT, 1, "3 3") + L(tauX, yv, tauX, y0, MUT, 1, "3 3") + T(tauX, y0+14, "&#964;", {s:12,c:MUT})
+    + T(x0-4, yv+4, mark, {s:11,c:MUT,a:"end"})
+    + (kind==="rise" ? L(x0,y0-h,x0+w,y0-h,MUT,1,"2 4") : "")
+    + T(x0 + w/2 + 4, y0 - h - 30, title, {s:11,b:1});
+}
+
+const RESV = (x,y,lab) => `<rect x="${x-7}" y="${y-18}" width="14" height="36" fill="#fff" stroke="${INK}" stroke-width="1.6"/>` + (lab?T(x+12,y+4,lab,{s:12,a:"start"}):"");
+const BATV = (x,y,lab) => `<rect x="${x-16}" y="${y-8}" width="32" height="16" fill="#fff"/>${L(x-15,y-5,x+15,y-5,INK,1.8)}${L(x-8,y+5,x+8,y+5,INK,4)}` + (lab?T(x+20,y+4,lab,{s:12,a:"start"}):"");
+const BAT = (x,y,lab,ly) => `<rect x="${x-8}" y="${y-16}" width="16" height="32" fill="#fff"/>${L(x-5,y-15,x-5,y+15,INK,1.8)}${L(x+5,y-8,x+5,y+8,INK,4)}` + (lab?T(x,y+(ly||30),lab,{s:12}):"");
+const GAL = (x,y) => `<circle cx="${x}" cy="${y}" r="11" fill="#fff" stroke="${INK}" stroke-width="1.6"/>` + T(x,y+4.5,"G",{s:12,b:1});
+const MET = (x,y,t) => `<circle cx="${x}" cy="${y}" r="11" fill="#fff" stroke="${INK}" stroke-width="1.6"/>` + T(x,y+4.5,t,{s:12,b:1});
+const DOT = (x,y) => `<circle cx="${x}" cy="${y}" r="3" fill="${INK}"/>`;
+const PL = (pts,c=INK,sw=1.5) => `<polyline points="${pts}" fill="none" stroke="${c}" stroke-width="${sw}"/>`;
+const AXES = (x0,y0,w,h,xl,yl) => L(x0,y0,x0+w,y0,INK,1.4) + L(x0,y0,x0,y0-h,INK,1.4) + `<path d="M${x0+w},${y0} l-7,-3.5 l0,7 z M${x0},${y0-h} l-3.5,7 l7,0 z" fill="${INK}"/>` + T(x0+w+4,y0+15,xl,{s:12,i:1,a:"end"}) + T(x0-6,y0-h+10,yl,{s:12,i:1,a:"end"});
+
+/* ===== Chapter 3: Electric current and DC circuits ===== */
+const C3 = THEORY[3];
+
+/* figures */
+const f3_drift = S(360, 200, (() => { let o = "";
+  o += `<rect x="20" y="20" width="320" height="60" rx="8" fill="#eef2f7" stroke="${MUT}"/>` + T(180,14,"No field: random motion, no net flow",{s:11.5,c:MUT});
+  [[50,40,72,62,58,34],[110,60,96,36,124,44],[170,42,192,66,206,40],[240,64,222,40,254,36],[300,44,318,66,290,60]].forEach(([a,b,c,d,e,f]) => {
+    o += PL(`${a},${b} ${c},${d} ${e},${f}`,BLU,1.3) + `<circle cx="${a}" cy="${b}" r="4" fill="${BLU}"/>`; });
+  o += `<rect x="20" y="115" width="320" height="60" rx="8" fill="#eef2f7" stroke="${MUT}"/>` + T(180,109,"Field applied: random motion plus a slow drift",{s:11.5,c:MUT});
+  [[300,135],[230,155],[160,135],[90,155]].forEach(([x,y]) => { o += PL(`${x},${y} ${x-14},${y+14} ${x-26},${y-4} ${x-42},${y+10}`,BLU,1.3) + `<circle cx="${x}" cy="${y}" r="4" fill="${BLU}"/>`; });
+  o += A(60,192,150,192,FLD,2) + T(158,196,"E",{s:13,i:1,b:1,c:FLD,a:"start"}) + A(300,192,210,192,BLU,2) + T(202,196,"v<tspan font-size='9'>d</tspan>",{s:13,i:1,c:BLU,a:"end"});
+  return o; })());
+const f3_dir = S(340, 170, L(60,40,280,40) + L(60,40,60,130) + L(280,40,280,130) + L(60,130,280,130) + BAT(170,130,"") + T(158,160,"+",{s:13,c:RED,b:1}) + T(182,160,"&#8722;",{s:13,c:BLU,b:1})
+  + RES(170,40,"") + A(110,40,140,40,RED,2) + T(110,30,"conventional current I",{s:11,c:RED}) + A(240,52,210,52,BLU,1.8) + T(228,70,"electrons",{s:11,c:BLU})
+  + A(275,60,275,100,RED,2) + A(65,100,65,60,RED,2));
+const f3_vi = S(360, 190, AXES(40,160,140,130,"I","V") + L(40,160,170,50,BLU,2.2) + T(110,180,"ohmic conductor",{s:11.5}) + T(130,96,"gradient = R",{s:11,c:MUT,a:"start"})
+  + AXES(220,160,130,130,"I","V") + P("M220,160 Q300,150 330,40",RED,2.2) + T(285,180,"filament lamp",{s:11.5}) + T(250,80,"R rises as it heats up",{s:10.5,c:MUT,a:"start"}));
+const f3_wire = S(340, 120, `<ellipse cx="60" cy="60" rx="14" ry="26" fill="#d9e3ef" stroke="${INK}"/><path d="M60,34 L280,34 M60,86 L280,86" stroke="${INK}" stroke-width="1.5"/><ellipse cx="280" cy="60" rx="14" ry="26" fill="#eef2f7" stroke="${INK}"/>`
+  + T(60,64,"A",{s:13,i:1,b:1}) + L(60,104,280,104,MUT,1) + L(60,98,60,110,MUT,1) + L(280,98,280,110,MUT,1) + T(170,118,"length l",{s:12,c:MUT}) + T(170,64,"resistivity &#961;",{s:12,c:MUT}));
+const f3_rt = S(320, 190, AXES(50,160,240,140,"T","R") + L(50,120,270,40,RED,2.2) + L(50,120,90,105,MUT,1,"3 3") + DOT(110,98) + L(110,98,110,160,MUT,1,"3 3") + L(50,98,110,98,MUT,1,"3 3")
+  + T(110,176,"T&#8320;",{s:12}) + T(44,102,"R&#8320;",{s:12,a:"end"}) + T(190,110,"metal: R increases",{s:11.5,c:RED,a:"start"}) + T(190,126,"steadily with T",{s:11.5,c:RED,a:"start"}));
+const f3_emf = S(360, 190, `<rect x="40" y="95" width="150" height="70" rx="6" fill="none" stroke="${MUT}" stroke-dasharray="5 4"/>` + T(115,182,"inside the battery",{s:11,c:MUT})
+  + L(40,130,40,40) + L(40,40,320,40) + L(320,40,320,130) + L(190,130,320,130) + L(40,130,190,130) + BAT(85,130,"") + T(85,112,"&#949;",{s:13,i:1}) + RES(150,130,"") + T(150,152,"r",{s:13,i:1})
+  + RES(180,40,"R") + MET(320,85,"V") + A(250,32,280,32,RED,1.6) + T(265,24,"I",{s:12,i:1,c:RED})
+  + T(250,72,"terminal p.d.",{s:11,c:MUT}) + T(250,88,"V = &#949; &#8722; Ir",{s:12,b:1}));
+const f3_vt = S(320, 180, AXES(50,150,240,120,"I","V") + L(50,50,250,140,BLU,2.2) + DOT(50,50) + T(44,54,"&#949;",{s:13,i:1,a:"end"}) + T(170,80,"gradient = &#8722;r",{s:12,c:MUT,a:"start"}) + T(170,170,"more current, more lost volts",{s:11,c:MUT}));
+const f3_series = S(340, 150, L(40,40,300,40) + L(40,40,40,120) + L(300,40,300,120) + L(40,120,300,120) + RES(100,40,"R&#8321;") + RES(170,40,"R&#8322;") + RES(240,40,"R&#8323;") + BAT(170,120,"V")
+  + A(56,56,56,90,RED,1.6) + T(68,78,"I",{s:12,i:1,c:RED,a:"start"}) + T(170,76,"same I through each",{s:11.5,c:BLU}));
+const f3_par = S(390, 200, L(70,30,270,30) + L(70,75,270,75) + L(70,120,270,120) + L(70,30,70,170) + L(270,30,270,170) + L(70,170,270,170)
+  + RES(170,30,"") + RES(170,75,"") + RES(170,120,"") + T(196,24,"R&#8321;",{s:12,a:"start"}) + T(196,69,"R&#8322;",{s:12,a:"start"}) + T(196,114,"R&#8323;",{s:12,a:"start"})
+  + BAT(170,170,"V") + T(300,70,"same V",{s:12,c:BLU,a:"start"}) + T(300,86,"across each",{s:12,c:BLU,a:"start"}) + DOT(70,30) + DOT(70,75) + DOT(70,120) + DOT(270,30) + DOT(270,75) + DOT(270,120));
+const f3_junction = S(300, 160, DOT(150,80) + A(40,40,140,76,RED,2) + A(40,120,140,84,RED,2) + A(160,80,270,80,RED,2)
+  + T(70,40,"I&#8321;",{s:13,i:1,c:RED}) + T(70,132,"I&#8322;",{s:13,i:1,c:RED}) + T(240,70,"I&#8323;",{s:13,i:1,c:RED}) + T(150,150,"I&#8321; + I&#8322; = I&#8323;",{s:13,b:1}));
+const f3_loop2 = S(360, 230, L(60,40,300,40) + L(60,190,300,190) + L(60,40,60,190) + L(180,40,180,190) + L(300,40,300,190) + DOT(180,40) + DOT(180,190)
+  + BATV(60,150,"12 V") + RESV(60,85,"2 &#937;") + BATV(300,150,"6 V") + RESV(300,85,"4 &#937;") + RESV(180,115,"6 &#937;")
+  + A(66,62,66,52,RED,1.8) + T(76,58,"I&#8321;",{s:11,c:RED,a:"start"}) + A(294,62,294,52,RED,1.8) + T(286,58,"I&#8322;",{s:11,c:RED,a:"end"}) + A(186,56,186,72,RED,1.8) + T(196,66,"I&#8323;",{s:11,c:RED,a:"start"})
+  + P("M100,140 A22,22 0 1 1 132,150",MUT,1.3,1) + T(118,120,"loop 1",{s:10,c:MUT}) + P("M228,140 A22,22 0 1 1 260,150",MUT,1.3,1) + T(246,120,"loop 2",{s:10,c:MUT}));
+const f3_divider = S(320, 200, L(60,30,200,30) + L(60,170,200,170) + L(60,30,60,170) + L(200,30,200,170) + BATV(60,100,"V") + RESV(200,70,"R&#8321;") + RESV(200,130,"R&#8322;")
+  + L(200,100,270,100) + L(200,170,270,170) + `<circle cx="270" cy="100" r="4" fill="#fff" stroke="${INK}"/><circle cx="270" cy="170" r="4" fill="#fff" stroke="${INK}"/>`
+  + A(288,165,288,108,BLU,1.6) + T(296,140,"V<tspan font-size='9'>out</tspan>",{s:13,a:"start",c:BLU}) + DOT(200,100) + DOT(200,170));
+const f3_pot = S(360, 220, L(40,40,320,40) + L(40,40,40,90) + L(320,40,320,90) + BAT(180,40,"&#949;&#8320; (driver cell)",-24)
+  + `<line x1="40" y1="90" x2="320" y2="90" stroke="#8a6d3b" stroke-width="4"/>` + T(34,94,"A",{s:13,b:1,a:"end"}) + T(326,94,"B",{s:13,b:1,a:"start"})
+  + L(40,90,40,170) + L(40,170,110,170) + BAT(130,170,"&#949;&#8321; (unknown)",30) + L(150,170,190,170) + GAL(205,170) + L(216,170,230,170) + L(230,170,230,104)
+  + `<path d="M230,104 L224,96 L236,96 z" fill="${INK}"/>` + T(242,120,"jockey",{s:11,c:MUT,a:"start"}) + T(236,86,"C",{s:13,b:1,a:"start"})
+  + L(40,62,230,62,BLU,1,"3 3") + L(40,56,40,68,BLU,1) + L(230,56,230,68,BLU,1) + T(135,58,"balance length l",{s:11,c:BLU}));
+
+/* lessons */
+C3[0].html = `
+<p>An electric current is a flow of charge. In a metal wire, the charges that move are <b>free electrons</b>: the outer electrons of the metal atoms, which are not tied to any one atom.</p>
+<h4>The microscopic model</h4>
+${fig(f3_drift, "Figure 3.1: Free electrons in a metal. Without a field they move randomly and there is no net flow. With a field, they slowly drift opposite to E at the drift velocity v<sub>d</sub>.")}
+<ul><li>With <b>no electric field</b>, the free electrons move randomly in all directions at high speed. For every electron going one way, another goes the other way, so there is <b>no net flow</b> of charge.</li>
+<li>When a potential difference is applied, it sets up an electric field E inside the wire. The force F = eE pushes every electron <b>opposite to E</b>.</li>
+<li>The electrons still move randomly, but now they also drift slowly along the wire. Their average velocity along the wire is the <b>drift velocity v<sub>d</sub></b>. It is very small, typically less than 1 mm s<sup>&minus;1</sup>.</li></ul>
+<p>A lamp lights instantly even though the electrons drift so slowly, because the field travels through the whole wire almost at the speed of light, and all the free electrons start drifting together.</p>
+<h4>Electric current</h4>
+<p><b>Electric current</b> is defined as the <b>rate of flow of charge</b>.</p>
+${fx("I=\\dfrac{dQ}{dt}||Q=ne", "I = dQ/dt &nbsp;&nbsp; Q = ne")}
+<ul><li>Current is a scalar. Its unit is the ampere (A). <b>1 A</b> is a flow of 1 coulomb of charge past a point every second.</li>
+<li>If n electrons pass a point, the charge is Q = ne, with e = 1.60 &times; 10<sup>&minus;19</sup> C.</li>
+<li>Current is measured with an <b>ammeter connected in series</b>.</li>
+<li>A current flows only while there is a potential difference, just as water flows in a pipe only when one end is higher than the other.</li></ul>
+${fig(f3_dir, "Figure 3.2: Conventional current flows from the positive terminal round to the negative terminal. Electrons actually flow the opposite way.")}
+${ex("charge and number of electrons", `<p>A current of 0.80 A flows for 5.0 minutes. How much charge passes, and how many electrons is that?</p>
+<p>Q = It = 0.80 &times; (5.0 &times; 60) = <b>240 C</b>.</p>
+<p>n = Q/e = 240 / (1.60 &times; 10<sup>&minus;19</sup>) = <b>1.5 &times; 10<sup>21</sup> electrons</b>.</p>`)}
+${trap(`Forgetting to change minutes into seconds. The ampere is coulombs per <b>second</b>.`)}`;
+
+C3[1].html = `
+<h4>Ohm's law</h4>
+<p><b>Ohm's law</b> states that the potential difference across a conductor is <b>directly proportional</b> to the current flowing through it, <b>provided its temperature and other physical conditions stay constant</b>.</p>
+${fx("V=IR||R=\\dfrac{V}{I}", "V = IR &nbsp;&nbsp; R = V/I")}
+<p><b>Resistance</b> is the ratio of the potential difference across a component to the current through it. It measures how much the component opposes the current. Unit: the ohm (&Omega;).</p>
+${fig(f3_vi, "Figure 3.3: An ohmic conductor gives a straight line through the origin. A filament lamp does not obey Ohm's law, because it gets hotter and its resistance rises.")}
+<ul><li>A conductor that obeys Ohm's law (constant R over a wide range of voltage) is called <b>ohmic</b>.</li>
+<li>For an ohmic conductor, the gradient of the V&ndash;I graph is the resistance R.</li>
+<li>The condition "constant temperature" matters. A filament lamp heats up as the current increases, so its resistance increases and its graph curves.</li></ul>
+<h4>What does resistance depend on?</h4>
+${fig(f3_wire, "Figure 3.4: A wire of length l and cross-sectional area A, made of a material of resistivity &#961;.")}
+${fx("R=\\dfrac{\\rho l}{A}||\\rho=\\dfrac{RA}{l}", "R = &rho;l/A &nbsp;&nbsp; &rho; = RA/l")}
+<ul><li><b>Longer wire, more resistance</b> (R &prop; l): electrons have further to travel through the material.</li>
+<li><b>Thicker wire, less resistance</b> (R &prop; 1/A): there are more paths side by side for the electrons.</li>
+<li>The material matters through its <b>resistivity &rho;</b>.</li></ul>
+<p><b>Resistivity</b> is the resistance of a sample of the material with unit length and unit cross-sectional area. Its unit is the <b>ohm metre (&Omega; m)</b>. Resistivity depends only on the <b>material and its temperature</b>, not on the shape of the wire. Good conductors such as copper (1.7 &times; 10<sup>&minus;8</sup> &Omega; m) have very small resistivities. Insulators such as glass (10<sup>10</sup> to 10<sup>14</sup> &Omega; m) have very large ones.</p>
+${ex("resistivity from measurements", `<p>A wire 1.2 m long with cross-sectional area 2.0 &times; 10<sup>&minus;7</sup> m<sup>2</sup> carries 0.50 A when 0.60 V is across it. Find the resistivity.</p>
+<p>R = V/I = 0.60/0.50 = 1.2 &Omega;. Then &rho; = RA/l = (1.2)(2.0 &times; 10<sup>&minus;7</sup>)/1.2 = <b>2.0 &times; 10<sup>&minus;7</sup> &Omega; m</b>.</p>`)}
+${trap(`Mixing up resistance and resistivity. Cutting a wire in half halves its <b>resistance</b>, but its <b>resistivity</b> stays the same, because it is still the same material. Also convert mm<sup>2</sup> to m<sup>2</sup>: 1 mm<sup>2</sup> = 1.0 &times; 10<sup>&minus;6</sup> m<sup>2</sup>.`)}`;
+
+C3[2].html = `
+<p>The resistance of a <b>metal always increases</b> when its temperature increases. To see why, go back to the microscopic model.</p>
+<ol><li>The metal is a lattice of positive ions, with free electrons drifting between them.</li>
+<li>When the metal is heated, the ions <b>vibrate with a larger amplitude</b>.</li>
+<li>The drifting electrons now <b>collide with the ions more often</b>.</li>
+<li>These collisions hinder the drift of the electrons, so for the same voltage less current flows. The <b>resistance increases</b>.</li></ol>
+${fig(f3_rt, "Figure 3.5: Over a limited range, the resistance of a metal increases linearly with temperature.")}
+<p>Over a limited range of temperature, resistivity and resistance increase approximately <b>linearly</b> with temperature:</p>
+${fx("\\rho=\\rho_0\\left[1+\\alpha\\left(T-T_0\\right)\\right]||R=R_0\\left[1+\\alpha\\left(T-T_0\\right)\\right]||\\alpha=\\dfrac{1}{\\rho_0}\\dfrac{\\Delta\\rho}{\\Delta T}", "&rho; = &rho;<sub>0</sub>[1 + &alpha;(T &minus; T<sub>0</sub>)] &nbsp;&nbsp; R = R<sub>0</sub>[1 + &alpha;(T &minus; T<sub>0</sub>)]")}
+<ul><li>R<sub>0</sub> (or &rho;<sub>0</sub>) is the value at the reference temperature T<sub>0</sub>, usually 20 &deg;C.</li>
+<li>&alpha; is the <b>temperature coefficient of resistivity</b>: the fractional increase in resistivity for each degree rise in temperature. Its unit is &deg;C<sup>&minus;1</sup>.</li>
+<li>For metals, &alpha; is positive. That is why R increases with T.</li></ul>
+${ex("hot copper wire", `<p>A copper coil has a resistance of 5.0 &Omega; at 20 &deg;C. For copper, &alpha; = 3.9 &times; 10<sup>&minus;3</sup> &deg;C<sup>&minus;1</sup>. Find its resistance at 80 &deg;C.</p>
+<p>R = 5.0[1 + (3.9 &times; 10<sup>&minus;3</sup>)(80 &minus; 20)] = 5.0 &times; 1.234 = <b>6.2 &Omega;</b>.</p>`)}
+${ex("finding a temperature", `<p>A tungsten filament has a resistance of 15 &Omega; at 20 &deg;C and 190 &Omega; when lit. Taking &alpha; = 4.5 &times; 10<sup>&minus;3</sup> &deg;C<sup>&minus;1</sup>, find its working temperature.</p>
+<p>190 = 15[1 + 4.5 &times; 10<sup>&minus;3</sup>(T &minus; 20)], so T &minus; 20 = (190/15 &minus; 1)/(4.5 &times; 10<sup>&minus;3</sup>) = 2593, and T = <b>2.6 &times; 10<sup>3</sup> &deg;C</b>.</p>`)}
+${trap(`Using T instead of the temperature <b>change</b> (T &minus; T<sub>0</sub>) inside the bracket.`)}`;
+
+C3[3].html = `
+<p>A battery is not perfect. Some of the energy it gives to the charges is used up inside the battery itself, because the chemicals inside have resistance.</p>
+${fig(f3_emf, "Figure 3.6: A real battery behaves like an ideal emf &#949; in series with an internal resistance r. The voltmeter reads the terminal potential difference V.")}
+<h4>Three definitions</h4>
+<ul><li><b>Electromotive force (emf), &epsilon;</b>: the energy supplied by the source to each unit charge that flows through the <b>whole</b> circuit, the external and internal resistances. Despite its name, it is not a force. Unit: volt.</li>
+<li><b>Terminal potential difference, V</b>: the work done in moving a unit charge through the <b>external</b> resistance only. Unit: volt.</li>
+<li><b>Internal resistance, r</b>: the resistance of the chemicals inside the battery, between its terminals.</li></ul>
+<h4>Lost volts</h4>
+<p>Each coulomb gets &epsilon; joules from the battery. Some of this, Ir, is used to push it through the internal resistance (the "lost volts"). The rest, V, is delivered to the external circuit:</p>
+${fx("\\varepsilon=V+Ir||V=\\varepsilon-Ir||I=\\dfrac{\\varepsilon}{R+r}", "&epsilon; = V + Ir &nbsp;&nbsp; V = &epsilon; &minus; Ir &nbsp;&nbsp; I = &epsilon;/(R + r)")}
+${fig(f3_vt, "Figure 3.7: As the current increases, the terminal p.d. falls. The intercept is &#949; and the gradient is &#8722;r.")}
+<ul><li>V is less than &epsilon; whenever a current flows.</li>
+<li>V = &epsilon; only when <b>no current</b> flows (an open circuit).</li>
+<li>The smaller r is, the more current and power the battery can deliver. A car battery has a very small r, so it can supply the large current needed to start the engine.</li></ul>
+<h4>Factors affecting internal resistance</h4>
+<ul><li>The type and concentration of the chemicals (electrolyte) in the cell.</li>
+<li>The temperature of the cell.</li>
+<li>The distance between the electrodes, and their size.</li>
+<li>The age of the cell: as a battery is used up and its electrolyte dries out, r increases.</li></ul>
+${ex("terminal voltage", `<p>A 9.0 V battery with internal resistance 0.50 &Omega; is connected to a 4.0 &Omega; resistor.</p>
+<p>I = &epsilon;/(R + r) = 9.0/4.5 = <b>2.0 A</b>. Lost volts = Ir = 2.0 &times; 0.50 = 1.0 V, so V = 9.0 &minus; 1.0 = <b>8.0 V</b>.</p>`)}
+${trap(`Calling the voltmeter reading across a working battery its emf. That reading is the terminal p.d. It equals the emf only when no current flows.`)}`;
+
+C3[4].html = `
+<p>Real circuits contain several resistors. You can replace any combination of them with one <b>effective resistance</b> R<sub>eff</sub> that draws the same current from the supply.</p>
+<h4>Series</h4>
+${fig(f3_series, "Figure 3.8: Resistors in series. There is only one path, so the same current flows through each resistor.")}
+<p>There is only one path, so the <b>same current I</b> flows through every resistor. The supply voltage is <b>shared</b>: V = V<sub>1</sub> + V<sub>2</sub> + V<sub>3</sub>. Writing each as IR and cancelling I gives:</p>
+${fx("R_{\\text{eff}}=R_1+R_2+R_3+\\cdots", "R<sub>eff</sub> = R<sub>1</sub> + R<sub>2</sub> + R<sub>3</sub> + ...")}
+<p>R<sub>eff</sub> in series is always <b>larger</b> than the largest resistor.</p>
+<h4>Parallel</h4>
+${fig(f3_par, "Figure 3.9: Resistors in parallel. Each resistor is connected directly across the supply, so each has the same voltage.")}
+<p>Each resistor is connected across the same two points, so each has the <b>same voltage V</b>. The current <b>splits</b>: I = I<sub>1</sub> + I<sub>2</sub> + I<sub>3</sub>. Writing each as V/R and cancelling V gives:</p>
+${fx("\\dfrac{1}{R_{\\text{eff}}}=\\dfrac{1}{R_1}+\\dfrac{1}{R_2}+\\dfrac{1}{R_3}+\\cdots", "1/R<sub>eff</sub> = 1/R<sub>1</sub> + 1/R<sub>2</sub> + 1/R<sub>3</sub> + ...")}
+<p>R<sub>eff</sub> in parallel is always <b>smaller</b> than the smallest resistor, because each extra branch gives the current another path.</p>
+<table class="cmp"><tr><th></th><th>Series</th><th>Parallel</th></tr>
+<tr><td>Same for every resistor</td><td>current I</td><td>voltage V</td></tr>
+<tr><td>Shared between resistors</td><td>voltage: V = V<sub>1</sub> + V<sub>2</sub> + ...</td><td>current: I = I<sub>1</sub> + I<sub>2</sub> + ...</td></tr>
+<tr><td>R<sub>eff</sub></td><td>bigger than the largest</td><td>smaller than the smallest</td></tr></table>
+${ex("a mixed circuit", `<p>A 6.0 &Omega; and a 3.0 &Omega; resistor are in parallel, and this pair is in series with a 4.0 &Omega; resistor, across a 12 V supply.</p>
+<p>Parallel pair: 1/R = 1/6.0 + 1/3.0 = 1/2.0, so R = 2.0 &Omega;. Total: R<sub>eff</sub> = 2.0 + 4.0 = <b>6.0 &Omega;</b>.</p>
+<p>Supply current I = 12/6.0 = 2.0 A. Voltage across the pair = 2.0 &times; 2.0 = 4.0 V, so the 6.0 &Omega; carries 4.0/6.0 = <b>0.67 A</b> and the 3.0 &Omega; carries 4.0/3.0 = <b>1.3 A</b> (they add to 2.0 A).</p>`)}
+${trap(`Forgetting the last step in the parallel formula. 1/R<sub>eff</sub> = 0.5 means R<sub>eff</sub> = 2 &Omega;, not 0.5 &Omega;. Turn the answer upside down.`)}`;
+
+C3[5].html = `
+<p>Some circuits cannot be simplified into series and parallel parts, for example when there are batteries in different branches. For these we use <b>Kirchhoff's two rules</b>.</p>
+<h4>First rule: the junction rule</h4>
+${fig(f3_junction, "Figure 3.10: At a junction, the total current flowing in equals the total current flowing out.")}
+<p>The sum of the currents entering any junction equals the sum of the currents leaving it: &Sigma;I<sub>in</sub> = &Sigma;I<sub>out</sub>. This is <b>conservation of charge</b>: charge cannot pile up at a junction or disappear.</p>
+<h4>Second rule: the loop rule</h4>
+<p>In any closed loop, the sum of the emfs equals the sum of the IR products: &Sigma;&epsilon; = &Sigma;IR. This is <b>conservation of energy</b>: the energy a charge gains from the batteries around a loop equals the energy it gives up in the resistors.</p>
+${fx("\\Sigma I_{\\text{in}}=\\Sigma I_{\\text{out}}||\\Sigma\\varepsilon=\\Sigma IR", "&Sigma;I<sub>in</sub> = &Sigma;I<sub>out</sub> &nbsp;&nbsp; &Sigma;&epsilon; = &Sigma;IR")}
+<h4>Sign rules when you go round a loop</h4>
+<table class="cmp"><tr><th>Going through...</th><th>in the same direction as...</th><th>sign</th></tr>
+<tr><td>a battery, from &minus; to +</td><td>its emf</td><td>+&epsilon;</td></tr>
+<tr><td>a battery, from + to &minus;</td><td>against its emf</td><td>&minus;&epsilon;</td></tr>
+<tr><td>a resistor</td><td>the assumed current</td><td>+IR</td></tr>
+<tr><td>a resistor</td><td>against the assumed current</td><td>&minus;IR</td></tr></table>
+<h4>Step by step</h4>
+<ol><li>Mark each emf (from the &minus; terminal to the + terminal).</li>
+<li>Choose a direction for the current in each branch. Resistors in the same branch carry the same current.</li>
+<li>Apply the junction rule at one junction.</li>
+<li>Choose a direction for going round each loop, and apply the loop rule (at most two loops).</li>
+<li>Solve the equations simultaneously (EQN mode on your calculator).</li>
+<li>A <b>negative</b> answer means that current flows the opposite way to what you assumed. The size is still correct.</li></ol>
+${fig(f3_loop2, "Figure 3.11: A two-loop circuit. The currents I&#8321;, I&#8322; and I&#8323; are the directions we assume before solving.")}
+${ex("two loops", `<p>Solve the circuit in Figure 3.11.</p>
+<p>Junction (top): I<sub>3</sub> = I<sub>1</sub> + I<sub>2</sub>.</p>
+<p>Loop 1 (left): 12 = 2I<sub>1</sub> + 6I<sub>3</sub>. Loop 2 (right): 6 = 4I<sub>2</sub> + 6I<sub>3</sub>.</p>
+<p>Solving: I<sub>1</sub> = <b>1.91 A</b>, I<sub>2</sub> = <b>&minus;0.545 A</b>, I<sub>3</sub> = <b>1.36 A</b>. I<sub>2</sub> is negative, so 0.545 A actually flows <b>down</b> through the 6 V battery: the 12 V battery is charging it.</p>
+<p>Check loop 1: 2(1.91) + 6(1.36) = 12.0 V. Correct.</p>`)}
+${trap(`Getting the sign of an emf wrong. Decide the sign by the way <b>you</b> cross the battery, not by the way the current flows.`)}`;
+
+C3[6].html = `
+<p>When charge flows through a device, the electrical energy it carries is changed into other forms: heat in a kettle, light in a lamp, kinetic energy in a motor.</p>
+<h4>Electrical energy</h4>
+<p>A charge Q moving through a potential difference V transfers energy W = QV. Since Q = It:</p>
+${fx("W=IVt||W=I^2Rt=\\dfrac{V^2}{R}t", "W = IVt &nbsp;&nbsp; W = I<sup>2</sup>Rt = (V<sup>2</sup>/R)t")}
+<p>For a resistor, which changes all of its electrical energy into heat, W = I<sup>2</sup>Rt gives the <b>heat produced</b>. Unit: joule (J).</p>
+<h4>Power</h4>
+<p><b>Power</b> is the rate at which electrical energy is transferred.</p>
+${fx("P=\\dfrac{W}{t}=IV||P=I^2R=\\dfrac{V^2}{R}", "P = W/t = IV = I<sup>2</sup>R = V<sup>2</sup>/R")}
+<ul><li>Unit: watt (W), where 1 W = 1 J s<sup>&minus;1</sup>.</li>
+<li>Use P = I<sup>2</sup>R when you know the current (for example, resistors in series). Use P = V<sup>2</sup>/R when you know the voltage (for example, resistors in parallel).</li>
+<li>Inside a battery, power &epsilon;I is produced from chemical energy. I<sup>2</sup>r of it is wasted as heat in the internal resistance, and the rest, VI, goes to the external circuit.</li></ul>
+${ex("energy in a circuit", `<p>A 12 V battery with internal resistance 1.0 &Omega; is connected to a 5.0 &Omega; resistor for 10 minutes.</p>
+<p>I = 12/(5.0 + 1.0) = 2.0 A.</p>
+<p>Power produced by the battery: &epsilon;I = 12 &times; 2.0 = <b>24 W</b>. Heat in the battery: I<sup>2</sup>r = <b>4.0 W</b>. Power to the resistor: I<sup>2</sup>R = <b>20 W</b>.</p>
+<p>Heat produced in the resistor in 10 minutes: W = 20 &times; 600 = <b>1.2 &times; 10<sup>4</sup> J</b>.</p>`)}
+${trap(`Using the battery's emf in P = V<sup>2</sup>/R for the external resistor. Use the voltage actually across that resistor.`)}`;
+
+C3[7].html = `
+<p>Often a circuit needs a smaller voltage than the supply provides. A <b>potential divider</b> gets it by connecting two or more resistors <b>in series</b> across the supply.</p>
+${fig(f3_divider, "Figure 3.12: A potential divider. The output voltage is taken across R&#8322;.")}
+<h4>The principle</h4>
+<p>The resistors are in series, so the same current flows through each: I = V/(R<sub>1</sub> + R<sub>2</sub>). The voltage across each resistor is IR, so the supply voltage is <b>shared in the ratio of the resistances</b>. The larger resistor gets the larger share.</p>
+${fx("V_1=\\left(\\dfrac{R_1}{R_1+R_2}\\right)V||V_2=\\left(\\dfrac{R_2}{R_1+R_2}\\right)V", "V<sub>1</sub> = [R<sub>1</sub>/(R<sub>1</sub> + R<sub>2</sub>)]V &nbsp;&nbsp; V<sub>2</sub> = [R<sub>2</sub>/(R<sub>1</sub> + R<sub>2</sub>)]V")}
+<p>With three resistors, the same idea gives V<sub>1</sub> = [R<sub>1</sub>/(R<sub>1</sub> + R<sub>2</sub> + R<sub>3</sub>)]V. Put simply: <b>ratio of voltages = ratio of resistances</b>.</p>
+<p>A uniform resistance wire also works as a divider, because R &prop; l. Tapping it at a point gives V<sub>1</sub>/V = l<sub>1</sub>/(l<sub>1</sub> + l<sub>2</sub>).</p>
+${ex("output voltage, and the effect of a load", `<p>R<sub>1</sub> = 1.0 k&Omega; and R<sub>2</sub> = 3.0 k&Omega; are connected across 12 V. The output is taken across R<sub>2</sub>.</p>
+<p>V<sub>out</sub> = [3.0/(1.0 + 3.0)] &times; 12 = <b>9.0 V</b>.</p>
+<p>Now a 3.0 k&Omega; load (for example, a voltmeter) is connected across the output. It is in parallel with R<sub>2</sub>, giving 1.5 k&Omega;. The new output is [1.5/(1.0 + 1.5)] &times; 12 = <b>7.2 V</b>. Connecting a load always <b>lowers</b> the output voltage.</p>`)}
+${trap(`Putting the wrong resistor on top of the fraction. The resistor you want the voltage across goes on top.`)}`;
+
+C3[8].html = `
+<p>An ordinary voltmeter draws a small current from the cell it measures, so it reads the terminal p.d. (&epsilon; &minus; Ir), not the true emf. A <b>potentiometer</b> measures voltage while drawing <b>no current at all</b>.</p>
+${fig(f3_pot, "Figure 3.13: A potentiometer. The driver cell sends a steady current along the uniform wire AB. The jockey is moved until the galvanometer reads zero.")}
+<h4>How it works</h4>
+<ol><li>The <b>driver cell</b> sends a steady current I along a long, uniform resistance wire AB.</li>
+<li>Because the wire is uniform, the potential drop along it is <b>proportional to length</b>: V = I(&rho;/A)l = kl, where k is the potential drop per unit length.</li>
+<li>The cell being tested is connected so that its emf opposes the potential drop along the wire, through a galvanometer and a sliding contact called a <b>jockey</b>.</li>
+<li>The jockey is tapped along the wire until the galvanometer reads <b>zero</b>. At this <b>balance point</b> C, the emf of the cell exactly equals the potential drop along AC.</li>
+<li>The length AC is the <b>balance length</b> l, and &epsilon; = kl.</li></ol>
+<p>At balance no current flows through the tested cell, so there is no Ir drop. The potentiometer measures the <b>true emf</b>.</p>
+${fx("V\\propto l||V=kl||\\dfrac{\\varepsilon_1}{\\varepsilon_2}=\\dfrac{l_1}{l_2}", "V &prop; l &nbsp;&nbsp; V = kl &nbsp;&nbsp; &epsilon;<sub>1</sub>/&epsilon;<sub>2</sub> = l<sub>1</sub>/l<sub>2</sub>")}
+<h4>Uses</h4>
+<ul><li><b>Measuring an unknown emf:</b> find k from the driver circuit, then &epsilon; = kl.</li>
+<li><b>Comparing two emfs:</b> find the balance length for each cell. Since k is the same, &epsilon;<sub>1</sub>/&epsilon;<sub>2</sub> = l<sub>1</sub>/l<sub>2</sub>.</li>
+<li><b>Measuring internal resistance:</b> find the balance length l<sub>0</sub> for the cell alone (its emf), then l with a known resistor R connected across the cell (its terminal p.d.). Then r = R(l<sub>0</sub> &minus; l)/l.</li></ul>
+${ex("balance length", `<p>A 2.0 V driver cell (negligible internal resistance) is connected across a 100 cm wire of resistance 4.0 &Omega;. A cell of emf 1.2 V is tested.</p>
+<p>The full 2.0 V is across the 1.00 m wire, so k = 2.0 V m<sup>&minus;1</sup>. Balance length l = 1.2/2.0 = 0.60 m = <b>60 cm</b>.</p>
+<p>If a 1.0 &Omega; resistor is added in series with the driver cell, the current is 2.0/(4.0 + 1.0) = 0.40 A, so the p.d. across the wire is 0.40 &times; 4.0 = 1.6 V and k = 1.6 V m<sup>&minus;1</sup>. The new balance length is 1.2/1.6 = 0.75 m = <b>75 cm</b>.</p>`)}
+${trap(`Forgetting that adding resistance to the <b>driver</b> circuit changes k. Less current along the wire means a smaller potential drop per metre, so the balance length gets longer.`)}`;
+
+})();
+(function(){
+const INK="#1b2232", MUT="#5b6476", RED="#c0392b", BLU="#2a6aa3", FLD="#1d7448";
+const DEFS = `<defs>${[INK,RED,BLU,FLD,MUT].map(c => `<marker id="m${c.slice(1)}" markerWidth="9" markerHeight="9" refX="7.5" refY="4.5" orient="auto" markerUnits="userSpaceOnUse"><path d="M0,0 L9,4.5 L0,9 z" fill="${c}"/></marker>`).join("")}</defs>`;
+const S = (w, h, body) => `<svg class="tsvg" viewBox="0 0 ${w} ${h}" width="${w}" xmlns="http://www.w3.org/2000/svg" font-family="system-ui,sans-serif">${DEFS}${body}</svg>`;
+const A = (x1,y1,x2,y2,c=INK,sw=2) => `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${c}" stroke-width="${sw}" marker-end="url(#m${c.slice(1)})"/>`;
+const L = (x1,y1,x2,y2,c=INK,sw=1.5,dash) => `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${c}" stroke-width="${sw}"${dash?` stroke-dasharray="${dash}"`:""}/>`;
+const T = (x,y,t,o={}) => `<text x="${x}" y="${y}" font-size="${o.s||13}" fill="${o.c||INK}" text-anchor="${o.a||"middle"}"${o.b?' font-weight="700"':""}${o.i?' font-style="italic"':""}>${t}</text>`;
+const Q = (x,y,s,r=13) => `<circle cx="${x}" cy="${y}" r="${r}" fill="${s==="+"?RED:BLU}"/>` + T(x, y+5, s==="+"?"+":"&#8722;", {c:"#fff", s:r>10?17:12, b:1});
+const P = (d,c=FLD,sw=1.6,mk) => `<path d="${d}" fill="none" stroke="${c}" stroke-width="${sw}"${mk?` marker-end="url(#m${c.slice(1)})"`:""}/>`;
+const tri = (x,y,c=FLD,dir=1) => `<path d="M${x-4*dir},${y-4} L${x+4*dir},${y} L${x-4*dir},${y+4} z" fill="${c}"/>`;
+const RES = (x,y,lab) => `<rect x="${x-18}" y="${y-7}" width="36" height="14" fill="#fff" stroke="${INK}" stroke-width="1.6"/>` + (lab?T(x,y-13,lab,{s:12}):"");
+const CAPV = (x,y,lab) => `<rect x="${x-16}" y="${y-6}" width="32" height="12" fill="#fff"/>${L(x-15,y-5,x+15,y-5,INK,2.5)}${L(x-15,y+5,x+15,y+5,INK,2.5)}` + (lab?T(x+22,y+4,lab,{s:12,a:"start"}):"");
+const fig = (svgStr, cap) => `<figure class="tfig">${svgStr}<figcaption>${cap}</figcaption></figure>`;
+const ex = (title, body) => `<div class="ex"><b>Worked example: ${title}</b>${body}</div>`;
+const trap = body => `<div class="trap"><b>Common mistake.</b> ${body}</div>`;
+const fx = (tex, html) => `<div class="formula" data-tex="${tex}">${html}</div>`;
+function expPath(x0, y0, w, h, kind){ // kind: "rise" or "decay"; tau at w/5
+  const pts = []; for(let i=0;i<=40;i++){ const t = i/40*5; const v = kind==="rise" ? 1-Math.exp(-t) : Math.exp(-t);
+    pts.push(`${(x0 + i/40*w).toFixed(1)},${(y0 - v*h).toFixed(1)}`); }
+  return "M" + pts.join(" L");
+}
+function graph(x0, y0, w, h, kind, ylab, title, mark){
+  const tauX = x0 + w/5, v = kind==="rise" ? 0.632 : 0.368, yv = y0 - v*h;
+  return L(x0,y0,x0+w+8,y0,INK,1.4) + L(x0,y0,x0,y0-h-12,INK,1.4) + T(x0+w+6,y0+14,"t",{s:12,i:1}) + T(x0-6,y0-h-14,ylab,{s:12,a:"end",i:1})
+    + P(expPath(x0,y0,w,h,kind), BLU, 2)
+    + L(x0, yv, tauX, yv, MUT, 1, "3 3") + L(tauX, yv, tauX, y0, MUT, 1, "3 3") + T(tauX, y0+14, "&#964;", {s:12,c:MUT})
+    + T(x0-4, yv+4, mark, {s:11,c:MUT,a:"end"})
+    + (kind==="rise" ? L(x0,y0-h,x0+w,y0-h,MUT,1,"2 4") : "")
+    + T(x0 + w/2 + 4, y0 - h - 30, title, {s:11,b:1});
+}
+
+const RESV = (x,y,lab) => `<rect x="${x-7}" y="${y-18}" width="14" height="36" fill="#fff" stroke="${INK}" stroke-width="1.6"/>` + (lab?T(x+12,y+4,lab,{s:12,a:"start"}):"");
+const BATV = (x,y,lab) => `<rect x="${x-16}" y="${y-8}" width="32" height="16" fill="#fff"/>${L(x-15,y-5,x+15,y-5,INK,1.8)}${L(x-8,y+5,x+8,y+5,INK,4)}` + (lab?T(x+20,y+4,lab,{s:12,a:"start"}):"");
+const BAT = (x,y,lab,ly) => `<rect x="${x-8}" y="${y-16}" width="16" height="32" fill="#fff"/>${L(x-5,y-15,x-5,y+15,INK,1.8)}${L(x+5,y-8,x+5,y+8,INK,4)}` + (lab?T(x,y+(ly||30),lab,{s:12}):"");
+const GAL = (x,y) => `<circle cx="${x}" cy="${y}" r="11" fill="#fff" stroke="${INK}" stroke-width="1.6"/>` + T(x,y+4.5,"G",{s:12,b:1});
+const MET = (x,y,t) => `<circle cx="${x}" cy="${y}" r="11" fill="#fff" stroke="${INK}" stroke-width="1.6"/>` + T(x,y+4.5,t,{s:12,b:1});
+const DOT = (x,y) => `<circle cx="${x}" cy="${y}" r="3" fill="${INK}"/>`;
+const PL = (pts,c=INK,sw=1.5) => `<polyline points="${pts}" fill="none" stroke="${c}" stroke-width="${sw}"/>`;
+const AXES = (x0,y0,w,h,xl,yl) => L(x0,y0,x0+w,y0,INK,1.4) + L(x0,y0,x0,y0-h,INK,1.4) + `<path d="M${x0+w},${y0} l-7,-3.5 l0,7 z M${x0},${y0-h} l-3.5,7 l7,0 z" fill="${INK}"/>` + T(x0+w+4,y0+15,xl,{s:12,i:1,a:"end"}) + T(x0-6,y0-h+10,yl,{s:12,i:1,a:"end"});
+
+/* ===== Chapter 4: Magnetism ===== */
+const C4 = THEORY[4];
+const OUT = (x,y,r=9,c=INK) => `<circle cx="${x}" cy="${y}" r="${r}" fill="#fff" stroke="${c}" stroke-width="1.6"/><circle cx="${x}" cy="${y}" r="${r/3.2}" fill="${c}"/>`;
+const INTO = (x,y,r=9,c=INK) => `<circle cx="${x}" cy="${y}" r="${r}" fill="#fff" stroke="${c}" stroke-width="1.6"/>` + L(x-r*.6,y-r*.6,x+r*.6,y+r*.6,c,1.6) + L(x-r*.6,y+r*.6,x+r*.6,y-r*.6,c,1.6);
+const xs = (x0,y0,w,h,step=30) => { let o=""; for(let x=x0;x<=x0+w;x+=step) for(let y=y0;y<=y0+h;y+=step) o += T(x,y+4,"&#215;",{s:13,c:"#9aa3b2"}); return o; };
+const MAG = (x,y,w,h,left,right) => `<rect x="${x}" y="${y}" width="${w/2}" height="${h}" fill="${left==="N"?RED:BLU}"/><rect x="${x+w/2}" y="${y}" width="${w/2}" height="${h}" fill="${right==="N"?RED:BLU}"/>` + T(x+w/4,y+h/2+5,left,{s:14,b:1,c:"#fff"}) + T(x+3*w/4,y+h/2+5,right,{s:14,b:1,c:"#fff"});
+
+const f4_bar = S(360, 200, (() => { let o = MAG(130,88,100,24,"S","N");
+  [1,2,3].forEach(k => { const h = 34*k;
+    o += P(`M232,94 C${262+18*k},${94-h} ${98-18*k},${94-h} 128,94`) + tri(180, 94-0.75*h, FLD, -1);
+    o += P(`M232,106 C${262+18*k},${106+h} ${98-18*k},${106+h} 128,106`) + tri(180, 106+0.75*h, FLD, -1); });
+  o += A(232,100,330,100,FLD,1.6) + A(30,100,128,100,FLD,1.6);
+  return o + T(180,196,"Outside the magnet, field lines run from N to S",{s:11.5,c:MUT}); })());
+const f4_poles = S(390, 110, MAG(20,22,90,22,"S","N") + MAG(140,22,90,22,"N","S") + T(250,38,"like poles repel",{s:12,b:1,c:RED,a:"start"})
+  + A(108,14,90,14,INK,1.6) + A(152,14,170,14,INK,1.6)
+  + MAG(20,70,90,22,"S","N") + MAG(140,70,90,22,"S","N") + A(108,62,124,62,INK,1.6) + A(152,62,136,62,INK,1.6) + T(250,86,"unlike poles attract",{s:12,b:1,c:BLU,a:"start"}));
+const f4_earth = S(360, 220, `<circle cx="180" cy="110" r="62" fill="#e8f1e8" stroke="${INK}" stroke-width="1.4"/>` + L(180,30,180,190,MUT,1,"4 3")
+  + `<rect x="172" y="80" width="16" height="30" fill="${BLU}"/><rect x="172" y="110" width="16" height="30" fill="${RED}"/>` + T(180,99,"S",{s:11,b:1,c:"#fff"}) + T(180,129,"N",{s:11,b:1,c:"#fff"})
+  + P("M170,172 C40,215 40,5 170,48",FLD,1.6) + P("M190,172 C320,215 320,5 190,48",FLD,1.6) + P("M176,172 C110,190 110,30 176,48",FLD,1.3) + P("M184,172 C250,190 250,30 184,48",FLD,1.3)
+  + `<path d="M68,116 L72,106 L76,116 z M284,116 L288,106 L292,116 z M122,116 L126,106 L130,116 z M230,116 L234,106 L238,116 z" fill="${FLD}"/>`
+  + T(180,22,"geographic North",{s:11.5,b:1}) + T(180,212,"geographic South",{s:11.5,b:1})
+  );
+const f4_wire = S(360, 190, (() => { let o = "";
+  [28,50,74].forEach(r => o += `<circle cx="90" cy="95" r="${r}" fill="none" stroke="${FLD}" stroke-width="1.5"/>` + `<path d="M${90-4},${95-r-4} L${90-12},${95-r} L${90-4},${95-r+4} z" fill="${FLD}"/>`);
+  o += OUT(90,95,10) + T(90,186,"current out of page: anticlockwise",{s:11});
+  [28,50,74].forEach(r => o += `<circle cx="270" cy="95" r="${r}" fill="none" stroke="${FLD}" stroke-width="1.5"/>` + `<path d="M${270+4},${95-r-4} L${270+12},${95-r} L${270+4},${95-r+4} z" fill="${FLD}"/>`);
+  return o + INTO(270,95,10) + T(270,186,"current into page: clockwise",{s:11}); })());
+const f4_grip = S(370, 170, L(160,160,160,12,RED,3) + `<path d="M160,6 l-6,12 l12,0 z" fill="${RED}"/>` + T(172,26,"I (thumb)",{s:12,c:RED,a:"start"})
+  + `<ellipse cx="160" cy="95" rx="70" ry="20" fill="none" stroke="${FLD}" stroke-width="1.8"/>` + `<path d="M226,101 l10,-6 l-1,12 z" fill="${FLD}"/>`
+  + T(236,124,"B (curled fingers)",{s:12,c:FLD,a:"start"}) + T(60,150,"Right-hand grip rule",{s:12,b:1,a:"start"}));
+const f4_coil = S(360, 170, `<ellipse cx="120" cy="85" rx="18" ry="60" fill="none" stroke="${INK}" stroke-width="2"/>` + OUT(120,25,8) + INTO(120,145,8)
+  + A(40,85,300,85,FLD,1.8) + P("M128,40 C200,10 230,70 200,85",FLD,1.2) + P("M112,40 C40,10 20,70 40,85",FLD,1.2) + P("M128,130 C200,160 230,100 200,85",FLD,1.2) + P("M112,130 C40,160 20,100 40,85",FLD,1.2)
+  + T(306,89,"B",{s:14,i:1,b:1,c:FLD,a:"start"}) + T(150,22,"current out",{s:11,c:MUT,a:"start"}) + T(150,150,"current in",{s:11,c:MUT,a:"start"}));
+const f4_sol = S(360, 180, (() => { let o = "";
+  for(let x=90;x<=270;x+=20){ o += OUT(x,50,7) + INTO(x,130,7); }
+  [70,90,110].forEach(y => o += A(70,y,300,y,FLD,1.6));
+  o += P("M300,70 C350,30 330,10 180,10 C40,10 20,30 70,70",FLD,1.2) + P("M300,110 C350,150 330,170 180,170 C40,170 20,150 70,110",FLD,1.2);
+  return o + T(320,94,"N",{s:15,b:1,c:RED}) + T(48,94,"S",{s:15,b:1,c:BLU}) + T(180,94,"",{}) ; })());
+const f4_force = S(360, 190, xs(30,20,300,140) + `<path d="M60,100 L230,100" stroke="${INK}" stroke-width="1.4" stroke-dasharray="4 3"/>` + Q(60,100,"+",11)
+  + A(74,100,130,100,BLU,2.4) + T(110,120,"v",{s:14,i:1,b:1,c:BLU}) + A(60,86,60,38,RED,2.4) + T(72,46,"F",{s:14,i:1,b:1,c:RED,a:"start"})
+  + T(260,186,"&#215; B into page",{s:12,c:MUT}) + T(160,60,"F &#8869; v and F &#8869; B",{s:12,a:"start"}));
+const f4_circle = S(360, 220, xs(20,15,320,190) + `<circle cx="180" cy="110" r="80" fill="none" stroke="${BLU}" stroke-width="1.8" stroke-dasharray="5 3"/>` + Q(180,190,"+",10)
+  + A(192,190,240,190,BLU,2.2) + T(232,182,"v",{s:14,i:1,b:1,c:BLU}) + A(180,178,180,138,RED,2.2) + T(190,150,"F",{s:14,i:1,b:1,c:RED,a:"start"})
+  + Q(260,110,"+",10) + A(260,98,260,54,BLU,2.2) + A(248,110,210,110,RED,2.2) + DOT(180,110) + T(180,104,"centre",{s:11,c:MUT}));
+const f4_motor = S(360, 190, `<rect x="20" y="40" width="50" height="110" fill="${RED}"/><rect x="290" y="40" width="50" height="110" fill="${BLU}"/>` + T(45,100,"N",{s:18,b:1,c:"#fff"}) + T(315,100,"S",{s:18,b:1,c:"#fff"})
+  + [60,85,110,135].map(y => A(72,y,286,y,FLD,1.4)).join("") + OUT(180,95,13) + A(180,78,180,22,RED,2.6) + T(192,32,"F",{s:14,i:1,b:1,c:RED,a:"start"})
+  + T(180,172,"current out of page, B to the right: force upwards",{s:11,c:MUT}));
+const f4_parallel = S(360, 200, (() => { let o = "";
+  o += L(50,20,50,170,INK,3) + L(130,20,130,170,INK,3) + A(50,120,50,60,RED,2) + A(130,120,130,60,RED,2) + T(38,50,"I&#8321;",{s:12,c:RED}) + T(142,50,"I&#8322;",{s:12,c:RED,a:"start"})
+    + INTO(130,140,6,FLD) + T(150,144,"B&#8321;",{s:11,c:FLD,a:"start"}) + A(124,95,98,95,INK,2.2) + A(56,95,82,95,INK,2.2) + T(90,190,"same direction: attract",{s:12,b:1,c:BLU});
+  o += L(230,20,230,170,INK,3) + L(310,20,310,170,INK,3) + A(230,120,230,60,RED,2) + A(310,60,310,120,RED,2) + T(218,50,"I&#8321;",{s:12,c:RED}) + T(322,50,"I&#8322;",{s:12,c:RED,a:"start"})
+    + A(316,95,346,95,INK,2.2) + A(224,95,194,95,INK,2.2) + T(270,190,"opposite: repel",{s:12,b:1,c:RED});
+  return o; })());
+const f4_selector = S(360, 220, `<rect x="60" y="30" width="220" height="7" fill="${RED}"/><rect x="60" y="170" width="220" height="7" fill="${BLU}"/>` + xs(80,55,190,100,38)
+  + T(290,38,"+",{s:15,c:RED,b:1,a:"start"}) + T(290,178,"&#8722;",{s:15,c:BLU,b:1,a:"start"}) + Q(30,104,"+",10) + A(42,104,74,104,BLU,2)
+  + L(80,104,340,104,INK,1.8) + P("M80,104 Q200,104 330,60",MUT,1.2) + P("M80,104 Q200,104 330,148",MUT,1.2) + T(334,58,"too fast",{s:10.5,c:MUT,a:"end"}) + T(334,160,"too slow",{s:10.5,c:MUT,a:"end"})
+  + A(160,92,160,58,RED,2.2) + T(170,66,"F<tspan font-size='9'>B</tspan> = qvB",{s:12,c:RED,a:"start"}) + A(160,116,160,150,FLD,2.2) + T(170,148,"F<tspan font-size='9'>E</tspan> = qE",{s:12,c:FLD,a:"start"})
+  + T(180,212,"B into page, E downwards: only v = E/B goes straight",{s:11,c:MUT}));
+
+C4[0].html = `
+<p>A <b>magnetic field</b> is a region around a magnet (or a current) in which a magnetic force can be felt. It is a vector, so it has a direction at every point. We represent it with <b>magnetic field lines</b>.</p>
+<h4>Poles</h4>
+<p>Every magnet has two poles, <b>north (N)</b> and <b>south (S)</b>, and they always come in pairs. Cut a magnet in half and you get two smaller magnets, each with its own N and S.</p>
+${fig(f4_poles, "Figure 4.1: Like poles repel. Unlike poles attract.")}
+<h4>Sources of magnetic field</h4>
+<ul><li><b>Permanent magnets</b>, such as a bar magnet.</li>
+<li><b>The Earth</b>, which behaves like a giant bar magnet.</li>
+<li><b>Moving charges</b>, and so any <b>current-carrying conductor</b>. This is the link between electricity and magnetism.</li></ul>
+<h4>Field lines</h4>
+${fig(f4_bar, "Figure 4.2: The magnetic field of a bar magnet. Outside the magnet the lines run from N to S.")}
+<ul><li>Outside a magnet, field lines go from the <b>N pole to the S pole</b>. A small compass placed there points along the line.</li>
+<li>The field is strongest where the lines are closest together, near the poles.</li>
+<li>Field lines never cross.</li></ul>
+${fig(f4_earth, "Figure 4.3: The Earth's magnetic field is like that of a bar magnet whose S pole points towards geographic north. That is why the N end of a compass points north.")}
+<p>The Earth's field looks like the field of a bar magnet inside the Earth. The magnet's <b>south</b> pole is near the <b>geographic north</b> pole, so the north-seeking end of a compass is pulled towards geographic north.</p>
+${trap(`Drawing field lines going from S to N outside a magnet, or letting them cross. Outside the magnet, the lines always leave N and enter S.`)}`;
+
+C4[1].html = `
+<p>In 1820, Oersted noticed that a compass needle moved when a current flowed in a nearby wire. Every current produces a magnetic field around it. Its strength is the <b>magnetic flux density B</b>, a vector measured in <b>tesla (T)</b>.</p>
+<h4>Finding the direction: right-hand grip rule</h4>
+${fig(f4_grip, "Figure 4.4: Grip the wire with your right hand, thumb pointing along the current. Your fingers curl in the direction of B.")}
+<p>We draw fields in and out of the page with two symbols: &#8857; (a dot) means <b>out of the page</b>, towards you, like the point of an arrow. &#8855; (a cross) means <b>into the page</b>, like the tail feathers of an arrow.</p>
+<h4>1. A long straight wire</h4>
+${fig(f4_wire, "Figure 4.5: The field around a long straight wire is a set of circles centred on the wire. The field gets weaker further out.")}
+${fx("B=\\dfrac{\\mu_0I}{2\\pi r}||\\mu_0=4\\pi\\times10^{-7}\\ \\text{T m A}^{-1}", "B = &mu;<sub>0</sub>I/2&pi;r")}
+<p>r is the perpendicular distance from the wire. B is proportional to I and inversely proportional to r.</p>
+<h4>2. At the centre of a circular coil</h4>
+${fig(f4_coil, "Figure 4.6: A circular coil seen from the side. At the centre, the field is along the axis of the coil.")}
+${fx("B=\\dfrac{\\mu_0NI}{2R}", "B = &mu;<sub>0</sub>NI/2R")}
+<p>N is the number of turns and R is the radius of the coil. More turns or more current gives a stronger field.</p>
+<h4>3. A solenoid</h4>
+${fig(f4_sol, "Figure 4.7: A solenoid. Inside, the field is strong and uniform. Outside, it looks like the field of a bar magnet.")}
+${fx("\\text{centre: } B=\\mu_0nI||\\text{end: } B=\\tfrac12\\mu_0nI||n=\\dfrac{N}{l}", "centre: B = &mu;<sub>0</sub>nI &nbsp;&nbsp; end: B = &frac12;&mu;<sub>0</sub>nI &nbsp;&nbsp; n = N/l")}
+<p>n is the number of turns <b>per unit length</b>. At each end, the field is half its value at the centre. To find which end is N: grip the solenoid with your right hand with your fingers along the current, and your thumb points to the <b>N</b> end.</p>
+<h4>Resultant field from two wires</h4>
+<p>B is a vector. When two wires are present, find B from each wire at the point, decide each direction with the grip rule, and add them as vectors.</p>
+${ex("two parallel wires", `<p>Wire X carries 20 A and wire Y carries 10 A, in the same direction. They are 10 cm apart. Find B at the midpoint.</p>
+<p>B<sub>X</sub> = (4&pi; &times; 10<sup>&minus;7</sup>)(20)/(2&pi; &times; 0.050) = 8.0 &times; 10<sup>&minus;5</sup> T. B<sub>Y</sub> = 4.0 &times; 10<sup>&minus;5</sup> T.</p>
+<p>Between two wires with currents in the <b>same</b> direction, the two fields point in <b>opposite</b> directions, so B = 8.0 &minus; 4.0 = <b>4.0 &times; 10<sup>&minus;5</sup> T</b>, in the direction of X's field. If the currents were opposite, the fields would add: B = <b>1.2 &times; 10<sup>&minus;4</sup> T</b>.</p>
+<p>The neutral point (B = 0) is where 20/x = 10/(0.10 &minus; x), so x = <b>6.7 cm</b> from X, closer to the smaller current.</p>`)}
+${trap(`Using the diameter instead of the radius in B = &mu;<sub>0</sub>NI/2R, or using N instead of n = N/l for a solenoid.`)}`;
+
+C4[2].html = `
+<p>A magnetic field does not push on a charge at rest. It only exerts a force on a charge that is <b>moving</b> across the field.</p>
+${fx("\\vec F=q\\vec v\\times\\vec B||F=qvB\\sin\\theta", "F = qv &times; B &nbsp;&nbsp; F = qvB sin &theta;")}
+<ul><li>&theta; is the angle between v and B.</li>
+<li>The force is largest (qvB) when the charge moves <b>perpendicular</b> to B (&theta; = 90&deg;).</li>
+<li>The force is <b>zero</b> when the charge moves <b>parallel</b> to B (&theta; = 0&deg; or 180&deg;), or when it is at rest.</li></ul>
+<h4>Direction of the force</h4>
+${fig(f4_force, "Figure 4.8: A positive charge moving right through a field into the page feels a force upwards, at right angles to both v and B.")}
+<p>The force is always <b>perpendicular to both v and B</b>. Use the <b>right-hand palm rule</b>: fingers point along B, thumb along v, and the palm pushes in the direction of F on a <b>positive</b> charge. (Fleming's left-hand rule gives the same answer, with the second finger along the conventional current.) For a <b>negative</b> charge, such as an electron, the force is in the <b>opposite</b> direction.</p>
+<h4>Circular motion</h4>
+${fig(f4_circle, "Figure 4.9: The magnetic force is always perpendicular to the velocity, so it acts as a centripetal force and the charge moves in a circle.")}
+<p>Because F is always at right angles to v, it never speeds the charge up or slows it down. It only changes the direction. A charge entering a uniform field at right angles therefore moves in a <b>circle</b>, with the magnetic force providing the centripetal force:</p>
+${fx("qvB=\\dfrac{mv^2}{r}||r=\\dfrac{mv}{qB}||T=\\dfrac{2\\pi r}{v}=\\dfrac{2\\pi m}{qB}", "qvB = mv<sup>2</sup>/r &nbsp;&nbsp; r = mv/qB &nbsp;&nbsp; T = 2&pi;m/qB")}
+<p>A faster or heavier particle moves in a bigger circle. The period does not depend on the speed.</p>
+${ex("a proton in a magnetic field", `<p>A proton moves at 2.0 &times; 10<sup>6</sup> m s<sup>&minus;1</sup> at right angles to a 0.50 T field. (m = 1.67 &times; 10<sup>&minus;27</sup> kg)</p>
+<p>F = qvB = (1.60 &times; 10<sup>&minus;19</sup>)(2.0 &times; 10<sup>6</sup>)(0.50) = <b>1.6 &times; 10<sup>&minus;13</sup> N</b>.</p>
+<p>r = mv/qB = (1.67 &times; 10<sup>&minus;27</sup>)(2.0 &times; 10<sup>6</sup>)/[(1.60 &times; 10<sup>&minus;19</sup>)(0.50)] = <b>4.2 &times; 10<sup>&minus;2</sup> m</b>.</p>
+<p>T = 2&pi;m/qB = <b>1.3 &times; 10<sup>&minus;7</sup> s</b>.</p>`)}
+${trap(`Forgetting to reverse the direction for an electron. The palm rule gives the force on a positive charge.`)}`;
+
+C4[3].html = `
+<p>A current is a stream of moving charges. Each one feels a magnetic force, so a <b>current-carrying wire</b> in a magnetic field feels a force too. This is how electric motors and loudspeakers work.</p>
+${fig(f4_motor, "Figure 4.10: A wire carrying current out of the page between the poles of a magnet. The field points from N to S, and the force on the wire is upwards.")}
+${fx("\\vec F=I\\vec l\\times\\vec B||F=IlB\\sin\\theta", "F = Il &times; B &nbsp;&nbsp; F = IlB sin &theta;")}
+<ul><li>l is the length of wire inside the field, and &theta; is the angle between the wire (the current) and B.</li>
+<li>The force is largest when the wire is <b>perpendicular</b> to B, and <b>zero</b> when the wire is parallel to B.</li>
+<li>The force is perpendicular to both the wire and B.</li></ul>
+<h4>Direction of the force</h4>
+<p>Use the right-hand palm rule (fingers along B, thumb along I, palm pushes towards F), or <b>Fleming's left-hand rule</b>: <b>F</b>irst finger = <b>F</b>ield, se<b>C</b>ond finger = <b>C</b>urrent, thu<b>M</b>b = <b>M</b>otion (force).</p>
+${ex("force on a wire", `<p>A 0.20 m length of wire carrying 5.0 A lies in a 0.30 T field.</p>
+<p>At 90&deg; to the field: F = IlB = (5.0)(0.20)(0.30) = <b>0.30 N</b>.</p>
+<p>At 30&deg; to the field: F = IlB sin 30&deg; = <b>0.15 N</b>.</p>`)}
+${trap(`Using the whole length of the wire when only part of it is inside the field. Only the length l <b>in</b> the field feels the force.`)}`;
+
+C4[4].html = `
+<p>Each current-carrying wire produces a magnetic field. A second wire placed nearby sits in that field, so it feels a force. Two parallel wires therefore push or pull on each other.</p>
+${fig(f4_parallel, "Figure 4.11: Currents in the same direction attract. Currents in opposite directions repel.")}
+<h4>Why there is a force</h4>
+<ol><li>The current I<sub>1</sub> in wire 1 produces a field at wire 2: B<sub>1</sub> = &mu;<sub>0</sub>I<sub>1</sub>/2&pi;d.</li>
+<li>Wire 2 carries current I<sub>2</sub> in this field, so a length l of it feels a force F = B<sub>1</sub>I<sub>2</sub>l.</li>
+<li>Wire 1 feels an equal and opposite force from wire 2's field (Newton's third law).</li></ol>
+${fx("\\dfrac{F}{l}=\\dfrac{\\mu_0I_1I_2}{2\\pi d}", "F/l = &mu;<sub>0</sub>I<sub>1</sub>I<sub>2</sub>/2&pi;d")}
+<p>F/l is the force per unit length, in N m<sup>&minus;1</sup>. d is the distance between the wires.</p>
+<ul><li>Currents in the <b>same</b> direction: the wires <b>attract</b>.</li>
+<li>Currents in <b>opposite</b> directions: the wires <b>repel</b>.</li>
+<li>The force on each wire is the same size, even if the currents are different.</li></ul>
+${ex("force per unit length", `<p>Two long parallel wires 0.10 m apart carry 5.0 A and 8.0 A in the same direction.</p>
+<p>F/l = (4&pi; &times; 10<sup>&minus;7</sup>)(5.0)(8.0)/(2&pi; &times; 0.10) = <b>8.0 &times; 10<sup>&minus;5</sup> N m<sup>&minus;1</sup></b>, attractive.</p>`)}
+${trap(`Thinking that "like currents" repel, the way like charges and like poles do. For currents it is the opposite: same direction attracts.`)}`;
+
+C4[5].html = `
+<p>If a charged particle moves through a region with an electric field and a magnetic field at right angles to each other, the two forces can cancel. This is used to select particles with one particular speed.</p>
+${fig(f4_selector, "Figure 4.12: A velocity selector. The electric force pushes the positive particle down, and the magnetic force pushes it up.")}
+<h4>Velocity selector</h4>
+<ul><li>The electric force F<sub>E</sub> = qE does not depend on speed.</li>
+<li>The magnetic force F<sub>B</sub> = qvB increases with speed.</li>
+<li>For one particular speed the two forces are equal and opposite, the resultant force is zero, and the particle goes straight through.</li></ul>
+${fx("qE=qvB||v=\\dfrac{E}{B}", "qE = qvB &nbsp;&nbsp; v = E/B")}
+<p>Faster particles have F<sub>B</sub> &gt; F<sub>E</sub> and are deflected one way. Slower particles have F<sub>B</sub> &lt; F<sub>E</sub> and are deflected the other way. Only particles with <b>v = E/B</b> pass through the exit slit. Notice that q cancels, so this works for any charge and any mass.</p>
+<h4>Measuring q/m: the mass spectrometer</h4>
+<p>The selected particles then enter a region with a magnetic field only. They move in a semicircle of radius r = mv/qB. Using v = E/B:</p>
+${fx("\\dfrac{q}{m}=\\dfrac{v}{rB}=\\dfrac{E}{rB^2}", "q/m = v/rB = E/rB<sup>2</sup>")}
+${ex("velocity selector", `<p>E = 3.0 &times; 10<sup>4</sup> V m<sup>&minus;1</sup> and B = 0.15 T. v = E/B = <b>2.0 &times; 10<sup>5</sup> m s<sup>&minus;1</sup></b>.</p>
+<p>In the same B, the ions move in a circle of radius 1.4 cm. q/m = v/(rB) = 2.0 &times; 10<sup>5</sup>/(0.014 &times; 0.15) = <b>9.5 &times; 10<sup>7</sup> C kg<sup>&minus;1</sup></b>, which matches a proton.</p>`)}
+${trap(`Thinking the selector picks particles by mass or charge. It picks by <b>speed</b> only, since q cancels in qE = qvB.`)}`;
+
+})();
+(function(){
+const INK="#1b2232", MUT="#5b6476", RED="#c0392b", BLU="#2a6aa3", FLD="#1d7448";
+const DEFS = `<defs>${[INK,RED,BLU,FLD,MUT].map(c => `<marker id="m${c.slice(1)}" markerWidth="9" markerHeight="9" refX="7.5" refY="4.5" orient="auto" markerUnits="userSpaceOnUse"><path d="M0,0 L9,4.5 L0,9 z" fill="${c}"/></marker>`).join("")}</defs>`;
+const S = (w, h, body) => `<svg class="tsvg" viewBox="0 0 ${w} ${h}" width="${w}" xmlns="http://www.w3.org/2000/svg" font-family="system-ui,sans-serif">${DEFS}${body}</svg>`;
+const A = (x1,y1,x2,y2,c=INK,sw=2) => `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${c}" stroke-width="${sw}" marker-end="url(#m${c.slice(1)})"/>`;
+const L = (x1,y1,x2,y2,c=INK,sw=1.5,dash) => `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${c}" stroke-width="${sw}"${dash?` stroke-dasharray="${dash}"`:""}/>`;
+const T = (x,y,t,o={}) => `<text x="${x}" y="${y}" font-size="${o.s||13}" fill="${o.c||INK}" text-anchor="${o.a||"middle"}"${o.b?' font-weight="700"':""}${o.i?' font-style="italic"':""}>${t}</text>`;
+const Q = (x,y,s,r=13) => `<circle cx="${x}" cy="${y}" r="${r}" fill="${s==="+"?RED:BLU}"/>` + T(x, y+5, s==="+"?"+":"&#8722;", {c:"#fff", s:r>10?17:12, b:1});
+const P = (d,c=FLD,sw=1.6,mk) => `<path d="${d}" fill="none" stroke="${c}" stroke-width="${sw}"${mk?` marker-end="url(#m${c.slice(1)})"`:""}/>`;
+const tri = (x,y,c=FLD,dir=1) => `<path d="M${x-4*dir},${y-4} L${x+4*dir},${y} L${x-4*dir},${y+4} z" fill="${c}"/>`;
+const RES = (x,y,lab) => `<rect x="${x-18}" y="${y-7}" width="36" height="14" fill="#fff" stroke="${INK}" stroke-width="1.6"/>` + (lab?T(x,y-13,lab,{s:12}):"");
+const CAPV = (x,y,lab) => `<rect x="${x-16}" y="${y-6}" width="32" height="12" fill="#fff"/>${L(x-15,y-5,x+15,y-5,INK,2.5)}${L(x-15,y+5,x+15,y+5,INK,2.5)}` + (lab?T(x+22,y+4,lab,{s:12,a:"start"}):"");
+const fig = (svgStr, cap) => `<figure class="tfig">${svgStr}<figcaption>${cap}</figcaption></figure>`;
+const ex = (title, body) => `<div class="ex"><b>Worked example: ${title}</b>${body}</div>`;
+const trap = body => `<div class="trap"><b>Common mistake.</b> ${body}</div>`;
+const fx = (tex, html) => `<div class="formula" data-tex="${tex}">${html}</div>`;
+function expPath(x0, y0, w, h, kind){ // kind: "rise" or "decay"; tau at w/5
+  const pts = []; for(let i=0;i<=40;i++){ const t = i/40*5; const v = kind==="rise" ? 1-Math.exp(-t) : Math.exp(-t);
+    pts.push(`${(x0 + i/40*w).toFixed(1)},${(y0 - v*h).toFixed(1)}`); }
+  return "M" + pts.join(" L");
+}
+function graph(x0, y0, w, h, kind, ylab, title, mark){
+  const tauX = x0 + w/5, v = kind==="rise" ? 0.632 : 0.368, yv = y0 - v*h;
+  return L(x0,y0,x0+w+8,y0,INK,1.4) + L(x0,y0,x0,y0-h-12,INK,1.4) + T(x0+w+6,y0+14,"t",{s:12,i:1}) + T(x0-6,y0-h-14,ylab,{s:12,a:"end",i:1})
+    + P(expPath(x0,y0,w,h,kind), BLU, 2)
+    + L(x0, yv, tauX, yv, MUT, 1, "3 3") + L(tauX, yv, tauX, y0, MUT, 1, "3 3") + T(tauX, y0+14, "&#964;", {s:12,c:MUT})
+    + T(x0-4, yv+4, mark, {s:11,c:MUT,a:"end"})
+    + (kind==="rise" ? L(x0,y0-h,x0+w,y0-h,MUT,1,"2 4") : "")
+    + T(x0 + w/2 + 4, y0 - h - 30, title, {s:11,b:1});
+}
+
+const RESV = (x,y,lab) => `<rect x="${x-7}" y="${y-18}" width="14" height="36" fill="#fff" stroke="${INK}" stroke-width="1.6"/>` + (lab?T(x+12,y+4,lab,{s:12,a:"start"}):"");
+const BATV = (x,y,lab) => `<rect x="${x-16}" y="${y-8}" width="32" height="16" fill="#fff"/>${L(x-15,y-5,x+15,y-5,INK,1.8)}${L(x-8,y+5,x+8,y+5,INK,4)}` + (lab?T(x+20,y+4,lab,{s:12,a:"start"}):"");
+const BAT = (x,y,lab,ly) => `<rect x="${x-8}" y="${y-16}" width="16" height="32" fill="#fff"/>${L(x-5,y-15,x-5,y+15,INK,1.8)}${L(x+5,y-8,x+5,y+8,INK,4)}` + (lab?T(x,y+(ly||30),lab,{s:12}):"");
+const GAL = (x,y) => `<circle cx="${x}" cy="${y}" r="11" fill="#fff" stroke="${INK}" stroke-width="1.6"/>` + T(x,y+4.5,"G",{s:12,b:1});
+const MET = (x,y,t) => `<circle cx="${x}" cy="${y}" r="11" fill="#fff" stroke="${INK}" stroke-width="1.6"/>` + T(x,y+4.5,t,{s:12,b:1});
+const DOT = (x,y) => `<circle cx="${x}" cy="${y}" r="3" fill="${INK}"/>`;
+const PL = (pts,c=INK,sw=1.5) => `<polyline points="${pts}" fill="none" stroke="${c}" stroke-width="${sw}"/>`;
+const AXES = (x0,y0,w,h,xl,yl) => L(x0,y0,x0+w,y0,INK,1.4) + L(x0,y0,x0,y0-h,INK,1.4) + `<path d="M${x0+w},${y0} l-7,-3.5 l0,7 z M${x0},${y0-h} l-3.5,7 l7,0 z" fill="${INK}"/>` + T(x0+w+4,y0+15,xl,{s:12,i:1,a:"end"}) + T(x0-6,y0-h+10,yl,{s:12,i:1,a:"end"});
+
+/* ===== Chapter 5: Electromagnetic induction ===== */
+const C5 = THEORY[5];
+const OUT5 = (x,y,r=6,c=MUT) => `<circle cx="${x}" cy="${y}" r="${r}" fill="none" stroke="${c}" stroke-width="1.1"/><circle cx="${x}" cy="${y}" r="1.6" fill="${c}"/>`;
+const COIL = (x0,y,n,h,col=INK,arrows) => { let o = ""; for(let i=0;i<n;i++){ const x = x0 + i*16;
+    o += `<ellipse cx="${x}" cy="${y}" rx="6" ry="${h}" fill="none" stroke="${col}" stroke-width="1.6"/>`;
+    if(arrows) o += `<path d="M${x+6},${y+4} l-4,8 l8,0 z" fill="${RED}" transform="rotate(180 ${x+6} ${y+8})"/>`; }
+  return o; };
+const IND = (x,y,lab) => { let o = `<rect x="${x-28}" y="${y-12}" width="56" height="16" fill="#fff"/>`; for(let i=0;i<4;i++) o += `<path d="M${x-28+i*14},${y} a7,7 0 0 1 14,0" fill="none" stroke="${INK}" stroke-width="1.8"/>`; return o + (lab?T(x,y-18,lab,{s:12}):""); };
+
+const f5_flux = S(360, 190, (() => { let o = "";
+  o += `<path d="M30,140 L120,140 L150,100 L60,100 z" fill="#d9e3ef" stroke="${INK}"/>` + A(90,120,90,40,INK,2) + T(98,44,"A (normal)",{s:11.5,a:"start"});
+  [55,75,95,115].forEach(x => o += A(x+20,30,x-20,170,FLD,1.3)); o += T(30,30,"B",{s:13,i:1,b:1,c:FLD});
+  o += P("M90,75 Q100,72 104,80",INK,1.2) + T(110,84,"&#952;",{s:13,i:1,a:"start"}) + T(90,184,"&#966; = BA cos &#952;",{s:12,b:1});
+  o += `<path d="M210,110 L300,110 L330,70 L240,70 z" fill="#d9e3ef" stroke="${INK}"/>` + [50,90,130].map(y => A(200,y+10,350,y+10,FLD,1.3)).join("") + T(270,184,"B parallel to surface: &#966; = 0",{s:11.5,c:MUT});
+  return o; })());
+const f5_faraday = S(360, 270, (() => { let o = "";
+  const row = (y, magX, arrow, needle, lab) => { let r = `<rect x="${magX}" y="${y-10}" width="60" height="20" fill="${BLU}"/><rect x="${magX+60}" y="${y-10}" width="0" height="20"/>` + `<rect x="${magX+30}" y="${y-10}" width="30" height="20" fill="${RED}"/>` + T(magX+15,y+5,"S",{s:11,b:1,c:"#fff"}) + T(magX+45,y+5,"N",{s:11,b:1,c:"#fff"});
+    if(arrow) r += A(magX+30-arrow*14, y-18, magX+30+arrow*14, y-18, INK, 1.8);
+    r += COIL(150,y,6,14) + L(150,y+14,150,y+28) + L(230,y+14,230,y+28) + L(150,y+28,270,y+28) + L(230,y+28,230,y+28);
+    r += `<circle cx="300" cy="${y}" r="15" fill="#fff" stroke="${INK}" stroke-width="1.5"/>` + L(300,y+6,300+needle*10,y-10,RED,2) + L(270,y+28,300,y+28) + L(300,y+28,300,y+15) + L(230,y-14,230,y-22) + L(230,y-22,300,y-22) + L(300,y-22,300,y-15);
+    return r + T(330,y+5,lab,{s:10.5,c:MUT,a:"start"}).replace(/start/,"start"); };
+  o += row(35, 30, 0, 0, "") + T(180,80,"magnet still: no deflection",{s:11,c:MUT});
+  o += row(125, 40, 1, -1, "") + T(180,170,"magnet moves in: needle deflects",{s:11,c:MUT});
+  o += row(215, 10, -1, 1, "") + T(180,260,"magnet moves out: deflects the other way",{s:11,c:MUT});
+  return o; })());
+const f5_lenz = S(400, 170, `<rect x="20" y="70" width="40" height="22" fill="${BLU}"/><rect x="60" y="70" width="40" height="22" fill="${RED}"/>` + T(40,86,"S",{s:12,b:1,c:"#fff"}) + T(80,86,"N",{s:12,b:1,c:"#fff"})
+  + A(70,58,110,58,INK,2) + T(90,50,"moving in",{s:11})
+  + (() => { let o=""; for(let i=0;i<6;i++){ const x=160+i*20; o += `<ellipse cx="${x}" cy="81" rx="7" ry="34" fill="none" stroke="${INK}" stroke-width="1.6"/>`; } return o; })()
+  + T(145,40,"N",{s:15,b:1,c:RED}) + T(295,40,"S",{s:15,b:1,c:BLU}) + A(150,128,120,128,RED,1.8) + T(200,140,"induced N repels the incoming N",{s:11,c:RED})
+  + `<circle cx="350" cy="70" r="20" fill="#fff" stroke="${INK}" stroke-width="1.6"/><path d="M362,52 l-12,-3 l7,10 z" fill="${RED}"/>` + P("M350,50 A20,20 0 0 0 330,70",RED,2) + T(350,108,"coil end seen",{s:10,c:MUT}) + T(350,120,"from the magnet:",{s:10,c:MUT}) + T(350,134,"anticlockwise = N",{s:10,c:RED,b:1}));
+const f5_rod = S(360, 210, (() => { let o = "";
+  for(let x=80;x<=320;x+=30) for(let y=60;y<=150;y+=30) o += OUT5(x,y);
+  o += L(40,40,340,40,INK,3) + L(40,170,340,170,INK,3) + L(40,40,40,170,INK,1.5) + RESV(40,105,"R") + L(230,32,230,178,BLU,5);
+  o += A(240,105,290,105,BLU,2.2) + T(296,109,"v",{s:14,i:1,b:1,c:BLU,a:"start"}) + A(222,60,222,150,RED,2) + T(214,112,"I",{s:13,i:1,c:RED,a:"end"})
+    + A(110,34,170,34,RED,1.6) + A(170,176,110,176,RED,1.6) + T(140,202,"&#8857; B out of page. Area grows, so flux grows.",{s:11,c:MUT}) + L(230,190,230,190) + T(236,30,"l",{s:13,i:1,a:"start"});
+  return o; })());
+const f5_rot = S(360, 200, `<rect x="10" y="40" width="40" height="110" fill="${RED}"/><rect x="150" y="40" width="40" height="110" fill="${BLU}"/>` + T(30,100,"N",{s:15,b:1,c:"#fff"}) + T(170,100,"S",{s:15,b:1,c:"#fff"})
+  + [60,90,120].map(y => A(52,y,146,y,FLD,1.2)).join("") + `<rect x="80" y="55" width="40" height="80" fill="none" stroke="${INK}" stroke-width="2.4" transform="rotate(-25 100 95)"/>` + L(100,30,100,165,MUT,1,"4 3") + P("M86,30 A16,6 0 1 0 114,30",INK,1.4,1) + T(100,186,"coil rotates at &#969;",{s:11})
+  + AXES(220,100,130,80,"t","&#949;") + L(220,180,220,100,INK,1.4) + P((() => { let d="M220,100"; for(let i=1;i<=60;i++){ const t=i/60; d += ` L${220+t*125},${100-60*Math.sin(t*4*Math.PI)}`; } return d; })(),BLU,2)
+  + L(220,40,345,40,MUT,1,"3 3") + T(214,44,"NAB&#969;",{s:11,a:"end",c:MUT}));
+const f5_self = S(360, 150, L(40,40,320,40) + L(40,40,40,110) + L(320,40,320,110) + L(40,110,320,110) + BAT(180,110,"") + IND(120,40,"L") + RES(250,40,"") + L(232,30,270,52,INK,1.4) + `<path d="M270,52 l-9,-1 l5,-7 z" fill="${INK}"/>` + T(250,24,"variable R",{s:11,c:MUT})
+  + T(180,140,"change R &#8594; I changes &#8594; flux in L changes &#8594; back emf",{s:11,c:MUT}));
+const f5_mutual = S(360, 200, (() => { let o = "";
+  for(let i=0;i<10;i++){ const x=80+i*20; o += `<ellipse cx="${x}" cy="90" rx="8" ry="46" fill="none" stroke="${BLU}" stroke-width="1.5"/>`; }
+  for(let i=0;i<7;i++){ const x=110+i*20; o += `<ellipse cx="${x}" cy="90" rx="5" ry="24" fill="none" stroke="${RED}" stroke-width="1.7"/>`; }
+  o += A(60,90,320,90,FLD,1.5) + T(150,30,"coil 2 (outer, N&#8322; turns)",{s:11.5,c:BLU}) + T(230,160,"coil 1 (inner, N&#8321;)",{s:11.5,c:RED})
+    + L(110,114,110,170,RED,1.4) + L(110,170,40,170,RED,1.4) + T(40,188,"changing I&#8321;",{s:11,c:RED}) + L(260,136,260,170,BLU,1.4) + GAL(300,170) + L(260,170,289,170,BLU,1.4) + T(300,194,"emf &#949;&#8322; induced",{s:11,c:BLU});
+  return o; })());
+
+C5[0].html = `
+<p>To understand electromagnetic induction, we first need a way to count how much magnetic field passes through a coil. That quantity is <b>magnetic flux</b>.</p>
+${fig(f5_flux, "Figure 5.1: Flux depends on how much of the field passes straight through the surface. When B lies along the surface, no field lines pass through.")}
+<p><b>Magnetic flux &phi;</b> is the scalar product of the magnetic flux density B and the area vector A. You can think of it as the number of field lines passing through the area.</p>
+${fx("\\phi=\\vec B\\cdot\\vec A=BA\\cos\\theta||\\text{flux linkage } \\Phi=N\\phi", "&phi; = BA cos &theta; &nbsp;&nbsp; flux linkage &Phi; = N&phi;")}
+<ul><li>The area vector A points along the <b>normal</b> (perpendicular) to the surface. So &theta; is the angle between B and the <b>normal</b>, not between B and the surface.</li>
+<li>&phi; is <b>maximum</b> (BA) when B is perpendicular to the surface (&theta; = 0&deg;). &phi; is <b>zero</b> when B is parallel to the surface (&theta; = 90&deg;).</li>
+<li>Flux is a <b>scalar</b>. Unit: the weber, Wb = T m<sup>2</sup>.</li></ul>
+<h4>Flux linkage</h4>
+<p>A coil of N turns has the same flux &phi; through each turn, so the total, the <b>flux linkage</b>, is &Phi; = N&phi;.</p>
+${ex("flux and flux linkage", `<p>A square coil of side 4.0 cm with 200 turns is in a 0.50 T field. The field makes 60&deg; with the normal to the coil.</p>
+<p>A = (0.040)<sup>2</sup> = 1.6 &times; 10<sup>&minus;3</sup> m<sup>2</sup>. &phi; = BA cos 60&deg; = (0.50)(1.6 &times; 10<sup>&minus;3</sup>)(0.50) = <b>4.0 &times; 10<sup>&minus;4</sup> Wb</b>.</p>
+<p>&Phi; = N&phi; = 200 &times; 4.0 &times; 10<sup>&minus;4</sup> = <b>8.0 &times; 10<sup>&minus;2</sup> Wb</b>.</p>`)}
+${trap(`Measuring &theta; from the surface. If a question says the field makes 30&deg; <b>with the surface</b>, the angle with the normal is 60&deg;.`)}`;
+
+C5[1].html = `
+<p><b>Electromagnetic induction</b> is the production of an emf (and so a current, if the circuit is complete) whenever the magnetic flux through a coil or circuit <b>changes</b>.</p>
+<h4>Faraday's experiment</h4>
+${fig(f5_faraday, "Figure 5.2: A galvanometer shows a current only while the magnet is moving. Moving it out gives a current in the opposite direction.")}
+<ul><li>Magnet <b>at rest</b> inside or near the coil: no current, even if the field is strong. The flux is not changing.</li>
+<li>Magnet <b>moving in</b>: the flux through the coil increases, and the needle deflects.</li>
+<li>Magnet <b>moving out</b>: the flux decreases, and the needle deflects the <b>other</b> way.</li></ul>
+<p>The induced emf is bigger if you use a stronger magnet, move it faster, use a coil with a larger area, or use more turns. All of these make the flux change faster.</p>
+<h4>Faraday's law</h4>
+<p>The magnitude of the induced emf is <b>directly proportional to the rate of change of magnetic flux linkage</b>.</p>
+${fx("\\varepsilon=-N\\dfrac{d\\phi}{dt}", "&epsilon; = &minus;N d&phi;/dt")}
+<h4>Lenz's law</h4>
+<p>The induced current always flows in a direction that <b>opposes the change in flux</b> that produces it. This is what the minus sign in Faraday's law means. It follows from conservation of energy: if the induced current helped the change, you would get energy for nothing.</p>
+${fig(f5_lenz, "Figure 5.3: As the N pole approaches, the coil's induced current makes the near end an N pole, which pushes back against the magnet.")}
+<p>How to find the direction:</p>
+<ol><li>Decide whether the flux through the coil is increasing or decreasing.</li>
+<li>If it is <b>increasing</b>, the induced field points <b>against</b> the magnet's field. If it is <b>decreasing</b>, the induced field points <b>the same way</b>, to replace what is lost. (A magnet approaching is repelled. A magnet leaving is attracted.)</li>
+<li>Use the right-hand grip rule to turn the induced field direction into a current direction.</li></ol>
+<h4>Three ways to change the flux</h4>
+<p><b>1. A straight conductor moving through a field.</b></p>
+${fig(f5_rod, "Figure 5.4: A rod sliding along rails. As the rod moves, the area of the loop increases, so the flux increases and an emf is induced.")}
+<p>In time dt, the rod moves dx = v dt, so the area grows by l dx and the flux by Bl dx. Then &epsilon; = Bl(dx/dt) = Blv. In general:</p>
+${fx("\\varepsilon=Blv\\sin\\theta", "&epsilon; = Blv sin &theta;")}
+<p>&theta; is the angle between v and B. Fleming's <b>right-hand</b> rule (thumb = motion, first finger = field, second finger = current) gives the current direction.</p>
+<p><b>2. A coil in a changing field, or with a changing area.</b> With B perpendicular to the coil: &epsilon; = &minus;NA(dB/dt) if B changes, or &epsilon; = &minus;NB(dA/dt) if the area changes.</p>
+<p><b>3. A coil rotating in a field.</b></p>
+${fig(f5_rot, "Figure 5.5: A coil rotating at constant &#969; in a uniform field. The angle changes continuously, so the flux changes and a sinusoidal emf is induced.")}
+<p>The angle is &theta; = &omega;t, so &phi; = BA cos &omega;t. Differentiating:</p>
+${fx("\\varepsilon=-N\\dfrac{d}{dt}\\left(BA\\cos\\omega t\\right)=NAB\\omega\\sin\\omega t||\\varepsilon_{\\max}=NAB\\omega", "&epsilon; = NAB&omega; sin &omega;t &nbsp;&nbsp; &epsilon;<sub>max</sub> = NAB&omega;")}
+<p>This is how a generator produces alternating current, which you will meet in Chapter 6.</p>
+${ex("three kinds of induced emf", `<p><b>Changing B:</b> a 100-turn coil of area 5.0 &times; 10<sup>&minus;3</sup> m<sup>2</sup> is perpendicular to a field that falls from 0.40 T to 0.10 T in 0.050 s. |&epsilon;| = NA(&Delta;B/&Delta;t) = 100 &times; 5.0 &times; 10<sup>&minus;3</sup> &times; 0.30/0.050 = <b>3.0 V</b>.</p>
+<p><b>Moving rod:</b> a 0.50 m rod moves at 4.0 m s<sup>&minus;1</sup> at right angles to a 0.80 T field. &epsilon; = Blv = <b>1.6 V</b>. With a 2.0 &Omega; resistor in the circuit, I = <b>0.80 A</b>.</p>
+<p><b>Rotating coil:</b> 50 turns, area 0.010 m<sup>2</sup>, B = 0.20 T, 50 revolutions per second. &omega; = 2&pi; &times; 50 = 314 rad s<sup>&minus;1</sup>, so &epsilon;<sub>max</sub> = NAB&omega; = <b>31 V</b>.</p>`)}
+${trap(`Using revolutions per second as &omega;. Convert: &omega; = 2&pi;f, in rad s<sup>&minus;1</sup>.`)}`;
+
+C5[2].html = `
+<p>So far, the changing flux came from a magnet or another circuit. But a coil carrying a <b>changing current</b> produces a changing field <b>through itself</b>, so it induces an emf in itself. This is <b>self-induction</b>.</p>
+${fig(f5_self, "Figure 5.6: Changing the resistance changes the current through the coil. The coil's own changing flux induces a back emf in it.")}
+<ul><li>By Lenz's law, the self-induced emf <b>opposes the change in current</b>, so it is called a <b>back emf</b>.</li>
+<li>When the current is <b>increasing</b>, the back emf tries to stop it rising. When it is <b>decreasing</b>, the back emf tries to keep it flowing.</li>
+<li>A steady current gives no back emf, because the flux is not changing.</li></ul>
+<p>The self-induced emf is proportional to the rate of change of current:</p>
+${fx("\\varepsilon=-L\\dfrac{dI}{dt}||L=\\dfrac{N\\phi}{I}", "&epsilon; = &minus;L dI/dt &nbsp;&nbsp; L = N&phi;/I")}
+<p><b>Self-inductance L</b> is the ratio of the self-induced emf to the rate of change of current in the coil. It also equals the flux linkage per unit current. Unit: the <b>henry</b> (H = V s A<sup>&minus;1</sup> = Wb A<sup>&minus;1</sup>).</p>
+<h4>Inductance of a solenoid and a coil</h4>
+${fx("L_{\\text{solenoid}}=\\dfrac{\\mu_0N^2A}{l}||L_{\\text{coil}}=\\dfrac{\\mu_0N^2A}{2r}", "L<sub>solenoid</sub> = &mu;<sub>0</sub>N<sup>2</sup>A/l &nbsp;&nbsp; L<sub>coil</sub> = &mu;<sub>0</sub>N<sup>2</sup>A/2r")}
+<p>L depends only on the shape and size of the coil: number of turns, area and length. It does not depend on the current. Notice the N<sup>2</sup>: doubling the turns makes L four times bigger.</p>
+${ex("self-inductance", `<p>A back emf of 6.0 V appears when the current changes at 40 A s<sup>&minus;1</sup>. L = &epsilon;/(dI/dt) = 6.0/40 = <b>0.15 H</b>.</p>
+<p>A solenoid has 500 turns, length 0.25 m and cross-sectional area 2.0 &times; 10<sup>&minus;4</sup> m<sup>2</sup>. L = (4&pi; &times; 10<sup>&minus;7</sup>)(500)<sup>2</sup>(2.0 &times; 10<sup>&minus;4</sup>)/0.25 = <b>2.5 &times; 10<sup>&minus;4</sup> H</b>.</p>`)}
+${trap(`Using N instead of N<sup>2</sup> in the formula for L.`)}`;
+
+C5[3].html = `
+<p>An <b>inductor</b> is a coil or solenoid with a large self-inductance. Its jobs in a circuit are to <b>control changes in current</b> and to <b>store energy</b>.</p>
+<p>When the current through an inductor is switched on, it does not jump to its final value at once. The back emf opposes the rise. Work has to be done against this back emf to build the current up, and that work is stored as energy in the <b>magnetic field</b> of the inductor.</p>
+${fx("U=\\tfrac12LI^2", "U = &frac12;LI<sup>2</sup>")}
+<table class="cmp"><tr><th></th><th>Capacitor</th><th>Inductor</th></tr>
+<tr><td>Energy stored in</td><td>electric field</td><td>magnetic field</td></tr>
+<tr><td>Formula</td><td>U = &frac12;CV<sup>2</sup></td><td>U = &frac12;LI<sup>2</sup></td></tr>
+<tr><td>Opposes changes in</td><td>voltage</td><td>current</td></tr></table>
+<p>When the current is switched off, the stored energy is released. That is why switching off a large inductor can cause a spark at the switch.</p>
+${ex("energy in an inductor", `<p>A 40 mH coil with resistance 0.50 &Omega; is connected to a 6.0 V supply. The final current is I = V/R = 6.0/0.50 = 12 A.</p>
+<p>U = &frac12;LI<sup>2</sup> = &frac12;(40 &times; 10<sup>&minus;3</sup>)(12)<sup>2</sup> = <b>2.9 J</b>.</p>`)}
+${trap(`Forgetting to convert mH to H (1 mH = 10<sup>&minus;3</sup> H), or forgetting to square the current.`)}`;
+
+C5[4].html = `
+<p>Place two coils close together. A changing current in coil 1 makes a changing flux, and some of that flux passes through coil 2. So an emf is induced in coil 2, even though the coils are not connected. This is <b>mutual induction</b>.</p>
+${fig(f5_mutual, "Figure 5.7: Two coaxial solenoids. A changing current in the inner coil changes the flux through the outer coil, inducing an emf in it.")}
+${fx("\\varepsilon_2=-M\\dfrac{dI_1}{dt}||M=\\dfrac{N_2\\phi_2}{I_1}||M=\\dfrac{\\mu_0N_1N_2A}{l}", "&epsilon;<sub>2</sub> = &minus;M dI<sub>1</sub>/dt &nbsp;&nbsp; M = N<sub>2</sub>&phi;<sub>2</sub>/I<sub>1</sub> &nbsp;&nbsp; M = &mu;<sub>0</sub>N<sub>1</sub>N<sub>2</sub>A/l")}
+<ul><li><b>Mutual inductance M</b> is the ratio of the emf induced in one coil to the rate of change of current in the other coil. Unit: henry (H).</li>
+<li>It works both ways: a changing current in coil 2 induces an emf in coil 1, with the <b>same</b> M.</li>
+<li>For two coaxial solenoids, A is the cross-sectional area of the inner solenoid and l is the length of the solenoids.</li>
+<li>Only a <b>changing</b> current induces an emf. A steady current in coil 1 gives nothing in coil 2. This is why transformers need alternating current.</li></ul>
+${ex("mutual inductance", `<p>The current in coil 1 rises steadily from 0 to 4.0 A in 0.020 s. M = 0.050 H. |&epsilon;<sub>2</sub>| = M(&Delta;I<sub>1</sub>/&Delta;t) = 0.050 &times; 4.0/0.020 = <b>10 V</b>.</p>
+<p>Two coaxial solenoids: N<sub>1</sub> = 800, N<sub>2</sub> = 200, A = 1.0 &times; 10<sup>&minus;3</sup> m<sup>2</sup>, l = 0.40 m. M = (4&pi; &times; 10<sup>&minus;7</sup>)(800)(200)(1.0 &times; 10<sup>&minus;3</sup>)/0.40 = <b>5.0 &times; 10<sup>&minus;4</sup> H</b>.</p>`)}
+${trap(`Mixing up self- and mutual induction. <b>Self</b>: the changing current is in the <b>same</b> coil. <b>Mutual</b>: the changing current is in <b>another</b> coil.`)}`;
+
+})();
+(function(){
+const INK="#1b2232", MUT="#5b6476", RED="#c0392b", BLU="#2a6aa3", FLD="#1d7448";
+const DEFS = `<defs>${[INK,RED,BLU,FLD,MUT].map(c => `<marker id="m${c.slice(1)}" markerWidth="9" markerHeight="9" refX="7.5" refY="4.5" orient="auto" markerUnits="userSpaceOnUse"><path d="M0,0 L9,4.5 L0,9 z" fill="${c}"/></marker>`).join("")}</defs>`;
+const S = (w, h, body) => `<svg class="tsvg" viewBox="0 0 ${w} ${h}" width="${w}" xmlns="http://www.w3.org/2000/svg" font-family="system-ui,sans-serif">${DEFS}${body}</svg>`;
+const A = (x1,y1,x2,y2,c=INK,sw=2) => `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${c}" stroke-width="${sw}" marker-end="url(#m${c.slice(1)})"/>`;
+const L = (x1,y1,x2,y2,c=INK,sw=1.5,dash) => `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${c}" stroke-width="${sw}"${dash?` stroke-dasharray="${dash}"`:""}/>`;
+const T = (x,y,t,o={}) => `<text x="${x}" y="${y}" font-size="${o.s||13}" fill="${o.c||INK}" text-anchor="${o.a||"middle"}"${o.b?' font-weight="700"':""}${o.i?' font-style="italic"':""}>${t}</text>`;
+const Q = (x,y,s,r=13) => `<circle cx="${x}" cy="${y}" r="${r}" fill="${s==="+"?RED:BLU}"/>` + T(x, y+5, s==="+"?"+":"&#8722;", {c:"#fff", s:r>10?17:12, b:1});
+const P = (d,c=FLD,sw=1.6,mk) => `<path d="${d}" fill="none" stroke="${c}" stroke-width="${sw}"${mk?` marker-end="url(#m${c.slice(1)})"`:""}/>`;
+const tri = (x,y,c=FLD,dir=1) => `<path d="M${x-4*dir},${y-4} L${x+4*dir},${y} L${x-4*dir},${y+4} z" fill="${c}"/>`;
+const RES = (x,y,lab) => `<rect x="${x-18}" y="${y-7}" width="36" height="14" fill="#fff" stroke="${INK}" stroke-width="1.6"/>` + (lab?T(x,y-13,lab,{s:12}):"");
+const CAPV = (x,y,lab) => `<rect x="${x-16}" y="${y-6}" width="32" height="12" fill="#fff"/>${L(x-15,y-5,x+15,y-5,INK,2.5)}${L(x-15,y+5,x+15,y+5,INK,2.5)}` + (lab?T(x+22,y+4,lab,{s:12,a:"start"}):"");
+const fig = (svgStr, cap) => `<figure class="tfig">${svgStr}<figcaption>${cap}</figcaption></figure>`;
+const ex = (title, body) => `<div class="ex"><b>Worked example: ${title}</b>${body}</div>`;
+const trap = body => `<div class="trap"><b>Common mistake.</b> ${body}</div>`;
+const fx = (tex, html) => `<div class="formula" data-tex="${tex}">${html}</div>`;
+function expPath(x0, y0, w, h, kind){ // kind: "rise" or "decay"; tau at w/5
+  const pts = []; for(let i=0;i<=40;i++){ const t = i/40*5; const v = kind==="rise" ? 1-Math.exp(-t) : Math.exp(-t);
+    pts.push(`${(x0 + i/40*w).toFixed(1)},${(y0 - v*h).toFixed(1)}`); }
+  return "M" + pts.join(" L");
+}
+function graph(x0, y0, w, h, kind, ylab, title, mark){
+  const tauX = x0 + w/5, v = kind==="rise" ? 0.632 : 0.368, yv = y0 - v*h;
+  return L(x0,y0,x0+w+8,y0,INK,1.4) + L(x0,y0,x0,y0-h-12,INK,1.4) + T(x0+w+6,y0+14,"t",{s:12,i:1}) + T(x0-6,y0-h-14,ylab,{s:12,a:"end",i:1})
+    + P(expPath(x0,y0,w,h,kind), BLU, 2)
+    + L(x0, yv, tauX, yv, MUT, 1, "3 3") + L(tauX, yv, tauX, y0, MUT, 1, "3 3") + T(tauX, y0+14, "&#964;", {s:12,c:MUT})
+    + T(x0-4, yv+4, mark, {s:11,c:MUT,a:"end"})
+    + (kind==="rise" ? L(x0,y0-h,x0+w,y0-h,MUT,1,"2 4") : "")
+    + T(x0 + w/2 + 4, y0 - h - 30, title, {s:11,b:1});
+}
+
+const RESV = (x,y,lab) => `<rect x="${x-7}" y="${y-18}" width="14" height="36" fill="#fff" stroke="${INK}" stroke-width="1.6"/>` + (lab?T(x+12,y+4,lab,{s:12,a:"start"}):"");
+const BATV = (x,y,lab) => `<rect x="${x-16}" y="${y-8}" width="32" height="16" fill="#fff"/>${L(x-15,y-5,x+15,y-5,INK,1.8)}${L(x-8,y+5,x+8,y+5,INK,4)}` + (lab?T(x+20,y+4,lab,{s:12,a:"start"}):"");
+const BAT = (x,y,lab,ly) => `<rect x="${x-8}" y="${y-16}" width="16" height="32" fill="#fff"/>${L(x-5,y-15,x-5,y+15,INK,1.8)}${L(x+5,y-8,x+5,y+8,INK,4)}` + (lab?T(x,y+(ly||30),lab,{s:12}):"");
+const GAL = (x,y) => `<circle cx="${x}" cy="${y}" r="11" fill="#fff" stroke="${INK}" stroke-width="1.6"/>` + T(x,y+4.5,"G",{s:12,b:1});
+const MET = (x,y,t) => `<circle cx="${x}" cy="${y}" r="11" fill="#fff" stroke="${INK}" stroke-width="1.6"/>` + T(x,y+4.5,t,{s:12,b:1});
+const DOT = (x,y) => `<circle cx="${x}" cy="${y}" r="3" fill="${INK}"/>`;
+const PL = (pts,c=INK,sw=1.5) => `<polyline points="${pts}" fill="none" stroke="${c}" stroke-width="${sw}"/>`;
+const AXES = (x0,y0,w,h,xl,yl) => L(x0,y0,x0+w,y0,INK,1.4) + L(x0,y0,x0,y0-h,INK,1.4) + `<path d="M${x0+w},${y0} l-7,-3.5 l0,7 z M${x0},${y0-h} l-3.5,7 l7,0 z" fill="${INK}"/>` + T(x0+w+4,y0+15,xl,{s:12,i:1,a:"end"}) + T(x0-6,y0-h+10,yl,{s:12,i:1,a:"end"});
+
+/* ===== Chapter 6: Alternating current ===== */
+const C6 = THEORY[6];
+const WAVE = (x0,y0,w,amp,ph,cyc,c,sw=2,fn=Math.sin) => { let d=""; for(let i=0;i<=80;i++){ const t=i/80; d += (i?" L":"M") + `${(x0+t*w).toFixed(1)},${(y0-amp*fn(2*Math.PI*cyc*t+ph)).toFixed(1)}`; } return P(d,c,sw); };
+const TA = (x0,y0,w,h,yl) => L(x0,y0,x0+w,y0,INK,1.3) + L(x0,y0+h,x0,y0-h,INK,1.3) + `<path d="M${x0+w},${y0} l-7,-3.5 l0,7 z" fill="${INK}"/>` + T(x0+w+2,y0+14,"t",{s:12,i:1,a:"end"}) + T(x0-5,y0-h+8,yl,{s:12,a:"end"});
+const PH = (x0,y0,len,deg,c,lab) => { const a=deg*Math.PI/180, x=x0+len*Math.cos(a), y=y0-len*Math.sin(a); return A(x0,y0,x,y,c,2.4) + T(x+10*Math.cos(a)+(Math.cos(a)>=0?4:-4),y-10*Math.sin(a)+4,lab,{s:12,c,b:1,a:Math.cos(a)>0.3?"start":(Math.cos(a)<-0.3?"end":"middle")}); };
+
+const f6_wave = S(360, 190, TA(40,95,300,80,"V") + WAVE(40,95,280,65,0,2,BLU) + L(40,30,320,30,MUT,1,"3 3") + T(36,34,"V&#8320;",{s:12,a:"end"}) + L(40,160,320,160,MUT,1,"3 3") + T(36,164,"&#8722;V&#8320;",{s:12,a:"end"})
+  + L(40,178,180,178,MUT,1) + L(40,172,40,184,MUT,1) + L(180,172,180,184,MUT,1) + T(110,174,"one period T",{s:11,c:MUT})
+  + `<circle cx="320" cy="170" r="12" fill="#fff" stroke="${INK}" stroke-width="1.5"/>` + P("M312,170 q4,-8 8,0 t8,0",INK,1.5) + T(300,174,"AC symbol",{s:10.5,c:MUT,a:"end"}));
+const f6_rms = S(360, 190, TA(40,150,300,130,"") + P((() => { let d=""; for(let i=0;i<=80;i++){ const t=i/80; d += (i?" L":"M") + `${(40+t*280).toFixed(1)},${(150-120*Math.pow(Math.sin(2*Math.PI*2*t),2)).toFixed(1)}`; } return d; })(),RED,2)
+  + L(40,90,320,90,FLD,1.6,"6 4") + T(326,94,"mean = I&#8320;&#178;/2",{s:11.5,c:FLD,a:"start"}).replace('x="326"','x="200"').replace('y="94"','y="84"') + T(36,34,"I&#8320;&#178;",{s:12,a:"end"}) + T(36,154,"0",{s:12,a:"end"}) + T(180,182,"I&#178; is never negative, so its average is not zero",{s:11,c:MUT}));
+const f6_R = S(360, 150, TA(30,75,190,60,"") + WAVE(30,75,180,50,0,1.5,BLU) + WAVE(30,75,180,30,0,1.5,RED) + T(140,20,"V",{s:12,b:1,c:BLU}) + T(100,48,"I",{s:12,b:1,c:RED})
+  + PH(270,85,70,30,BLU,"V") + PH(276,97,40,30,RED,"I") + T(290,140,"in phase",{s:11.5,c:MUT}));
+const f6_C = S(360, 150, TA(30,75,190,60,"") + WAVE(30,75,180,50,0,1.5,BLU) + WAVE(30,75,180,30,Math.PI/2,1.5,RED) + T(80,20,"V",{s:12,b:1,c:BLU}) + T(40,40,"I",{s:12,b:1,c:RED})
+  + PH(270,90,60,0,BLU,"V") + PH(270,90,40,90,RED,"I") + T(290,140,"I leads V by &#960;/2",{s:11.5,c:MUT}));
+const f6_L = S(360, 150, TA(30,75,190,60,"") + WAVE(30,75,180,50,0,1.5,BLU) + WAVE(30,75,180,30,-Math.PI/2,1.5,RED) + T(80,20,"V",{s:12,b:1,c:BLU}) + T(70,104,"I",{s:12,b:1,c:RED})
+  + PH(260,110,40,0,RED,"I") + PH(260,110,60,90,BLU,"V") + T(290,140,"V leads I by &#960;/2",{s:11.5,c:MUT}));
+const f6_rlc = S(360, 220, (() => { const x0=60,y0=130; let o = "";
+  o += A(x0,y0,x0+140,y0,RED,2.4) + T(x0+146,y0+4,"V<tspan font-size='9'>R</tspan> (along I)",{s:12,c:RED,a:"start",b:1})
+    + A(x0,y0,x0,y0-100,FLD,2.4) + T(x0-6,y0-96,"V<tspan font-size='9'>L</tspan>",{s:12,c:FLD,a:"end",b:1})
+    + A(x0,y0,x0,y0+60,BLU,2.4) + T(x0-6,y0+60,"V<tspan font-size='9'>C</tspan>",{s:12,c:BLU,a:"end",b:1})
+    + L(x0+140,y0,x0+140,y0-40,MUT,1,"4 3") + A(x0,y0,x0+140,y0-40,INK,2.6) + T(x0+150,y0-44,"V (supply)",{s:12,b:1,a:"start"})
+    + T(x0+38,y0-6,"&#966;",{s:13,i:1}) + T(250,30,"V<tspan font-size='9'>L</tspan> &#8722; V<tspan font-size='9'>C</tspan> is the net",{s:11,c:MUT,a:"middle"}) + T(250,44,"reactive voltage",{s:11,c:MUT});
+  return o; })());
+const f6_imp = S(320, 150, A(40,120,240,120,RED,2.2) + T(140,140,"R",{s:13,i:1,c:RED,b:1}) + A(240,120,240,40,FLD,2.2) + T(250,84,"X<tspan font-size='9'>L</tspan> &#8722; X<tspan font-size='9'>C</tspan>",{s:12,c:FLD,a:"start"})
+  + A(40,120,240,40,INK,2.4) + T(124,68,"Z",{s:14,i:1,b:1}) + T(84,114,"&#966;",{s:13,i:1}));
+const f6_freq = S(360, 220, AXES(40,190,300,170,"f","") + L(40,150,330,150,RED,2) + T(334,154,"R",{s:12,b:1,c:RED,a:"start"})
+  + L(40,190,320,30,FLD,2) + T(318,26,"X<tspan font-size='9'>L</tspan>",{s:12,b:1,c:FLD,a:"start"})
+  + P((() => { let d=""; for(let i=1;i<=60;i++){ const f=0.06+i/60*0.94; d += (i>1?" L":"M") + `${(40+f*290).toFixed(1)},${(190-Math.min(170,9/f)).toFixed(1)}`; } return d; })(),BLU,2) + T(64,40,"X<tspan font-size='9'>C</tspan>",{s:12,b:1,c:BLU,a:"start"})
+  + P((() => { let d=""; for(let i=1;i<=70;i++){ const f=0.06+i/70*0.94; const XL=f*290*160/280, XC=9/f, z=Math.sqrt(40*40+(XL-XC)*(XL-XC)); d += (i>1?" L":"M") + `${(40+f*290).toFixed(1)},${(190-Math.min(178,z)).toFixed(1)}`; } return d; })(),INK,2.4)
+  + T(250,70,"Z",{s:13,b:1,i:1}) + L(108,190,108,150,MUT,1,"3 3") + T(108,206,"f&#8320;",{s:12}) + T(220,206,"Z is smallest (= R) at resonance",{s:11,c:MUT}));
+const f6_pow = S(360, 170, TA(30,85,140,70,"P") + P((() => { let d=""; for(let i=0;i<=60;i++){ const t=i/60; d += (i?" L":"M") + `${(30+t*130).toFixed(1)},${(85-60*Math.pow(Math.sin(2*Math.PI*t*1.5),2)).toFixed(1)}`; } return d; })(),RED,2)
+  + L(30,55,160,55,FLD,1.4,"5 3") + T(95,160,"resistor: P always +, average &#189;I&#8320;V&#8320;",{s:10.5,c:MUT})
+  + TA(210,85,140,70,"P") + WAVE(210,85,130,50,0,3,BLU) + T(280,160,"pure C or L: average zero",{s:10.5,c:MUT}));
+
+C6[0].html = `
+<p>The mains supply in your home is not direct current. It is <b>alternating current (AC)</b>: a current whose magnitude and direction change <b>periodically</b>. Charges move back and forth instead of flowing steadily one way, yet energy still flows continuously from the power station to your devices.</p>
+${fig(f6_wave, "Figure 6.1: A sinusoidal alternating voltage. It rises to a peak V&#8320;, falls through zero, reverses to &#8722;V&#8320;, and repeats every period T.")}
+<p>The most common form is <b>sinusoidal</b> AC, which follows a sine curve:</p>
+${fx("V=V_0\\sin\\omega t||I=I_0\\sin\\omega t||\\omega=2\\pi f=\\dfrac{2\\pi}{T}", "V = V<sub>0</sub> sin &omega;t &nbsp;&nbsp; I = I<sub>0</sub> sin &omega;t &nbsp;&nbsp; &omega; = 2&pi;f = 2&pi;/T")}
+<ul><li>V and I are the <b>instantaneous</b> values at time t. V<sub>0</sub> and I<sub>0</sub> are the <b>peak</b> (maximum) values.</li>
+<li>&omega;t is called the <b>phase</b>. In your calculator, use <b>radian</b> mode.</li>
+<li>The sign of I tells you the direction at that instant: positive one way round the circuit, negative the other way.</li>
+<li>f is the frequency (number of cycles per second, Hz), and T = 1/f is the period.</li></ul>
+${ex("reading an AC equation", `<p>A supply is V = 325 sin(100&pi;t). Then V<sub>0</sub> = <b>325 V</b>, &omega; = 100&pi; rad s<sup>&minus;1</sup>, f = &omega;/2&pi; = <b>50 Hz</b>, T = 1/f = <b>0.020 s</b>.</p>
+<p>At t = 2.5 ms: V = 325 sin(100&pi; &times; 0.0025) = 325 sin(&pi;/4) = <b>230 V</b>.</p>`)}
+${trap(`Calculating sin &omega;t with the calculator in degree mode. &omega;t is in radians.`)}`;
+
+C6[1].html = `
+<p>The average of a sine wave over a full cycle is zero, since it is positive for half the time and negative for the other half. That is not a useful way to describe the size of an AC. Instead we ask: what <b>steady</b> current would have the same heating effect?</p>
+${fig(f6_rms, "Figure 6.2: The power in a resistor depends on I&#178;. I&#178; is always positive and averages to I&#8320;&#178;/2.")}
+<p>Power in a resistor is P = I<sup>2</sup>R. I<sup>2</sup> = I<sub>0</sub><sup>2</sup> sin<sup>2</sup> &omega;t is never negative, and its average over a cycle is <b>I<sub>0</sub><sup>2</sup>/2</b>. So the average power is &frac12;I<sub>0</sub><sup>2</sup>R. A steady current I<sub>rms</sub> gives the same power if I<sub>rms</sub><sup>2</sup> = I<sub>0</sub><sup>2</sup>/2.</p>
+<p><b>Root mean square (rms) current</b> is the value of the steady direct current that produces the same power (heating) in a resistor as the alternating current. The rms voltage is defined in the same way.</p>
+${fx("I_{\\text{rms}}=\\dfrac{I_0}{\\sqrt2}||V_{\\text{rms}}=\\dfrac{V_0}{\\sqrt2}", "I<sub>rms</sub> = I<sub>0</sub>/&radic;2 &nbsp;&nbsp; V<sub>rms</sub> = V<sub>0</sub>/&radic;2")}
+<ul><li>The name describes the steps: take the <b>square</b> of the current, find the <b>mean</b>, then take the square <b>root</b>.</li>
+<li>Rms values are also called <b>effective</b> values. A lamp on 240 V rms AC is exactly as bright as on 240 V DC.</li>
+<li>Mains ratings (such as 240 V) and AC meter readings are <b>rms</b> values. The peak is &radic;2 times bigger: 240 V rms has a peak of about 340 V.</li></ul>
+${ex("rms values", `<p>V = 340 sin &omega;t is connected across a 100 &Omega; resistor.</p>
+<p>V<sub>rms</sub> = 340/&radic;2 = <b>240 V</b>. I<sub>0</sub> = 340/100 = 3.4 A, so I<sub>rms</sub> = 3.4/&radic;2 = <b>2.4 A</b>.</p>
+<p>Average power: P = I<sub>rms</sub><sup>2</sup>R = (2.40)<sup>2</sup> &times; 100 = <b>5.8 &times; 10<sup>2</sup> W</b>.</p>`)}
+${trap(`Using peak values in P = I<sup>2</sup>R for average power. Average power uses rms values.`)}`;
+
+C6[2].html = `
+<p>In an AC circuit, resistors, capacitors and inductors each oppose the current in a different way, and they also shift the timing (phase) between the current and the voltage. We show these phase relationships with <b>phasor diagrams</b>.</p>
+<p>A <b>phasor</b> is a vector that rotates anticlockwise at angular frequency &omega;. Its length is the peak (or rms) value, and its projection on the vertical axis gives the instantaneous value. The angle between two phasors is their phase difference.</p>
+<h4>Pure resistor</h4>
+${fig(f6_R, "Figure 6.3: In a pure resistor, V and I reach their peaks and zeros at the same time: they are in phase.")}
+<p>V and I are <b>in phase</b>. The opposition is the resistance R = V<sub>0</sub>/I<sub>0</sub> = V<sub>rms</sub>/I<sub>rms</sub>, which does not depend on frequency.</p>
+<h4>Pure capacitor</h4>
+${fig(f6_C, "Figure 6.4: In a pure capacitor, the current reaches its peak a quarter of a cycle before the voltage.")}
+<p>The current is largest when the capacitor is empty and charging fastest, which is when V is zero. So <b>I leads V by &pi;/2</b>. The opposition is the <b>capacitive reactance</b>:</p>
+${fx("X_C=\\dfrac{1}{\\omega C}=\\dfrac{1}{2\\pi fC}", "X<sub>C</sub> = 1/&omega;C = 1/2&pi;fC")}
+<p>X<sub>C</sub> <b>decreases</b> as f increases. At high frequency the capacitor has little time to charge, so it hardly opposes the current. For DC (f = 0), X<sub>C</sub> is infinite and no current flows.</p>
+<h4>Pure inductor</h4>
+${fig(f6_L, "Figure 6.5: In a pure inductor, the voltage reaches its peak a quarter of a cycle before the current.")}
+<p>The back emf is largest when the current is changing fastest, which is when I is zero. So <b>V leads I by &pi;/2</b>. The opposition is the <b>inductive reactance</b>:</p>
+${fx("X_L=\\omega L=2\\pi fL", "X<sub>L</sub> = &omega;L = 2&pi;fL")}
+<p>X<sub>L</sub> <b>increases</b> as f increases, because a faster-changing current gives a bigger back emf. Memory aid: <b>"ELI the ICE man"</b>. In an inductor (<b>L</b>), the voltage (<b>E</b>) comes before <b>I</b>. In a capacitor (<b>C</b>), <b>I</b> comes before the voltage (<b>E</b>).</p>
+<h4>RC, RL and RLC in series</h4>
+${fig(f6_rlc, "Figure 6.6: Phasor diagram for a series RLC circuit. The current is the same everywhere, so it is the reference. V<sub>R</sub> is along I, V<sub>L</sub> is &#960;/2 ahead and V<sub>C</sub> is &#960;/2 behind.")}
+<p>In a series circuit the same current flows through every component, so we draw I as the reference. V<sub>R</sub> is in phase with I, V<sub>L</sub> points up (ahead) and V<sub>C</sub> points down (behind). The supply voltage is their <b>phasor sum</b>, not their ordinary sum:</p>
+${fx("V=\\sqrt{V_R^2+\\left(V_L-V_C\\right)^2}||Z=\\sqrt{R^2+\\left(X_L-X_C\\right)^2}||\\tan\\phi=\\dfrac{X_L-X_C}{R}", "V = &radic;[V<sub>R</sub><sup>2</sup> + (V<sub>L</sub> &minus; V<sub>C</sub>)<sup>2</sup>] &nbsp;&nbsp; Z = &radic;[R<sup>2</sup> + (X<sub>L</sub> &minus; X<sub>C</sub>)<sup>2</sup>] &nbsp;&nbsp; tan &phi; = (X<sub>L</sub> &minus; X<sub>C</sub>)/R")}
+${fig(f6_imp, "Figure 6.7: The impedance triangle. Dividing every voltage phasor by I gives R, X<sub>L</sub> &#8722; X<sub>C</sub> and Z.")}
+<ul><li><b>Impedance Z</b> is the total opposition of the circuit to alternating current, and V = IZ. Unit: ohm.</li>
+<li>For an <b>RC</b> circuit, leave out X<sub>L</sub>: Z = &radic;(R<sup>2</sup> + X<sub>C</sub><sup>2</sup>), and the current leads the voltage.</li>
+<li>For an <b>RL</b> circuit, leave out X<sub>C</sub>: Z = &radic;(R<sup>2</sup> + X<sub>L</sub><sup>2</sup>), and the voltage leads the current.</li></ul>
+<h4>How R, X and Z change with frequency: resonance</h4>
+${fig(f6_freq, "Figure 6.8: R does not depend on f. X<sub>C</sub> falls and X<sub>L</sub> rises as f increases. Z is large at both ends and smallest where X<sub>L</sub> = X<sub>C</sub>.")}
+<p>At one particular frequency, X<sub>L</sub> = X<sub>C</sub>. They cancel, so Z = R, which is the <b>minimum</b> impedance. The current is then at its <b>maximum</b>, and V and I are in phase. This is <b>resonance</b>, and it happens at the <b>resonant frequency</b>:</p>
+${fx("X_L=X_C\\ \\Rightarrow\\ f_0=\\dfrac{1}{2\\pi\\sqrt{LC}}", "f<sub>0</sub> = 1/(2&pi;&radic;LC)")}
+<p>A radio is tuned by changing C until f<sub>0</sub> matches the station's frequency, so that station gives the biggest current.</p>
+${ex("a series RLC circuit", `<p>R = 100 &Omega;, L = 0.50 H and C = 10 &mu;F are in series with a 240 V, 50 Hz supply.</p>
+<p>X<sub>L</sub> = 2&pi;(50)(0.50) = 157 &Omega;. X<sub>C</sub> = 1/[2&pi;(50)(10 &times; 10<sup>&minus;6</sup>)] = 318 &Omega;.</p>
+<p>Z = &radic;[100<sup>2</sup> + (157 &minus; 318)<sup>2</sup>] = <b>190 &Omega;</b>. I = V/Z = 240/190 = <b>1.27 A</b>.</p>
+<p>tan &phi; = (157 &minus; 318)/100, so &phi; = <b>&minus;58&deg;</b>. It is negative because X<sub>C</sub> &gt; X<sub>L</sub>: the circuit is capacitive and the current leads.</p>
+<p>Resonant frequency: f<sub>0</sub> = 1/[2&pi;&radic;(0.50 &times; 10 &times; 10<sup>&minus;6</sup>)] = <b>71 Hz</b>.</p>`)}
+${trap(`Adding V<sub>R</sub>, V<sub>L</sub> and V<sub>C</sub> as ordinary numbers. They are out of phase, so add them as phasors.`)}`;
+
+C6[3].html = `
+<p>In a DC circuit, power is simply P = IV. In an AC circuit, I and V keep changing, and they are not always in phase, so we need to be more careful.</p>
+<h4>Instantaneous power</h4>
+<p>The <b>instantaneous power</b> is P = IV, using the values at that instant. It changes throughout the cycle.</p>
+${fig(f6_pow, "Figure 6.9: Left: in a resistor, P is always positive. Right: in a pure capacitor or inductor, energy is taken in for a quarter cycle and given back the next, so the average is zero.")}
+<ul><li><b>Pure resistor:</b> P = I<sub>0</sub>V<sub>0</sub> sin<sup>2</sup> &omega;t. It is never negative, and its average is &frac12;I<sub>0</sub>V<sub>0</sub> = I<sub>rms</sub>V<sub>rms</sub>.</li>
+<li><b>Pure capacitor or inductor:</b> P = &frac12;I<sub>0</sub>V<sub>0</sub> sin 2&omega;t. It is positive for a quarter cycle (energy stored) and negative for the next (energy returned), so the <b>average is zero</b>.</li></ul>
+<h4>Average (real) power</h4>
+<p>Only the resistance actually uses up energy. So the average power in any series RC, RL or RLC circuit is the power in its resistance: P<sub>av</sub> = I<sub>rms</sub><sup>2</sup>R. From the phasor diagram, V<sub>R</sub> = V cos &phi;, which gives:</p>
+${fx("P_{\\text{av}}=I_{\\text{rms}}V_{\\text{rms}}\\cos\\phi=I_{\\text{rms}}^2R", "P<sub>av</sub> = I<sub>rms</sub>V<sub>rms</sub> cos &phi; = I<sub>rms</sub><sup>2</sup>R")}
+<h4>Power factor</h4>
+${fx("\\cos\\phi=\\dfrac{P_{\\text{av}}}{I_{\\text{rms}}V_{\\text{rms}}}=\\dfrac{R}{Z}", "cos &phi; = P<sub>av</sub>/(I<sub>rms</sub>V<sub>rms</sub>) = R/Z")}
+<ul><li>I<sub>rms</sub>V<sub>rms</sub> is called the <b>apparent power</b> (unit V A). The <b>power factor</b> cos &phi; is the ratio of the real power to the apparent power. It has no unit.</li>
+<li><b>Pure resistor:</b> &phi; = 0, power factor = 1. All the apparent power is used.</li>
+<li><b>Pure capacitor or inductor:</b> &phi; = &pi;/2, power factor = 0. No power is used.</li>
+<li><b>At resonance:</b> Z = R, so the power factor is 1.</li></ul>
+${ex("power in an RLC circuit", `<p>For the circuit in 6.3 (R = 100 &Omega;, Z = 190 &Omega;, I = 1.27 A, V = 240 V):</p>
+<p>Power factor: cos &phi; = R/Z = 100/190 = <b>0.53</b>.</p>
+<p>P<sub>av</sub> = I<sub>rms</sub>V<sub>rms</sub> cos &phi; = 1.27 &times; 240 &times; 0.53 = <b>1.6 &times; 10<sup>2</sup> W</b>. Check: I<sup>2</sup>R = (1.27)<sup>2</sup> &times; 100 = 1.6 &times; 10<sup>2</sup> W.</p>`)}
+${trap(`Thinking a capacitor or inductor "uses" power. They store energy and give it back, so their average power is zero. Only R dissipates energy.`)}`;
+
+})();
+(function(){
+const INK="#1b2232", MUT="#5b6476", RED="#c0392b", BLU="#2a6aa3", FLD="#1d7448";
+const DEFS = `<defs>${[INK,RED,BLU,FLD,MUT].map(c => `<marker id="m${c.slice(1)}" markerWidth="9" markerHeight="9" refX="7.5" refY="4.5" orient="auto" markerUnits="userSpaceOnUse"><path d="M0,0 L9,4.5 L0,9 z" fill="${c}"/></marker>`).join("")}</defs>`;
+const S = (w, h, body) => `<svg class="tsvg" viewBox="0 0 ${w} ${h}" width="${w}" xmlns="http://www.w3.org/2000/svg" font-family="system-ui,sans-serif">${DEFS}${body}</svg>`;
+const A = (x1,y1,x2,y2,c=INK,sw=2) => `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${c}" stroke-width="${sw}" marker-end="url(#m${c.slice(1)})"/>`;
+const L = (x1,y1,x2,y2,c=INK,sw=1.5,dash) => `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${c}" stroke-width="${sw}"${dash?` stroke-dasharray="${dash}"`:""}/>`;
+const T = (x,y,t,o={}) => `<text x="${x}" y="${y}" font-size="${o.s||13}" fill="${o.c||INK}" text-anchor="${o.a||"middle"}"${o.b?' font-weight="700"':""}${o.i?' font-style="italic"':""}>${t}</text>`;
+const Q = (x,y,s,r=13) => `<circle cx="${x}" cy="${y}" r="${r}" fill="${s==="+"?RED:BLU}"/>` + T(x, y+5, s==="+"?"+":"&#8722;", {c:"#fff", s:r>10?17:12, b:1});
+const P = (d,c=FLD,sw=1.6,mk) => `<path d="${d}" fill="none" stroke="${c}" stroke-width="${sw}"${mk?` marker-end="url(#m${c.slice(1)})"`:""}/>`;
+const tri = (x,y,c=FLD,dir=1) => `<path d="M${x-4*dir},${y-4} L${x+4*dir},${y} L${x-4*dir},${y+4} z" fill="${c}"/>`;
+const RES = (x,y,lab) => `<rect x="${x-18}" y="${y-7}" width="36" height="14" fill="#fff" stroke="${INK}" stroke-width="1.6"/>` + (lab?T(x,y-13,lab,{s:12}):"");
+const CAPV = (x,y,lab) => `<rect x="${x-16}" y="${y-6}" width="32" height="12" fill="#fff"/>${L(x-15,y-5,x+15,y-5,INK,2.5)}${L(x-15,y+5,x+15,y+5,INK,2.5)}` + (lab?T(x+22,y+4,lab,{s:12,a:"start"}):"");
+const fig = (svgStr, cap) => `<figure class="tfig">${svgStr}<figcaption>${cap}</figcaption></figure>`;
+const ex = (title, body) => `<div class="ex"><b>Worked example: ${title}</b>${body}</div>`;
+const trap = body => `<div class="trap"><b>Common mistake.</b> ${body}</div>`;
+const fx = (tex, html) => `<div class="formula" data-tex="${tex}">${html}</div>`;
+function expPath(x0, y0, w, h, kind){ // kind: "rise" or "decay"; tau at w/5
+  const pts = []; for(let i=0;i<=40;i++){ const t = i/40*5; const v = kind==="rise" ? 1-Math.exp(-t) : Math.exp(-t);
+    pts.push(`${(x0 + i/40*w).toFixed(1)},${(y0 - v*h).toFixed(1)}`); }
+  return "M" + pts.join(" L");
+}
+function graph(x0, y0, w, h, kind, ylab, title, mark){
+  const tauX = x0 + w/5, v = kind==="rise" ? 0.632 : 0.368, yv = y0 - v*h;
+  return L(x0,y0,x0+w+8,y0,INK,1.4) + L(x0,y0,x0,y0-h-12,INK,1.4) + T(x0+w+6,y0+14,"t",{s:12,i:1}) + T(x0-6,y0-h-14,ylab,{s:12,a:"end",i:1})
+    + P(expPath(x0,y0,w,h,kind), BLU, 2)
+    + L(x0, yv, tauX, yv, MUT, 1, "3 3") + L(tauX, yv, tauX, y0, MUT, 1, "3 3") + T(tauX, y0+14, "&#964;", {s:12,c:MUT})
+    + T(x0-4, yv+4, mark, {s:11,c:MUT,a:"end"})
+    + (kind==="rise" ? L(x0,y0-h,x0+w,y0-h,MUT,1,"2 4") : "")
+    + T(x0 + w/2 + 4, y0 - h - 30, title, {s:11,b:1});
+}
+
+const RESV = (x,y,lab) => `<rect x="${x-7}" y="${y-18}" width="14" height="36" fill="#fff" stroke="${INK}" stroke-width="1.6"/>` + (lab?T(x+12,y+4,lab,{s:12,a:"start"}):"");
+const BATV = (x,y,lab) => `<rect x="${x-16}" y="${y-8}" width="32" height="16" fill="#fff"/>${L(x-15,y-5,x+15,y-5,INK,1.8)}${L(x-8,y+5,x+8,y+5,INK,4)}` + (lab?T(x+20,y+4,lab,{s:12,a:"start"}):"");
+const BAT = (x,y,lab,ly) => `<rect x="${x-8}" y="${y-16}" width="16" height="32" fill="#fff"/>${L(x-5,y-15,x-5,y+15,INK,1.8)}${L(x+5,y-8,x+5,y+8,INK,4)}` + (lab?T(x,y+(ly||30),lab,{s:12}):"");
+const GAL = (x,y) => `<circle cx="${x}" cy="${y}" r="11" fill="#fff" stroke="${INK}" stroke-width="1.6"/>` + T(x,y+4.5,"G",{s:12,b:1});
+const MET = (x,y,t) => `<circle cx="${x}" cy="${y}" r="11" fill="#fff" stroke="${INK}" stroke-width="1.6"/>` + T(x,y+4.5,t,{s:12,b:1});
+const DOT = (x,y) => `<circle cx="${x}" cy="${y}" r="3" fill="${INK}"/>`;
+const PL = (pts,c=INK,sw=1.5) => `<polyline points="${pts}" fill="none" stroke="${c}" stroke-width="${sw}"/>`;
+const AXES = (x0,y0,w,h,xl,yl) => L(x0,y0,x0+w,y0,INK,1.4) + L(x0,y0,x0,y0-h,INK,1.4) + `<path d="M${x0+w},${y0} l-7,-3.5 l0,7 z M${x0},${y0-h} l-3.5,7 l7,0 z" fill="${INK}"/>` + T(x0+w+4,y0+15,xl,{s:12,i:1,a:"end"}) + T(x0-6,y0-h+10,yl,{s:12,i:1,a:"end"});
+
+/* ===== Chapter 7: Optics ===== */
+const C7 = THEORY[7];
+const RAY = (x1,y1,x2,y2,c=RED) => L(x1,y1,x2,y2,c,1.6) + (() => { const mx=(x1+x2)/2, my=(y1+y2)/2, a=Math.atan2(y2-y1,x2-x1); return `<path d="M${mx+5*Math.cos(a)},${my+5*Math.sin(a)} L${mx-5*Math.cos(a)-4*Math.sin(a)},${my-5*Math.sin(a)+4*Math.cos(a)} L${mx-5*Math.cos(a)+4*Math.sin(a)},${my-5*Math.sin(a)-4*Math.cos(a)} z" fill="${c}"/>`; })();
+const DASH = (x1,y1,x2,y2,c=RED) => L(x1,y1,x2,y2,c,1.2,"4 3");
+const OBJ = (x,y0,h,c=INK,dash) => L(x,y0,x,y0-h,c,2.4,dash?"4 3":null) + `<path d="M${x},${y0-h+(h>0?0:0)} l-5,${h>0?9:-9} l10,0 z" fill="${c}"${dash?' fill-opacity=".6"':""}/>`;
+const AXIS = (x1,x2,y) => L(x1,y,x2,y,MUT,1,"6 4");
+const PT = (x,y,lab) => DOT(x,y) + T(x,y+16,lab,{s:11,c:MUT});
+
+const f7_concave = S(360, 210, (() => { const y=110, mx=320; let o = AXIS(20,340,y);
+  o += P(`M${mx},40 Q${mx+18},${y} ${mx},180`,INK,3) + PT(260,y,"F") + PT(200,y,"C") + PT(mx,y,"P");
+  o += OBJ(140,y,40) + OBJ(230,y,-20,BLU);
+  o += RAY(140,70,320,70) + RAY(320,70,230,130) + L(230,130,200,150,RED,1.6);
+  o += RAY(140,70,320,130) + RAY(320,130,170,130);
+  o += T(140,128,"object",{s:11}) + T(232,160,"image",{s:11,c:BLU});
+  return o; })());
+const f7_convex = S(360, 200, (() => { const y=110, mx=200; let o = AXIS(20,340,y);
+  o += P(`M${mx},40 Q${mx-18},${y} ${mx},180`,INK,3) + PT(260,y,"F") + PT(320,y,"C");
+  o += OBJ(80,y,40) + OBJ(240,y,13.3,BLU,1);
+  o += RAY(80,70,200,70) + RAY(200,70,140,30) + DASH(200,70,260,110);
+  o += RAY(80,70,197,89.5) + RAY(197,89.5,120,76.6) + DASH(197,89.5,320,110);
+  o += T(80,128,"object",{s:11}) + T(252,92,"image",{s:11,c:BLU,a:"start"}) + T(180,194,"virtual, upright, diminished",{s:11,c:MUT});
+  return o; })());
+const f7_refr = S(360, 190, (() => { const y=100; let o = AXIS(20,340,y);
+  o += `<path d="M200,20 Q170,${y} 200,180 L340,180 L340,20 z" fill="#dbeaf7" stroke="${INK}" stroke-width="1.6"/>` + T(110,40,"n&#8321; (air)",{s:12}) + T(290,40,"n&#8322; (glass)",{s:12});
+  o += OBJ(60,y,0.01) + DOT(60,y) + T(60,y+18,"O",{s:12,b:1}) + DOT(310,y) + T(310,y+18,"I",{s:12,b:1,c:BLU});
+  o += RAY(60,y,184,60) + RAY(184,60,310,y) + RAY(60,y,184,140) + RAY(184,140,310,y);
+  o += L(60,160,186,160,MUT,1) + T(123,174,"u",{s:12,i:1}) + L(186,170,310,170,MUT,1) + T(250,184,"v",{s:12,i:1});
+  return o; })());
+const LENSCX = (x,y,h=70) => `<path d="M${x},${y-h} Q${x+16},${y} ${x},${y+h} Q${x-16},${y} ${x},${y-h} z" fill="#dbeaf7" stroke="${INK}" stroke-width="1.6"/>`;
+const LENSCC = (x,y,h=70) => `<path d="M${x-10},${y-h} L${x+10},${y-h} Q${x+1},${y} ${x+10},${y+h} L${x-10},${y+h} Q${x-1},${y} ${x-10},${y-h} z" fill="#dbeaf7" stroke="${INK}" stroke-width="1.6"/>`;
+const f7_lens = S(360, 210, (() => { const y=105; let o = AXIS(10,350,y) + LENSCX(180,y);
+  o += PT(120,y,"F") + PT(240,y,"F") + PT(60,y,"2F") + PT(300,y,"2F");
+  o += OBJ(60,y,40) + OBJ(300,y,-40,BLU);
+  o += RAY(60,65,180,65) + RAY(180,65,300,145) + L(300,145,330,165,RED,1.6) + RAY(60,65,180,105) + RAY(180,105,300,145);
+  o += T(60,190,"object at 2F",{s:11}) + T(300,190,"image at 2F",{s:11,c:BLU}) + T(180,202,"real, inverted, same size",{s:11,c:MUT});
+  return o; })());
+const f7_lensc = S(360, 190, (() => { const y=105; let o = AXIS(10,350,y) + LENSCC(200,y);
+  o += PT(140,y,"F") + PT(260,y,"F") + OBJ(80,y,40) + OBJ(160,y,13.3,BLU,1);
+  o += RAY(80,65,200,65) + RAY(200,65,290,5) + DASH(200,65,140,105);
+  o += RAY(80,65,200,105) + RAY(200,105,320,145);
+  o += T(80,124,"object",{s:11}) + T(160,84,"image",{s:11,c:BLU}) + T(200,186,"virtual, upright, diminished",{s:11,c:MUT});
+  return o; })());
+const f7_huy = S(380, 200, (() => { let o = "";
+  o += L(40,20,40,180,BLU,2.4) + T(40,196,"wavefront",{s:11,c:BLU});
+  [35,65,95,125,155].forEach(y => { o += DOT(40,y) + P(`M40,${y-30} A30,30 0 0 1 40,${y+30}`,MUT,1,0); });
+  o += L(70,20,70,180,BLU,2.4,"6 3") + T(76,196,"new wavefront",{s:11,c:BLU,a:"start"}) + A(90,100,120,100,INK,1.6);
+  o += L(220,20,220,80,INK,4) + L(220,120,220,180,INK,4) + [190,200,210].map(x => L(x,30,x,170,BLU,1.6)).join("");
+  [20,40,60,80].forEach(r => o += P(`M220,${100-r} A${r},${r} 0 0 1 220,${100+r}`,BLU,1.6));
+  o += T(290,196,"spreading at a narrow slit",{s:11,c:MUT});
+  return o; })());
+const f7_super = S(360, 190, (() => { const W = (x0,y0,amp,ph,c) => P((() => { let d=""; for(let i=0;i<=40;i++){ const t=i/40; d += (i?" L":"M")+`${(x0+t*90).toFixed(1)},${(y0-amp*Math.sin(4*Math.PI*t+ph)).toFixed(1)}`; } return d; })(),c,1.8);
+  let o = W(20,35,14,0,BLU) + W(20,75,14,0,RED) + T(65,108,"+",{s:16,b:1}) + T(160,20,"in phase: constructive",{s:12,b:1,c:FLD,a:"start"}) + W(160,55,28,0,FLD);
+  o += W(20,125,14,0,BLU) + W(20,160,14,Math.PI,RED) + T(160,110,"antiphase: destructive",{s:12,b:1,c:RED,a:"start"}) + L(160,145,250,145,RED,1.8);
+  return o; })());
+const f7_double = S(360, 220, (() => { let o = "";
+  o += `<circle cx="20" cy="110" r="5" fill="#f0c36d" stroke="${INK}"/>` + T(20,96,"source",{s:10,c:MUT}) + L(70,20,70,98,INK,3) + L(70,104,70,116,INK,3) + L(70,122,70,200,INK,3) + T(60,94,"S&#8321;",{s:11,a:"end"}) + T(60,134,"S&#8322;",{s:11,a:"end"});
+  o += L(300,20,300,200,INK,2) + T(300,214,"screen",{s:11,c:MUT});
+  for(let k=-4;k<=4;k++){ const yy=110+k*20; o += `<rect x="306" y="${yy-5}" width="24" height="10" fill="${k===0?"#f5b041":"#f8c471"}" opacity="${1-Math.abs(k)*0.15}"/>`; }
+  o += L(70,101,300,150,MUT,1) + L(70,119,300,150,MUT,1) + DOT(300,150) + T(290,148,"P",{s:11,a:"end"});
+  o += L(70,212,300,212,MUT,1) + T(185,208,"D",{s:12,i:1}) + L(336,110,336,150,BLU,1) + T(342,134,"y",{s:12,i:1,c:BLU,a:"start"}) + T(80,112,"d",{s:12,i:1,a:"start"});
+  return o; })());
+const f7_film = S(360, 190, `<rect x="20" y="70" width="320" height="50" fill="#dbeaf7" stroke="${INK}"/>` + T(30,64,"air (n = 1.00)",{s:11,a:"start"}) + T(30,100,"film (n)",{s:11,a:"start"}) + T(30,140,"air or glass below",{s:11,a:"start"})
+  + RAY(100,10,150,70,RED) + RAY(150,70,200,10,RED) + RAY(150,70,180,120,RED) + RAY(180,120,210,70,RED) + RAY(210,70,260,10,RED)
+  + T(196,26,"ray 1",{s:11,c:RED,a:"end"}) + T(262,26,"ray 2",{s:11,c:RED,a:"start"}) + T(150,86,"phase change &#960;",{s:10.5,c:BLU,a:"end"})
+  + L(320,70,320,120,MUT,1) + T(328,99,"t",{s:12,i:1,a:"start"}) + T(180,174,"ray 2 travels an extra 2nt inside the film",{s:11,c:MUT}));
+const f7_single = S(360, 200, (() => { let o = L(30,20,30,92,INK,4) + L(30,108,30,180,INK,4) + T(22,104,"a",{s:12,i:1,a:"end"}) + L(320,20,320,180,INK,2) + L(30,100,320,100,MUT,1,"4 3");
+  let d=""; for(let i=0;i<=200;i++){ const yy=-1+i/100; const b=Math.PI*yy*3.2; const I = Math.abs(b)<1e-6?1:Math.pow(Math.sin(b)/b,2); d += (i?" L":"M")+`${(250 - 70*I).toFixed(1)},${(100+yy*80).toFixed(1)}`; } o += P(d,BLU,2);
+  o += L(250,20,250,180,MUT,1) + T(208,30,"intensity",{s:10.5,c:MUT}) + T(300,104,"central max",{s:10,c:BLU,a:"end"}).replace('y="104"','y="94"');
+  return o + T(175,196,"central maximum is twice as wide as the others",{s:11,c:MUT}); })());
+const f7_grating = S(360, 210, (() => { let o = L(60,20,60,190,INK,2,"2 4") + T(56,200,"grating",{s:10.5,c:MUT});
+  for(let k=-2;k<=2;k++){ const th = Math.asin(k*0.3); const x=60+250*Math.cos(th), y=105-250*Math.sin(th)*0.62; o += A(60,105,x,y,k===0?INK:RED,1.6) + T(x+6,y+4,`m = ${k}`,{s:11,a:"start",c:k===0?INK:RED}); }
+  o += A(10,105,56,105,FLD,2) + T(20,96,"light",{s:10,c:FLD}) + P("M120,105 A60,60 0 0 0 117,85",INK,1.2) + T(126,92,"&#952;",{s:12,i:1,a:"start"});
+  return o; })());
+
+C7[0].html = `
+<p>A <b>spherical mirror</b> is part of a sphere. A <b>concave</b> mirror curves inwards (like the inside of a spoon) and makes light converge. A <b>convex</b> mirror bulges outwards and makes light spread out.</p>
+<h4>Key points</h4>
+<ul><li><b>Pole P:</b> the centre of the mirror's surface.</li>
+<li><b>Centre of curvature C:</b> the centre of the sphere the mirror is part of. R is its distance from P.</li>
+<li><b>Focal point F:</b> where rays parallel to the axis meet after reflection (concave), or appear to come from (convex). F is halfway between P and C, so:</li></ul>
+${fx("R=2f||\\dfrac1f=\\dfrac1u+\\dfrac1v||M=\\dfrac{h_i}{h_o}=-\\dfrac{v}{u}", "R = 2f &nbsp;&nbsp; 1/f = 1/u + 1/v &nbsp;&nbsp; M = h<sub>i</sub>/h<sub>o</sub> = &minus;v/u")}
+<h4>Ray diagrams</h4>
+<p>To find an image, draw at least two of these rays from the top of the object:</p>
+<ol><li>A ray <b>parallel to the axis</b> reflects <b>through F</b> (concave), or as if it came from F (convex).</li>
+<li>A ray <b>through F</b> (or heading towards F, for convex) reflects <b>parallel to the axis</b>.</li>
+<li>A ray <b>through C</b> (or heading towards C) reflects straight back along itself.</li></ol>
+${fig(f7_concave, "Figure 7.1: Concave mirror with the object beyond C. The image is real, inverted and diminished, between F and C.")}
+${fig(f7_convex, "Figure 7.2: Convex mirror. The reflected rays spread out and only appear to come from behind the mirror, so the image is virtual. It is always upright and diminished.")}
+<h4>Sign convention (real object)</h4>
+<table class="cmp"><tr><th>Quantity</th><th>Positive (+)</th><th>Negative (&minus;)</th></tr>
+<tr><td>f and R</td><td>concave mirror</td><td>convex mirror</td></tr>
+<tr><td>v</td><td>real image (in front of the mirror)</td><td>virtual image (behind the mirror)</td></tr>
+<tr><td>M</td><td>upright image</td><td>inverted image</td></tr></table>
+<p>The size of |M| tells you whether the image is magnified (|M| &gt; 1) or diminished (|M| &lt; 1).</p>
+${ex("mirror equation", `<p><b>Concave mirror,</b> f = 10 cm, object at u = 30 cm: 1/v = 1/10 &minus; 1/30, so v = <b>+15 cm</b> (real). M = &minus;15/30 = <b>&minus;0.5</b>: inverted and half the size.</p>
+<p><b>Convex mirror,</b> f = &minus;20 cm, object at u = 30 cm: 1/v = &minus;1/20 &minus; 1/30, so v = <b>&minus;12 cm</b> (virtual, behind the mirror). M = &minus;(&minus;12)/30 = <b>+0.4</b>: upright and diminished.</p>`)}
+${trap(`Forgetting to put a negative sign on f for a convex mirror.`)}`;
+
+C7[1].html = `
+<p>Light changes speed, and so bends, when it crosses a boundary between two materials. If the boundary is curved, like the surface of a glass ball or the front of your eye, it can form an image.</p>
+${fig(f7_refr, "Figure 7.3: Light from object O in air is refracted at a convex glass surface and forms an image I inside the glass.")}
+${fx("\\dfrac{n_1}{u}+\\dfrac{n_2}{v}=\\dfrac{n_2-n_1}{R}", "n<sub>1</sub>/u + n<sub>2</sub>/v = (n<sub>2</sub> &minus; n<sub>1</sub>)/R")}
+<ul><li>n<sub>1</sub> is the refractive index of the medium the <b>object</b> is in. n<sub>2</sub> is the refractive index of the medium the light <b>enters</b>.</li>
+<li><b>R is positive</b> for a <b>convex</b> surface facing the object, and <b>negative</b> for a <b>concave</b> surface.</li>
+<li><b>v positive:</b> real image, in the second medium. <b>v negative:</b> virtual image, on the same side as the object.</li>
+<li>Refractive index n = c/v is a ratio of speeds, so it has no unit.</li></ul>
+${ex("refraction at a curved surface", `<p>An object in air is 30 cm from a convex glass surface (n = 1.5, R = +10 cm).</p>
+<p>1.0/30 + 1.5/v = (1.5 &minus; 1.0)/10, so 1.5/v = 0.050 &minus; 0.033 = 0.017, and v = <b>+90 cm</b>. The image is real, 90 cm inside the glass.</p>`)}
+${trap(`Swapping n<sub>1</sub> and n<sub>2</sub>. n<sub>1</sub> always goes with u (the object side).`)}`;
+
+C7[2].html = `
+<p>A <b>thin lens</b> refracts light at two surfaces. A <b>convex</b> (converging) lens is thicker in the middle and brings parallel rays together at a focus. A <b>concave</b> (diverging) lens is thinner in the middle and spreads them out.</p>
+${fx("\\dfrac1f=\\dfrac1u+\\dfrac1v||M=\\dfrac{h_i}{h_o}=-\\dfrac{v}{u}", "1/f = 1/u + 1/v &nbsp;&nbsp; M = &minus;v/u")}
+<h4>Ray diagrams</h4>
+<ol><li>A ray <b>parallel to the axis</b> refracts <b>through F</b> on the far side (convex), or as if from F on the near side (concave).</li>
+<li>A ray through the <b>optical centre</b> goes straight through, undeviated.</li>
+<li>A ray through F (or heading to F) leaves parallel to the axis.</li></ol>
+${fig(f7_lens, "Figure 7.4: Convex lens with the object at 2F. The image is at 2F on the other side: real, inverted and the same size.")}
+${fig(f7_lensc, "Figure 7.5: Concave lens. The rays spread out as if from a point on the object side, so the image is always virtual, upright and diminished.")}
+<p><b>Sign convention:</b> f is <b>positive</b> for a convex lens and <b>negative</b> for a concave lens. v is positive for a real image (on the far side) and negative for a virtual image (on the object side).</p>
+<h4>Lens maker's equation</h4>
+<p>The focal length depends on the shape of the lens and on the refractive indices of the lens and its surroundings:</p>
+${fx("\\dfrac1f=\\left(\\dfrac{n_{\\text{material}}}{n_{\\text{medium}}}-1\\right)\\left(\\dfrac{1}{R_1}-\\dfrac{1}{R_2}\\right)", "1/f = (n<sub>material</sub>/n<sub>medium</sub> &minus; 1)(1/R<sub>1</sub> &minus; 1/R<sub>2</sub>)")}
+<p>R<sub>1</sub> is the surface the light meets first. Use the same sign rule as for one surface: convex towards the incoming light is positive. For a biconvex lens, R<sub>1</sub> is positive and R<sub>2</sub> is negative.</p>
+<p>If the lens is put in water, n<sub>material</sub>/n<sub>medium</sub> gets closer to 1, so the lens bends light less and its <b>focal length increases</b>.</p>
+<h4>Two lenses</h4>
+<p>Find the image formed by the first lens. That image becomes the <b>object</b> for the second lens. The total magnification is M = M<sub>1</sub> &times; M<sub>2</sub>.</p>
+${ex("lens calculations", `<p><b>Single lens:</b> a convex lens with f = 15 cm, object at 20 cm. 1/v = 1/15 &minus; 1/20, so v = <b>+60 cm</b> (real). M = &minus;60/20 = <b>&minus;3</b>.</p>
+<p><b>Lens maker:</b> biconvex glass lens (n = 1.5), R<sub>1</sub> = +20 cm, R<sub>2</sub> = &minus;20 cm. In air: 1/f = 0.5(1/20 + 1/20), so f = <b>20 cm</b>. In water (n = 1.33): 1/f = (1.5/1.33 &minus; 1)(0.10), so f = <b>78 cm</b>.</p>
+<p><b>Two lenses:</b> f<sub>1</sub> = 10 cm and f<sub>2</sub> = 20 cm, 40 cm apart, object 15 cm in front of lens 1. Lens 1: v<sub>1</sub> = 30 cm. This is 10 cm in front of lens 2, so u<sub>2</sub> = 10 cm and v<sub>2</sub> = &minus;20 cm (virtual). M = (&minus;30/15)(&minus;(&minus;20)/10) = <b>&minus;4</b>.</p>`)}
+${trap(`In a two-lens problem, using the distance from the first lens as u for the second lens. Measure u<sub>2</sub> from the <b>second</b> lens.`)}`;
+
+C7[3].html = `
+<p>So far we treated light as rays. To explain interference and diffraction, we need to treat light as a <b>wave</b>. A <b>wavefront</b> is a line (or surface) joining points that are in phase, such as all the crests. Rays are always perpendicular to wavefronts.</p>
+<h4>Huygens's principle</h4>
+<p>Every point on a wavefront acts as a source of <b>secondary spherical wavelets</b> that spread out at the speed of the wave. A short time later, the new wavefront is the surface that is <b>tangent to all these wavelets</b> (their envelope).</p>
+${fig(f7_huy, "Figure 7.6: Left: wavelets from points on a plane wavefront build the next plane wavefront. Right: at a narrow slit, only a few wavelets get through, so the wave spreads out in circles.")}
+<ul><li>A <b>plane</b> wavefront in open space stays plane, because the wavelets build a straight envelope.</li>
+<li>A <b>spherical</b> wavefront from a point source stays spherical and grows.</li>
+<li>At a <b>narrow slit</b>, the wavefront is cut down to a short section. Its wavelets spread out on the other side, so the light bends round the edges. This is <b>diffraction</b>, and it is most noticeable when the slit width is close to the wavelength.</li></ul>
+<p>Huygens's principle explains reflection, refraction, diffraction and interference.</p>
+${trap(`Thinking only the centre of the wavefront produces new waves. Every point on it is a source of wavelets.`)}`;
+
+C7[4].html = `
+<p>When two waves meet, they overlap. The <b>principle of superposition</b> says the resulting displacement at any point is the sum of the individual displacements. This overlapping of waves is called <b>interference</b>.</p>
+${fig(f7_super, "Figure 7.7: Two waves in phase add to a bigger wave (constructive). Two waves in antiphase cancel (destructive).")}
+<h4>Coherence</h4>
+<p>Two sources are <b>coherent</b> if they have the <b>same frequency</b> (and so wavelength) and a <b>constant phase difference</b>. Two separate light bulbs are not coherent, because their light is emitted in random bursts. In the lab we make coherent sources by splitting the light from one source, for example with two slits.</p>
+<h4>Conditions for an observable interference pattern</h4>
+<ul><li>The sources must be <b>coherent</b>.</li>
+<li>They should have about the <b>same amplitude</b>, so the dark fringes are really dark.</li>
+<li>The light should be <b>monochromatic</b> (one wavelength).</li>
+<li>The slit separation must be small compared with the distance to the screen.</li></ul>
+<h4>Constructive and destructive interference</h4>
+<p>What happens at a point depends on the <b>path difference</b>: how much further one wave has travelled than the other. A path difference of one wavelength &lambda; is a phase difference of 2&pi;.</p>
+<table class="cmp"><tr><th>Sources</th><th>Constructive (bright)</th><th>Destructive (dark)</th></tr>
+<tr><td>In phase</td><td>path difference = m&lambda;</td><td>path difference = (m + &frac12;)&lambda;</td></tr>
+<tr><td>Antiphase</td><td>path difference = (m + &frac12;)&lambda;</td><td>path difference = m&lambda;</td></tr></table>
+${fx("\\text{phase difference}=\\dfrac{2\\pi}{\\lambda}\\times\\text{path difference}", "phase difference = (2&pi;/&lambda;) &times; path difference")}
+<p>Here m = 0, 1, 2, ... For antiphase sources everything is swapped, because the waves already start half a cycle apart.</p>
+${trap(`Using the in-phase conditions for antiphase sources. Check how the sources start before deciding which condition applies.`)}`;
+
+C7[5].html = `
+<p>In <b>Young's double-slit experiment</b>, light from one source passes through two narrow slits close together. The two slits act as <b>coherent sources</b>, and their light overlaps on a screen to form a pattern of bright and dark <b>fringes</b>.</p>
+${fig(f7_double, "Figure 7.8: Young's double-slit experiment. Light from S&#8321; and S&#8322; overlaps on the screen, giving equally spaced bright and dark fringes.")}
+<ul><li>At the centre of the screen, both paths are equal, so the path difference is zero and there is a <b>bright</b> central fringe (m = 0).</li>
+<li>Moving away from the centre, the path difference grows. Bright fringes appear where it is m&lambda;, and dark fringes where it is (m + &frac12;)&lambda;.</li></ul>
+${fx("\\text{bright: } y_m=\\dfrac{m\\lambda D}{d}||\\text{dark: } y_m=\\dfrac{\\left(m+\\frac12\\right)\\lambda D}{d}||\\Delta y=\\dfrac{\\lambda D}{d}", "bright: y<sub>m</sub> = m&lambda;D/d &nbsp;&nbsp; dark: y<sub>m</sub> = (m + &frac12;)&lambda;D/d &nbsp;&nbsp; &Delta;y = &lambda;D/d")}
+<p>&Delta;y is the <b>fringe separation</b>: the distance between neighbouring bright (or dark) fringes. The fringes are equally spaced.</p>
+<h4>Changing the pattern</h4>
+<table class="cmp"><tr><th>Change</th><th>Effect on &Delta;y</th></tr>
+<tr><td>Longer wavelength (e.g. red instead of blue)</td><td>increases</td></tr>
+<tr><td>Screen further away (larger D)</td><td>increases</td></tr>
+<tr><td>Slits closer together (smaller d)</td><td>increases</td></tr>
+<tr><td>White light instead of one colour</td><td>central fringe white, others coloured</td></tr></table>
+${ex("fringe separation", `<p>Light of wavelength 600 nm passes through slits 0.30 mm apart onto a screen 1.5 m away.</p>
+<p>&Delta;y = &lambda;D/d = (600 &times; 10<sup>&minus;9</sup>)(1.5)/(0.30 &times; 10<sup>&minus;3</sup>) = <b>3.0 &times; 10<sup>&minus;3</sup> m</b> (3.0 mm).</p>`)}
+${trap(`Mixing up d (the slit separation, usually in mm) and D (the screen distance, usually in m). Convert both to metres.`)}`;
+
+C7[6].html = `
+<p>The colours on a soap bubble or an oil film on a wet road come from <b>thin-film interference</b>. Light reflects from both the top and the bottom surfaces of the film, and the two reflected rays interfere.</p>
+${fig(f7_film, "Figure 7.9: Ray 1 reflects from the top surface. Ray 2 enters the film, reflects from the bottom surface and comes back out. The two rays interfere.")}
+<h4>Phase change on reflection</h4>
+<ul><li>Light reflecting off a medium with a <b>higher</b> refractive index gets a phase change of <b>&pi;</b> (the same as an extra half wavelength).</li>
+<li>Light reflecting off a medium with a <b>lower</b> refractive index gets <b>no</b> phase change.</li></ul>
+<p>For a soap film in air: ray 1 reflects at air &rarr; soap (higher n), so it gets a phase change of &pi;. Ray 2 reflects at soap &rarr; air (lower n), so it gets none. The two rays therefore start out of step by &pi;.</p>
+<h4>Path difference</h4>
+<p>At normal incidence, ray 2 travels down and back up through the film, an extra distance 2t. Inside the film the wavelength is shorter (&lambda;/n), so the effective path difference is <b>2nt</b>.</p>
+<table class="cmp"><tr><th>Relative phase of the two reflected rays</th><th>Constructive (bright)</th><th>Destructive (dark)</th></tr>
+<tr><td>No phase difference (e.g. air &ndash; MgF<sub>2</sub> &ndash; glass: <b>non-reflective coating</b>)</td><td>2nt = m&lambda;</td><td>2nt = (m + &frac12;)&lambda;</td></tr>
+<tr><td>Phase difference &pi; (e.g. soap film in air: <b>reflective coating</b>)</td><td>2nt = (m + &frac12;)&lambda;</td><td>2nt = m&lambda;</td></tr></table>
+<h4>Applications</h4>
+<ul><li><b>Anti-reflective coatings</b> on spectacles, camera lenses and solar panels: the thickness is chosen so that reflected light interferes <b>destructively</b>. Less light is reflected, so more is transmitted.</li>
+<li><b>Reflective coatings</b>, such as heat-reflecting tinted glass: the thickness is chosen so that reflected light interferes <b>constructively</b>.</li></ul>
+${ex("coating thickness", `<p>A MgF<sub>2</sub> coating (n = 1.38) on glass (n = 1.5) should cancel reflected light of 550 nm. Both reflections are off a higher index, so there is no relative phase change. For the thinnest coating, 2nt = &frac12;&lambda;:</p>
+<p>t = &lambda;/(4n) = 550/(4 &times; 1.38) = <b>99.6 nm</b> (about 100 nm).</p>`)}
+${trap(`Forgetting to check the phase changes first. Decide which row of the table to use before writing any equation.`)}`;
+
+C7[7].html = `
+<p><b>Diffraction</b> is the spreading of waves as they pass through an opening or around the edge of an obstacle. With light, it is easiest to see when the opening is very narrow, close to the wavelength.</p>
+${fig(f7_single, "Figure 7.10: Single-slit diffraction. There is a wide, bright central maximum, with weaker maxima on each side.")}
+<h4>Why there are dark fringes</h4>
+<p>Think of the slit of width a as divided into two halves. For a point on the screen where light from the top edge and the bottom edge differs in path by &lambda;, every wavelet from the top half has a partner in the bottom half that is &lambda;/2 behind. They cancel in pairs, so that point is <b>dark</b>. This gives the first minimum at a sin &theta; = &lambda;.</p>
+${fx("\\text{dark: } y_m=\\dfrac{m\\lambda D}{a}||\\text{bright: } y_m=\\dfrac{\\left(m+\\frac12\\right)\\lambda D}{a}||\\text{width of central max}=\\dfrac{2\\lambda D}{a}", "dark: y<sub>m</sub> = m&lambda;D/a &nbsp;&nbsp; bright: y<sub>m</sub> = (m + &frac12;)&lambda;D/a &nbsp;&nbsp; central max width = 2&lambda;D/a")}
+<ul><li>The central maximum is the <b>widest</b> and <b>brightest</b>, about <b>twice</b> as wide as the others.</li>
+<li>A <b>narrower slit</b> (smaller a) gives a <b>wider</b> pattern. The light spreads out more.</li>
+<li>A <b>longer wavelength</b> also gives a wider pattern.</li></ul>
+${ex("single slit", `<p>Light of 500 nm passes through a slit 0.10 mm wide onto a screen 2.0 m away.</p>
+<p>First dark fringe: y<sub>1</sub> = &lambda;D/a = (500 &times; 10<sup>&minus;9</sup>)(2.0)/(0.10 &times; 10<sup>&minus;3</sup>) = 0.010 m. The central maximum is 2 &times; 0.010 = <b>2.0 cm</b> wide.</p>`)}
+${trap(`Using the double-slit idea that m&lambda; gives a bright fringe. For a single slit, m&lambda;D/a gives the <b>dark</b> fringes.`)}`;
+
+C7[8].html = `
+<p>A <b>diffraction grating</b> is a plate with a very large number of equally spaced parallel slits, often hundreds per millimetre. Light diffracts through every slit and the waves from all the slits interfere, giving very <b>sharp, bright</b> maxima at particular angles.</p>
+${fig(f7_grating, "Figure 7.11: A diffraction grating sends bright maxima in a few sharp directions, labelled by the order m.")}
+${fx("d\\sin\\theta=m\\lambda||d=\\dfrac1N", "d sin &theta; = m&lambda; &nbsp;&nbsp; d = 1/N")}
+<ul><li>d is the distance between neighbouring slits. If there are N lines per metre, d = 1/N.</li>
+<li>m = 0 is the straight-through (zero-order) maximum. m = 1, 2, ... are the first, second, ... orders, on both sides.</li>
+<li>Since sin &theta; cannot exceed 1, the highest order you can see is the largest whole number m &le; d/&lambda;.</li>
+<li>More lines per mm (smaller d) spreads the maxima further apart, but gives fewer orders.</li>
+<li>Different wavelengths come out at different angles, so a grating splits white light into a spectrum. A CD shows this effect.</li></ul>
+${ex("diffraction grating", `<p>A grating has 500 lines per mm, and light of 600 nm is used.</p>
+<p>d = 1/(500 &times; 10<sup>3</sup>) = 2.0 &times; 10<sup>&minus;6</sup> m. First order: sin &theta; = &lambda;/d = 0.30, so &theta; = <b>17.5&deg;</b>.</p>
+<p>Highest order: d/&lambda; = 3.3, so the highest order is <b>m = 3</b>.</p>`)}
+${trap(`Rounding the highest order up. If d/&lambda; = 3.3, the third order exists but the fourth does not.`)}`;
+
+})();
+(function(){
+const INK="#1b2232", MUT="#5b6476", RED="#c0392b", BLU="#2a6aa3", FLD="#1d7448";
+const DEFS = `<defs>${[INK,RED,BLU,FLD,MUT].map(c => `<marker id="m${c.slice(1)}" markerWidth="9" markerHeight="9" refX="7.5" refY="4.5" orient="auto" markerUnits="userSpaceOnUse"><path d="M0,0 L9,4.5 L0,9 z" fill="${c}"/></marker>`).join("")}</defs>`;
+const S = (w, h, body) => `<svg class="tsvg" viewBox="0 0 ${w} ${h}" width="${w}" xmlns="http://www.w3.org/2000/svg" font-family="system-ui,sans-serif">${DEFS}${body}</svg>`;
+const A = (x1,y1,x2,y2,c=INK,sw=2) => `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${c}" stroke-width="${sw}" marker-end="url(#m${c.slice(1)})"/>`;
+const L = (x1,y1,x2,y2,c=INK,sw=1.5,dash) => `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${c}" stroke-width="${sw}"${dash?` stroke-dasharray="${dash}"`:""}/>`;
+const T = (x,y,t,o={}) => `<text x="${x}" y="${y}" font-size="${o.s||13}" fill="${o.c||INK}" text-anchor="${o.a||"middle"}"${o.b?' font-weight="700"':""}${o.i?' font-style="italic"':""}>${t}</text>`;
+const Q = (x,y,s,r=13) => `<circle cx="${x}" cy="${y}" r="${r}" fill="${s==="+"?RED:BLU}"/>` + T(x, y+5, s==="+"?"+":"&#8722;", {c:"#fff", s:r>10?17:12, b:1});
+const P = (d,c=FLD,sw=1.6,mk) => `<path d="${d}" fill="none" stroke="${c}" stroke-width="${sw}"${mk?` marker-end="url(#m${c.slice(1)})"`:""}/>`;
+const tri = (x,y,c=FLD,dir=1) => `<path d="M${x-4*dir},${y-4} L${x+4*dir},${y} L${x-4*dir},${y+4} z" fill="${c}"/>`;
+const RES = (x,y,lab) => `<rect x="${x-18}" y="${y-7}" width="36" height="14" fill="#fff" stroke="${INK}" stroke-width="1.6"/>` + (lab?T(x,y-13,lab,{s:12}):"");
+const CAPV = (x,y,lab) => `<rect x="${x-16}" y="${y-6}" width="32" height="12" fill="#fff"/>${L(x-15,y-5,x+15,y-5,INK,2.5)}${L(x-15,y+5,x+15,y+5,INK,2.5)}` + (lab?T(x+22,y+4,lab,{s:12,a:"start"}):"");
+const fig = (svgStr, cap) => `<figure class="tfig">${svgStr}<figcaption>${cap}</figcaption></figure>`;
+const ex = (title, body) => `<div class="ex"><b>Worked example: ${title}</b>${body}</div>`;
+const trap = body => `<div class="trap"><b>Common mistake.</b> ${body}</div>`;
+const fx = (tex, html) => `<div class="formula" data-tex="${tex}">${html}</div>`;
+function expPath(x0, y0, w, h, kind){ // kind: "rise" or "decay"; tau at w/5
+  const pts = []; for(let i=0;i<=40;i++){ const t = i/40*5; const v = kind==="rise" ? 1-Math.exp(-t) : Math.exp(-t);
+    pts.push(`${(x0 + i/40*w).toFixed(1)},${(y0 - v*h).toFixed(1)}`); }
+  return "M" + pts.join(" L");
+}
+function graph(x0, y0, w, h, kind, ylab, title, mark){
+  const tauX = x0 + w/5, v = kind==="rise" ? 0.632 : 0.368, yv = y0 - v*h;
+  return L(x0,y0,x0+w+8,y0,INK,1.4) + L(x0,y0,x0,y0-h-12,INK,1.4) + T(x0+w+6,y0+14,"t",{s:12,i:1}) + T(x0-6,y0-h-14,ylab,{s:12,a:"end",i:1})
+    + P(expPath(x0,y0,w,h,kind), BLU, 2)
+    + L(x0, yv, tauX, yv, MUT, 1, "3 3") + L(tauX, yv, tauX, y0, MUT, 1, "3 3") + T(tauX, y0+14, "&#964;", {s:12,c:MUT})
+    + T(x0-4, yv+4, mark, {s:11,c:MUT,a:"end"})
+    + (kind==="rise" ? L(x0,y0-h,x0+w,y0-h,MUT,1,"2 4") : "")
+    + T(x0 + w/2 + 4, y0 - h - 30, title, {s:11,b:1});
+}
+
+const RESV = (x,y,lab) => `<rect x="${x-7}" y="${y-18}" width="14" height="36" fill="#fff" stroke="${INK}" stroke-width="1.6"/>` + (lab?T(x+12,y+4,lab,{s:12,a:"start"}):"");
+const BATV = (x,y,lab) => `<rect x="${x-16}" y="${y-8}" width="32" height="16" fill="#fff"/>${L(x-15,y-5,x+15,y-5,INK,1.8)}${L(x-8,y+5,x+8,y+5,INK,4)}` + (lab?T(x+20,y+4,lab,{s:12,a:"start"}):"");
+const BAT = (x,y,lab,ly) => `<rect x="${x-8}" y="${y-16}" width="16" height="32" fill="#fff"/>${L(x-5,y-15,x-5,y+15,INK,1.8)}${L(x+5,y-8,x+5,y+8,INK,4)}` + (lab?T(x,y+(ly||30),lab,{s:12}):"");
+const GAL = (x,y) => `<circle cx="${x}" cy="${y}" r="11" fill="#fff" stroke="${INK}" stroke-width="1.6"/>` + T(x,y+4.5,"G",{s:12,b:1});
+const MET = (x,y,t) => `<circle cx="${x}" cy="${y}" r="11" fill="#fff" stroke="${INK}" stroke-width="1.6"/>` + T(x,y+4.5,t,{s:12,b:1});
+const DOT = (x,y) => `<circle cx="${x}" cy="${y}" r="3" fill="${INK}"/>`;
+const PL = (pts,c=INK,sw=1.5) => `<polyline points="${pts}" fill="none" stroke="${c}" stroke-width="${sw}"/>`;
+const AXES = (x0,y0,w,h,xl,yl) => L(x0,y0,x0+w,y0,INK,1.4) + L(x0,y0,x0,y0-h,INK,1.4) + `<path d="M${x0+w},${y0} l-7,-3.5 l0,7 z M${x0},${y0-h} l-3.5,7 l7,0 z" fill="${INK}"/>` + T(x0+w+4,y0+15,xl,{s:12,i:1,a:"end"}) + T(x0-6,y0-h+10,yl,{s:12,i:1,a:"end"});
+
+/* ===== Chapter 8: Wave properties of particle ===== */
+const C8 = THEORY[8];
+const f8_dual = S(360, 190, (() => { let o = "";
+  o += T(90,18,"Light as a WAVE",{s:12,b:1,c:BLU}) + L(20,40,20,150,INK,2) + L(60,40,60,82,INK,3) + L(60,90,60,100,INK,3) + L(60,108,60,150,INK,3) + L(150,40,150,150,INK,2);
+  for(let k=-3;k<=3;k++) o += `<rect x="154" y="${95+k*14-4}" width="14" height="8" fill="#f5b041" opacity="${1-Math.abs(k)*0.22}"/>`;
+  o += T(90,172,"interference fringes",{s:11,c:MUT}) + [30,40,50].map(x => L(x,50,x,140,BLU,1.4)).join("");
+  o += T(270,18,"Light as a PARTICLE",{s:12,b:1,c:RED}) + `<rect x="230" y="110" width="110" height="16" fill="#9aa3b2"/>` + T(285,144,"metal surface",{s:11,c:MUT});
+  [[220,40],[250,50],[280,40]].forEach(([x,y]) => o += A(x,y,x+20,y+64,RED,1.6) + `<circle cx="${x}" cy="${y}" r="4" fill="${RED}"/>`);
+  o += A(300,108,330,60,BLU,1.6) + Q(332,56,"-",6) + T(270,172,"photoelectric effect (photons)",{s:11,c:MUT});
+  return o; })());
+const f8_dg = S(360, 190, `<rect x="20" y="80" width="50" height="30" rx="4" fill="#d9e3ef" stroke="${INK}"/>` + T(45,128,"electron gun",{s:11,c:MUT}) + T(45,72,"V",{s:12,i:1})
+  + A(72,95,150,95,BLU,2) + T(110,86,"e&#8315;",{s:12,c:BLU}) + L(160,70,160,120,INK,3) + T(160,136,"thin graphite",{s:11,c:MUT})
+  + P("M160,95 L300,40",BLU,1,0) + P("M160,95 L300,150",BLU,1,0) + P("M160,95 L300,95",BLU,1,0)
+  + `<ellipse cx="305" cy="95" rx="18" ry="80" fill="#eef2f7" stroke="${INK}"/>` + `<ellipse cx="305" cy="95" rx="6" ry="26" fill="none" stroke="${FLD}" stroke-width="2.4"/><ellipse cx="305" cy="95" rx="11" ry="50" fill="none" stroke="${FLD}" stroke-width="2.4"/>`
+  + T(290,186,"rings on screen",{s:11,c:MUT}));
+const f8_lambda = S(320, 170, AXES(50,140,240,120,"V","&#955;") + P((() => { let d=""; for(let i=0;i<=50;i++){ const x=0.08+i/50*0.92; d += (i?" L":"M")+`${(50+x*230).toFixed(1)},${(140-22/Math.sqrt(x)).toFixed(1)}`; } return d; })(),BLU,2.2)
+  + T(170,60,"&#955; = h/&#8730;(2meV)",{s:12,a:"start"}) + T(170,160,"higher V: faster electrons, shorter &#955;",{s:11,c:MUT}));
+
+C8[0].html = `
+<p>For centuries, people argued about whether light is a wave or a stream of particles. The answer from twentieth-century physics is: <b>both</b>, depending on the experiment.</p>
+${fig(f8_dual, "Figure 8.1: Light shows wave behaviour in interference and diffraction, and particle behaviour (photons) in the photoelectric effect.")}
+<h4>Wave&ndash;particle duality</h4>
+<p><b>Wave&ndash;particle duality</b> states that light (and matter) can show wave properties in some situations and particle properties in others, but <b>never both in the same experiment</b>.</p>
+<ul><li><b>Particle properties:</b> mass, momentum, being localised at a point.</li>
+<li><b>Wave properties:</b> wavelength, interference, diffraction.</li>
+<li>Evidence that light is a wave: Young's double-slit experiment, diffraction. Evidence that light is a particle (photon): the photoelectric effect.</li></ul>
+<h4>The momentum of a photon</h4>
+<p>A photon has energy E = hf = hc/&lambda;. Einstein's E = mc<sup>2</sup> links energy and mass, so hc/&lambda; = mc<sup>2</sup>, which gives a photon momentum p = mc = h/&lambda;. A wave of wavelength &lambda; carries momentum h/&lambda;.</p>
+<h4>De Broglie's hypothesis</h4>
+<p>In 1924, Louis de Broglie suggested that the same relation works the other way round: if waves can behave as particles, then <b>particles such as electrons can behave as waves</b>. Every moving particle has a wavelength, called its <b>de Broglie wavelength</b>:</p>
+${fx("\\lambda=\\dfrac{h}{p}=\\dfrac{h}{mv}||h=6.63\\times10^{-34}\\ \\text{J s}", "&lambda; = h/p = h/mv")}
+<p>&lambda; is the wave property and p is the particle property. A larger momentum gives a <b>shorter</b> wavelength.</p>
+${ex("everyday object versus electron", `<p>A 0.16 kg cricket ball at 30 m s<sup>&minus;1</sup>: &lambda; = 6.63 &times; 10<sup>&minus;34</sup>/(0.16 &times; 30) = <b>1.4 &times; 10<sup>&minus;34</sup> m</b>. That is far too small to ever detect, so we never see a cricket ball diffract.</p>
+<p>An electron at 1.0 &times; 10<sup>7</sup> m s<sup>&minus;1</sup>: &lambda; = 6.63 &times; 10<sup>&minus;34</sup>/(9.11 &times; 10<sup>&minus;31</sup> &times; 1.0 &times; 10<sup>7</sup>) = <b>7.3 &times; 10<sup>&minus;11</sup> m</b>, which is about the spacing of atoms in a crystal. So electrons <b>can</b> be diffracted by crystals.</p>`)}
+${trap(`Using the photon formula E = hc/&lambda; for an electron. For particles with mass, use &lambda; = h/mv.`)}`;
+
+C8[1].html = `
+<h4>The Davisson&ndash;Germer experiment</h4>
+<p>If electrons really are waves, they should diffract when they pass through a crystal, because the spacing of atoms in a crystal is close to their de Broglie wavelength. Davisson and Germer showed exactly this.</p>
+${fig(f8_dg, "Figure 8.2: A beam of electrons passes through a thin layer of graphite. The screen shows rings: a diffraction pattern, which only waves can produce.")}
+<ul><li>Electrons from an electron gun are accelerated through a potential difference V and aimed at a very thin graphite (or nickel) crystal.</li>
+<li>The screen shows a pattern of bright <b>rings</b>. This is a <b>diffraction pattern</b>, so the electrons are behaving as <b>waves</b>.</li>
+<li>The wavelength worked out from the rings agreed with &lambda; = h/p. This <b>confirmed de Broglie's hypothesis</b>.</li>
+<li>Increasing V makes the electrons faster, and the rings get <b>smaller</b>, showing that the wavelength gets shorter.</li></ul>
+<p>The kinetic energy gained is eV = &frac12;mv<sup>2</sup>, so p = &radic;(2meV) and:</p>
+${fx("\\lambda=\\dfrac{h}{\\sqrt{2meV}}", "&lambda; = h/&radic;(2meV)")}
+${fig(f8_lambda, "Figure 8.3: The de Broglie wavelength of an electron decreases as the accelerating voltage increases.")}
+<p>All particles have a de Broglie wavelength. Diffraction is only noticeable when the wavelength is about the same as the spacing of the atoms. Heavier particles have much larger momentum and so much shorter wavelengths.</p>
+<h4>The electron microscope</h4>
+<p>An electron microscope uses a beam of electrons instead of light, and magnetic fields as lenses to focus it. The electrons are accelerated through a high voltage, so they have a very short de Broglie wavelength, around 10<sup>&minus;10</sup> m or less.</p>
+<p>The finest detail any microscope can show (its <b>resolving power</b>) is limited by diffraction. A shorter wavelength means less diffraction, so finer detail can be resolved.</p>
+<table class="cmp"><tr><th></th><th>Optical microscope</th><th>Electron microscope</th></tr>
+<tr><td>Uses</td><td>visible light</td><td>electron waves</td></tr>
+<tr><td>Wavelength</td><td>about 4&ndash;7 &times; 10<sup>&minus;7</sup> m</td><td>about 10<sup>&minus;10</sup> m or less</td></tr>
+<tr><td>Can separate points about</td><td>a few hundred nm apart</td><td>less than 1 nm apart</td></tr>
+<tr><td>Resolving power adjusted by</td><td>changing the lenses</td><td>changing the accelerating voltage</td></tr></table>
+<p><b>Advantages of an electron microscope:</b> a much higher resolving power and magnification, because the electron wavelength is much shorter than the wavelength of light. A transmission electron microscope (TEM) sends electrons through a very thin specimen. A scanning electron microscope (SEM) scans the beam across the surface.</p>
+${ex("electron wavelength", `<p>An electron is accelerated from rest through 2000 V.</p>
+<p>&lambda; = h/&radic;(2meV) = 6.63 &times; 10<sup>&minus;34</sup>/&radic;(2 &times; 9.11 &times; 10<sup>&minus;31</sup> &times; 1.60 &times; 10<sup>&minus;19</sup> &times; 2000) = <b>2.7 &times; 10<sup>&minus;11</sup> m</b>.</p>
+<p>An electron and a proton with the same kinetic energy: &lambda; &prop; 1/&radic;m, so &lambda;<sub>e</sub>/&lambda;<sub>p</sub> = &radic;(m<sub>p</sub>/m<sub>e</sub>) = &radic;(1.67 &times; 10<sup>&minus;27</sup>/9.11 &times; 10<sup>&minus;31</sup>) = <b>43</b>. The electron's wavelength is 43 times longer.</p>`)}
+${trap(`Saying a higher voltage gives a longer wavelength. Higher V means more momentum, so a <b>shorter</b> wavelength and better resolution.`)}`;
+
+})();
+(function(){
+const INK="#1b2232", MUT="#5b6476", RED="#c0392b", BLU="#2a6aa3", FLD="#1d7448";
+const DEFS = `<defs>${[INK,RED,BLU,FLD,MUT].map(c => `<marker id="m${c.slice(1)}" markerWidth="9" markerHeight="9" refX="7.5" refY="4.5" orient="auto" markerUnits="userSpaceOnUse"><path d="M0,0 L9,4.5 L0,9 z" fill="${c}"/></marker>`).join("")}</defs>`;
+const S = (w, h, body) => `<svg class="tsvg" viewBox="0 0 ${w} ${h}" width="${w}" xmlns="http://www.w3.org/2000/svg" font-family="system-ui,sans-serif">${DEFS}${body}</svg>`;
+const A = (x1,y1,x2,y2,c=INK,sw=2) => `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${c}" stroke-width="${sw}" marker-end="url(#m${c.slice(1)})"/>`;
+const L = (x1,y1,x2,y2,c=INK,sw=1.5,dash) => `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${c}" stroke-width="${sw}"${dash?` stroke-dasharray="${dash}"`:""}/>`;
+const T = (x,y,t,o={}) => `<text x="${x}" y="${y}" font-size="${o.s||13}" fill="${o.c||INK}" text-anchor="${o.a||"middle"}"${o.b?' font-weight="700"':""}${o.i?' font-style="italic"':""}>${t}</text>`;
+const Q = (x,y,s,r=13) => `<circle cx="${x}" cy="${y}" r="${r}" fill="${s==="+"?RED:BLU}"/>` + T(x, y+5, s==="+"?"+":"&#8722;", {c:"#fff", s:r>10?17:12, b:1});
+const P = (d,c=FLD,sw=1.6,mk) => `<path d="${d}" fill="none" stroke="${c}" stroke-width="${sw}"${mk?` marker-end="url(#m${c.slice(1)})"`:""}/>`;
+const tri = (x,y,c=FLD,dir=1) => `<path d="M${x-4*dir},${y-4} L${x+4*dir},${y} L${x-4*dir},${y+4} z" fill="${c}"/>`;
+const RES = (x,y,lab) => `<rect x="${x-18}" y="${y-7}" width="36" height="14" fill="#fff" stroke="${INK}" stroke-width="1.6"/>` + (lab?T(x,y-13,lab,{s:12}):"");
+const CAPV = (x,y,lab) => `<rect x="${x-16}" y="${y-6}" width="32" height="12" fill="#fff"/>${L(x-15,y-5,x+15,y-5,INK,2.5)}${L(x-15,y+5,x+15,y+5,INK,2.5)}` + (lab?T(x+22,y+4,lab,{s:12,a:"start"}):"");
+const fig = (svgStr, cap) => `<figure class="tfig">${svgStr}<figcaption>${cap}</figcaption></figure>`;
+const ex = (title, body) => `<div class="ex"><b>Worked example: ${title}</b>${body}</div>`;
+const trap = body => `<div class="trap"><b>Common mistake.</b> ${body}</div>`;
+const fx = (tex, html) => `<div class="formula" data-tex="${tex}">${html}</div>`;
+function expPath(x0, y0, w, h, kind){ // kind: "rise" or "decay"; tau at w/5
+  const pts = []; for(let i=0;i<=40;i++){ const t = i/40*5; const v = kind==="rise" ? 1-Math.exp(-t) : Math.exp(-t);
+    pts.push(`${(x0 + i/40*w).toFixed(1)},${(y0 - v*h).toFixed(1)}`); }
+  return "M" + pts.join(" L");
+}
+function graph(x0, y0, w, h, kind, ylab, title, mark){
+  const tauX = x0 + w/5, v = kind==="rise" ? 0.632 : 0.368, yv = y0 - v*h;
+  return L(x0,y0,x0+w+8,y0,INK,1.4) + L(x0,y0,x0,y0-h-12,INK,1.4) + T(x0+w+6,y0+14,"t",{s:12,i:1}) + T(x0-6,y0-h-14,ylab,{s:12,a:"end",i:1})
+    + P(expPath(x0,y0,w,h,kind), BLU, 2)
+    + L(x0, yv, tauX, yv, MUT, 1, "3 3") + L(tauX, yv, tauX, y0, MUT, 1, "3 3") + T(tauX, y0+14, "&#964;", {s:12,c:MUT})
+    + T(x0-4, yv+4, mark, {s:11,c:MUT,a:"end"})
+    + (kind==="rise" ? L(x0,y0-h,x0+w,y0-h,MUT,1,"2 4") : "")
+    + T(x0 + w/2 + 4, y0 - h - 30, title, {s:11,b:1});
+}
+
+const RESV = (x,y,lab) => `<rect x="${x-7}" y="${y-18}" width="14" height="36" fill="#fff" stroke="${INK}" stroke-width="1.6"/>` + (lab?T(x+12,y+4,lab,{s:12,a:"start"}):"");
+const BATV = (x,y,lab) => `<rect x="${x-16}" y="${y-8}" width="32" height="16" fill="#fff"/>${L(x-15,y-5,x+15,y-5,INK,1.8)}${L(x-8,y+5,x+8,y+5,INK,4)}` + (lab?T(x+20,y+4,lab,{s:12,a:"start"}):"");
+const BAT = (x,y,lab,ly) => `<rect x="${x-8}" y="${y-16}" width="16" height="32" fill="#fff"/>${L(x-5,y-15,x-5,y+15,INK,1.8)}${L(x+5,y-8,x+5,y+8,INK,4)}` + (lab?T(x,y+(ly||30),lab,{s:12}):"");
+const GAL = (x,y) => `<circle cx="${x}" cy="${y}" r="11" fill="#fff" stroke="${INK}" stroke-width="1.6"/>` + T(x,y+4.5,"G",{s:12,b:1});
+const MET = (x,y,t) => `<circle cx="${x}" cy="${y}" r="11" fill="#fff" stroke="${INK}" stroke-width="1.6"/>` + T(x,y+4.5,t,{s:12,b:1});
+const DOT = (x,y) => `<circle cx="${x}" cy="${y}" r="3" fill="${INK}"/>`;
+const PL = (pts,c=INK,sw=1.5) => `<polyline points="${pts}" fill="none" stroke="${c}" stroke-width="${sw}"/>`;
+const AXES = (x0,y0,w,h,xl,yl) => L(x0,y0,x0+w,y0,INK,1.4) + L(x0,y0,x0,y0-h,INK,1.4) + `<path d="M${x0+w},${y0} l-7,-3.5 l0,7 z M${x0},${y0-h} l-3.5,7 l7,0 z" fill="${INK}"/>` + T(x0+w+4,y0+15,xl,{s:12,i:1,a:"end"}) + T(x0-6,y0-h+10,yl,{s:12,i:1,a:"end"});
+
+/* ===== Chapter 9: Nuclear and particle physics (restructured to match the CS: 9.1-9.4) ===== */
+const Qz = window.Q;
+const O9 = THEORY[9];
+const C9 = [
+  { sub:"9.1", title:"Binding energy and mass defect", sym:O9[0].sym, qs:O9[0].qs },
+  { sub:"9.2", title:"Radioactivity, decay law and half-life", sym:O9[1].sym.concat(O9[2].sym), qs:O9[1].qs.concat(O9[2].qs) },
+  { sub:"9.3", title:"Particle accelerators and detectors",
+    sym:[["e","Elementary charge (1.60 &times; 10<sup>&minus;19</sup>)","C"],["B","Magnetic flux density","T"],["p","Momentum of the particle","kg m s<sup>&minus;1</sup>"],["r","Radius of the circular path","m"]],
+    qs:[ O9[3].qs[0], O9[3].qs[1],
+      Qz("C2","Why are very high energies needed to investigate the structure inside a nucleon?","High-energy particles have a de Broglie wavelength short enough to be comparable with the size of a nucleon",
+        [["High-energy particles are attracted to the nucleus more strongly","The attraction does not grow with energy in this way."],["High energies split the nucleon into protons and electrons","Nucleons are made of quarks, not protons and electrons."],["High energies slow the nucleon down so that it can be seen","The fast particles are used as probes. Their energy gives them a short wavelength."]],
+        "&lambda; = h/p: a large momentum gives a wavelength of about 10<sup>&minus;15</sup> m, the size of a nucleon."),
+      Qz("C2","In a linear accelerator, why do the drift tubes get longer along the accelerator?","The particle speeds up, so longer tubes keep the time spent in each tube the same as the voltage keeps switching at a fixed frequency",
+        [["Longer tubes give a stronger electric field inside them","There is no field inside the hollow tubes."],["The particle slows down in each tube, so it needs more room","Inside the tubes it moves at constant speed."],["Longer tubes bend the particle into a circle","A linac is straight. Bending needs a magnetic field."]],
+        "The alternating voltage has a fixed frequency, so each tube must take the same time to cross, even as the particle gets faster."),
+      Qz("C2","A positive and a negative particle move at the same speed through a detector in a magnetic field. Their tracks","curve in opposite directions",
+        [["curve in the same direction","The magnetic force depends on the sign of the charge."],["are both straight","A charge moving across a magnetic field is deflected."],["stop immediately","They curve, and only slow down gradually as they ionise the material."]],
+        "F = qvB: reversing the sign of q reverses the force.") ] },
+  { sub:"9.4", title:"Fundamental particles",
+    sym:[["u, d","Up quark (+&#8532;e) and down quark (&#8722;&#8531;e)","&mdash;"],["&#957;","Neutrino","&mdash;"],["e<sup>+</sup>","Positron (antielectron)","&mdash;"],["p, n","Proton (uud) and neutron (udd)","&mdash;"]],
+    qs:[ O9[3].qs[2], O9[3].qs[3], O9[3].qs[4],
+      Qz("C1","A meson is made of","one quark and one antiquark",[["three quarks","That is a baryon."],["two leptons","Mesons are hadrons, so they are made of quarks."],["one quark and one lepton","A meson is a quark paired with an antiquark."]],
+        "Hadrons are baryons (three quarks) and mesons (a quark and an antiquark).") ] }
+];
+THEORY[9] = C9;
+
+/* figures */
+const f9_be = S(360, 220, (() => { let o = AXES(50,190,290,170,"A","E<tspan font-size='9'>B</tspan>/A");
+  const pts=[[1,0],[2,1.1],[3,2.6],[4,7.1],[6,5.3],[8,6],[12,7.7],[16,8],[20,8.03],[30,8.5],[40,8.6],[56,8.8],[80,8.7],[100,8.6],[140,8.3],[180,8],[220,7.7],[238,7.6]];
+  const X=a=>50+a/240*280, Y=e=>190-e/9.5*160;
+  o += P("M"+pts.map(([a,e])=>`${X(a).toFixed(1)},${Y(e).toFixed(1)}`).join(" L"),BLU,2.2);
+  o += DOT(X(56),Y(8.8)) + T(X(56),Y(8.8)-10,"Fe-56 (most stable)",{s:11,b:1}) + DOT(X(4),Y(7.1)) + T(X(4)+8,Y(7.1)-6,"He-4",{s:10.5,a:"start"});
+  o += A(X(10),Y(4.5),X(35),Y(6.6),FLD,2) + T(X(5),Y(4.2),"fusion",{s:11.5,c:FLD,b:1,a:"start"}) + A(X(230),Y(6.6),X(150),Y(7.2),RED,2) + T(X(210),Y(6.2),"fission",{s:11.5,c:RED,b:1});
+  o += T(30,Y(8.8)+4,"8.8",{s:10.5,a:"end",c:MUT}) + L(50,Y(8.8),X(56),Y(8.8),MUT,1,"3 3") + T(195,214,"nucleon number A",{s:11,c:MUT});
+  return o; })());
+const f9_defect = S(360, 150, (() => { let o = "";
+  const nuc=(x,y,c)=>`<circle cx="${x}" cy="${y}" r="9" fill="${c}" stroke="#fff"/>`;
+  o += nuc(60,60,RED)+nuc(76,60,BLU)+nuc(60,76,BLU)+nuc(76,76,RED) + T(68,108,"nucleus",{s:12}) + T(68,124,"smaller mass",{s:11,c:MUT});
+  o += A(110,68,200,68,INK,1.8) + T(155,58,"add energy E<tspan font-size='9'>B</tspan>",{s:11.5}) + A(200,84,110,84,MUT,1.4) + T(155,100,"releases E<tspan font-size='9'>B</tspan>",{s:11,c:MUT});
+  o += nuc(230,50,RED)+nuc(300,40,RED)+nuc(260,90,BLU)+nuc(320,85,BLU) + T(275,124,"separate nucleons",{s:12}) + T(275,140,"larger total mass",{s:11,c:MUT});
+  return o; })());
+const f9_pen = S(360, 170, (() => { let o = "";
+  o += `<rect x="110" y="20" width="6" height="130" fill="#f2e6c9" stroke="${MUT}"/><rect x="190" y="20" width="12" height="130" fill="#c3cad3" stroke="${MUT}"/><rect x="270" y="20" width="26" height="130" fill="#7f8c8d" stroke="${MUT}"/>`;
+  o += T(113,166,"paper",{s:11}) + T(196,166,"aluminium",{s:11}) + T(283,166,"lead",{s:11});
+  o += A(20,45,106,45,RED,2.4) + T(14,49,"&#945;",{s:15,b:1,c:RED,a:"end"});
+  o += A(20,85,186,85,BLU,2) + T(14,89,"&#946;",{s:15,b:1,c:BLU,a:"end"});
+  o += A(20,125,266,125,FLD,1.6) + A(296,125,340,125,FLD,1) + T(14,129,"&#947;",{s:15,b:1,c:FLD,a:"end"}) + T(320,116,"reduced",{s:10,c:MUT});
+  return o; })());
+const f9_decay = S(360, 210, (() => { let o = AXES(50,180,290,160,"t","") + T(62,24,"N",{s:12,i:1,a:"start"});
+  let d=""; for(let i=0;i<=60;i++){ const t=i/60*4.2; d += (i?" L":"M")+`${(50+t*64).toFixed(1)},${(180-150*Math.pow(0.5,t)).toFixed(1)}`; } o += P(d,BLU,2.2);
+  [[1,"N&#8320;/2"],[2,"N&#8320;/4"],[3,"N&#8320;/8"]].forEach(([k,lab]) => { const x=50+k*64, y=180-150*Math.pow(0.5,k); o += L(50,y,x,y,MUT,1,"3 3") + L(x,y,x,180,MUT,1,"3 3") + T(46,y+4,lab,{s:10.5,a:"end",c:MUT}) + T(x,196,`${k}T&#189;`,{s:11,c:MUT}); });
+  o += T(46,34,"N&#8320;",{s:11,a:"end"});
+  return o; })());
+const f9_linac = S(360, 150, (() => { let o = L(20,70,340,70,MUT,1,"3 3");
+  [[40,30],[90,40],[150,52],[225,66]].forEach(([x,w],i) => o += `<rect x="${x}" y="58" width="${w}" height="24" rx="3" fill="${i%2?"#c9d6e8":"#f4d0cb"}" stroke="${INK}"/>` + T(x+w/2,98,i%2?"&#8722;":"+",{s:13,b:1,c:i%2?BLU:RED}));
+  o += Q(26,70,"+",6) + A(300,70,340,70,RED,2) + `<circle cx="180" cy="128" r="11" fill="#fff" stroke="${INK}"/>` + P("M172,128 q4,-7 8,0 t8,0",INK,1.4) + T(200,132,"alternating voltage",{s:11,c:MUT,a:"start"});
+  return o + T(180,22,"tubes get longer as the particle speeds up",{s:11.5,c:MUT}); })());
+const f9_cyc = S(360, 220, (() => { let o = "";
+  o += `<path d="M175,30 A80,80 0 0 0 175,190 Z" fill="#f4d0cb" stroke="${INK}" stroke-width="1.6"/><path d="M195,30 A80,80 0 0 1 195,190 Z" fill="#c9d6e8" stroke="${INK}" stroke-width="1.6"/>`;
+  o += T(130,114,"D&#8321;",{s:13,b:1}) + T(240,114,"D&#8322;",{s:13,b:1});
+  o += P("M185,110 A8,8 0 0 1 185,126 L183,126 A14,14 0 0 1 183,98 L187,98 A22,22 0 0 1 187,142 L183,142 A30,30 0 0 1 183,82 L187,82 A38,38 0 0 1 187,158 L183,158 A46,46 0 0 1 183,64 L187,64 A54,54 0 0 1 187,172",RED,1.6);
+  o += A(187,172,240,172,RED,2) + T(250,176,"beam out",{s:11,c:RED,a:"start"}) + T(185,212,"&#8857; B out of page (bends the path)   E across the gap (speeds it up)",{s:10.5,c:MUT});
+  return o; })());
+const f9_tracks = S(320, 170, (() => { let o = ""; for(let x=30;x<=290;x+=40) for(let y=25;y<=145;y+=40) o += `<circle cx="${x}" cy="${y}" r="4" fill="none" stroke="#9aa3b2"/><circle cx="${x}" cy="${y}" r="1.2" fill="#9aa3b2"/>`;
+  o += P("M20,85 Q140,85 210,30",RED,2.2) + T(214,28,"+",{s:15,b:1,c:RED,a:"start"}) + P("M20,85 Q140,85 210,140",BLU,2.2) + T(214,148,"&#8722;",{s:15,b:1,c:BLU,a:"start"}) + P("M20,85 Q200,85 300,70",INK,1.6) + T(310,104,"high momentum: less curved",{s:10,c:MUT,a:"end"});
+  return o; })());
+const f9_tree = S(360, 230, (() => { const box=(x,y,w,t,c)=>`<rect x="${x-w/2}" y="${y-13}" width="${w}" height="26" rx="6" fill="#fff" stroke="${c}" stroke-width="1.6"/>` + T(x,y+4,t,{s:11.5,b:1,c});
+  let o = box(180,20,150,"Particles",INK) + L(180,33,90,62) + L(180,33,280,62);
+  o += box(90,75,110,"Fermions",INK) + box(280,75,150,"Bosons (force carriers)",INK) + L(90,88,50,118) + L(90,88,140,118);
+  o += box(50,130,80,"Quarks",RED) + box(140,130,80,"Leptons",BLU) + T(140,160,"e, &#956;, &#964;, 3 neutrinos",{s:10,c:BLU}) + T(280,104,"photon, W, Z, gluon",{s:10,c:MUT});
+  o += L(50,143,50,176) + box(50,188,80,"Hadrons",RED) + L(50,201,36,214) + L(50,201,110,214) + T(6,226,"baryons qqq",{s:10,c:RED,a:"start"}) + T(130,226,"mesons q q&#773;",{s:10,c:RED});
+  o += T(50,160,"u d s c t b",{s:10,c:RED});
+  return o; })());
+
+C9[0].html = `
+<p>A nucleus is made of protons and neutrons, together called <b>nucleons</b>. A nucleus is written <b><sup>A</sup><sub>Z</sub>X</b>, where A is the <b>nucleon number</b> (protons + neutrons) and Z is the <b>proton number</b>. The number of neutrons is N = A &minus; Z.</p>
+<h4>Units for tiny masses and energies</h4>
+<ul><li>The <b>atomic mass unit</b>: 1 u is exactly 1/12 of the mass of a carbon-12 atom. 1 u = 1.66 &times; 10<sup>&minus;27</sup> kg.</li>
+<li>The <b>electron-volt</b>: 1 eV is the kinetic energy gained by an electron accelerated through 1 V. 1 eV = 1.60 &times; 10<sup>&minus;19</sup> J, and 1 MeV = 10<sup>6</sup> eV.</li>
+<li>Using E = mc<sup>2</sup>, a mass of 1 u is equivalent to <b>931.5 MeV</b>.</li></ul>
+<h4>Mass defect</h4>
+<p>If you weigh a nucleus and then weigh all its protons and neutrons separately, the nucleus is always <b>lighter</b>. This difference is the <b>mass defect</b>.</p>
+${fig(f9_defect, "Figure 9.1: Pulling a nucleus apart needs energy, and the separate nucleons have more mass. Putting them together releases that energy, and mass is lost.")}
+${fx("\\Delta m=Zm_p+(A-Z)m_n-m_{\\text{nucleus}}||E_B=\\Delta m\\,c^2||1\\ \\text{u}=931.5\\ \\text{MeV}/c^2", "&Delta;m = Zm<sub>p</sub> + (A &minus; Z)m<sub>n</sub> &minus; m<sub>nucleus</sub> &nbsp;&nbsp; E<sub>B</sub> = &Delta;mc<sup>2</sup>")}
+<h4>Binding energy</h4>
+<p>The <b>binding energy</b> E<sub>B</sub> is the energy needed to separate a nucleus completely into its individual protons and neutrons. It is equal to the energy released when the nucleus is formed. The missing mass &Delta;m has become this energy, by E = mc<sup>2</sup>.</p>
+<h4>Binding energy per nucleon and stability</h4>
+<p>A big nucleus has a big binding energy just because it has many nucleons. To compare how tightly different nuclei are held together, divide by A: the <b>binding energy per nucleon</b>, E<sub>B</sub>/A. The <b>higher</b> it is, the <b>more stable</b> the nucleus.</p>
+${fig(f9_be, "Figure 9.2: Binding energy per nucleon against nucleon number. The curve peaks near iron-56. Moving towards the peak releases energy.")}
+<ul><li>The curve rises steeply for light nuclei, peaks at about <b>8.8 MeV per nucleon near iron-56</b>, then falls slowly for heavy nuclei.</li>
+<li>Nuclei near the peak (A around 50 to 60) are the most stable.</li>
+<li><b>Fusion:</b> very light nuclei can join to form a nucleus higher up the curve, releasing energy (as in the Sun).</li>
+<li><b>Fission:</b> very heavy nuclei, such as uranium-235, can split into two medium nuclei higher up the curve, releasing energy (as in nuclear power stations).</li></ul>
+${ex("helium-4", `<p>m<sub>p</sub> = 1.007276 u, m<sub>n</sub> = 1.008665 u, m(<sup>4</sup><sub>2</sub>He nucleus) = 4.001506 u.</p>
+<p>&Delta;m = 2(1.007276) + 2(1.008665) &minus; 4.001506 = <b>0.030376 u</b>.</p>
+<p>E<sub>B</sub> = 0.030376 &times; 931.5 = <b>28.3 MeV</b>. Per nucleon: 28.3/4 = <b>7.07 MeV</b>.</p>`)}
+${trap(`Using the mass of the whole atom (including electrons) with the masses of bare protons, or forgetting to multiply by 931.5 when the mass is in u.`)}`;
+
+C9[1].html = `
+<p>Some nuclei are unstable. They change into more stable nuclei by giving out radiation. This is <b>radioactive decay</b>. It is <b>spontaneous</b> (nothing triggers it) and <b>random</b> (you cannot predict when a particular nucleus will decay). Temperature and pressure have no effect on it.</p>
+<h4>Types of decay</h4>
+<table class="cmp"><tr><th>Decay</th><th>What is emitted</th><th>Change in A</th><th>Change in Z</th></tr>
+<tr><td>&alpha;</td><td>helium nucleus <sup>4</sup><sub>2</sub>He</td><td>&minus;4</td><td>&minus;2</td></tr>
+<tr><td>&beta;<sup>&minus;</sup></td><td>electron <sup>0</sup><sub>&minus;1</sub>e (and an antineutrino). A neutron becomes a proton.</td><td>0</td><td>+1</td></tr>
+<tr><td>&beta;<sup>+</sup></td><td>positron <sup>0</sup><sub>+1</sub>e (and a neutrino). A proton becomes a neutron.</td><td>0</td><td>&minus;1</td></tr>
+<tr><td>&gamma;</td><td>a high-energy photon from an excited nucleus</td><td>0</td><td>0</td></tr></table>
+<p>Examples: <sup>238</sup><sub>92</sub>U &rarr; <sup>234</sup><sub>90</sub>Th + <sup>4</sup><sub>2</sub>He (&alpha;). <sup>14</sup><sub>6</sub>C &rarr; <sup>14</sup><sub>7</sub>N + <sup>0</sup><sub>&minus;1</sub>e + antineutrino (&beta;<sup>&minus;</sup>). <sup>22</sup><sub>11</sub>Na &rarr; <sup>22</sup><sub>10</sub>Ne + <sup>0</sup><sub>+1</sub>e + neutrino (&beta;<sup>+</sup>). In every equation, <b>A and Z are both conserved</b>: the totals on each side match.</p>
+${fig(f9_pen, "Figure 9.3: Penetrating power. &#945; is stopped by paper, &#946; by a few mm of aluminium, and &#947; is only reduced by thick lead.")}
+<p>&alpha; particles are the most ionising and least penetrating. &gamma; rays are the least ionising and most penetrating.</p>
+<h4>The decay law</h4>
+<p>The rate of decay is directly proportional to the number of undecayed nuclei present. More nuclei means more decays per second.</p>
+${fx("\\dfrac{dN}{dt}=-\\lambda N||N=N_0e^{-\\lambda t}||A=\\lambda N=A_0e^{-\\lambda t}", "dN/dt = &minus;&lambda;N &nbsp;&nbsp; N = N<sub>0</sub>e<sup>&minus;&lambda;t</sup> &nbsp;&nbsp; A = &lambda;N = A<sub>0</sub>e<sup>&minus;&lambda;t</sup>")}
+<ul><li>The <b>decay constant &lambda;</b> is the probability that a nucleus decays per unit time. Unit: s<sup>&minus;1</sup>. A bigger &lambda; means a faster decay.</li>
+<li>The <b>activity A</b> is the number of decays per second. Unit: the <b>becquerel</b>, 1 Bq = 1 decay per second.</li></ul>
+<h4>Half-life</h4>
+${fig(f9_decay, "Figure 9.4: Exponential decay. In every half-life, the number of undecayed nuclei halves.")}
+<p>The <b>half-life T<sub>&frac12;</sub></b> is the time taken for the number of undecayed nuclei (or the activity) to fall to <b>half</b> its initial value. Putting N = N<sub>0</sub>/2 into the decay law gives:</p>
+${fx("T_{1/2}=\\dfrac{\\ln2}{\\lambda}||N=N_0\\left(\\tfrac12\\right)^n", "T<sub>&frac12;</sub> = ln 2/&lambda; &nbsp;&nbsp; N = N<sub>0</sub>(&frac12;)<sup>n</sup>")}
+<p>After n half-lives, the fraction left is (&frac12;)<sup>n</sup>: a half, then a quarter, then an eighth.</p>
+${ex("iodine-131", `<p>Iodine-131 has a half-life of 8.0 days. A sample contains 2.0 &times; 10<sup>20</sup> nuclei.</p>
+<p>&lambda; = ln 2/(8.0 &times; 24 &times; 3600) = <b>1.0 &times; 10<sup>&minus;6</sup> s<sup>&minus;1</sup></b>. Activity: A = &lambda;N = <b>2.0 &times; 10<sup>14</sup> Bq</b>.</p>
+<p>After 24 days (3 half-lives), the activity is (&frac12;)<sup>3</sup> of this: <b>2.5 &times; 10<sup>13</sup> Bq</b>.</p>`)}
+${trap(`Using the half-life in days with &lambda; in s<sup>&minus;1</sup>. Keep the time units the same throughout.`)}`;
+
+C9[2].html = `
+<p>To look inside a nucleon, physicists smash particles into it at very high energy. Machines that give charged particles these energies are called <b>particle accelerators</b>.</p>
+<h4>Getting the particles: thermionic emission</h4>
+<p><b>Thermionic emission</b> is the release of electrons from the surface of a heated metal. The heat gives some electrons enough energy to escape. A hot filament is the usual source of electrons in accelerators, electron guns and electron microscopes.</p>
+<h4>The roles of the two fields</h4>
+<ul><li>An <b>electric field</b> does work on a charged particle (W = qV), so it <b>speeds the particle up</b>. A charge entering at an angle follows a parabola.</li>
+<li>A <b>magnetic field</b> exerts a force perpendicular to the velocity, so it <b>bends the path</b> into a circle without changing the speed (r = mv/qB). It does no work.</li>
+<li>With both fields together, a particle can follow a spiral (helical) path.</li></ul>
+<h4>Linear accelerator (linac)</h4>
+${fig(f9_linac, "Figure 9.5: A linac. The particle is accelerated across each gap. The tubes get longer so that it spends the same time inside each one.")}
+<ol><li>A row of hollow metal <b>drift tubes</b> is connected to an alternating voltage, so neighbouring tubes have opposite charges.</li>
+<li>The particle is attracted across the <b>gap</b> to the next tube, and speeds up.</li>
+<li>Inside a tube there is no electric field, so the particle coasts at constant speed while the voltage reverses.</li>
+<li>When it reaches the next gap, the polarity is right to accelerate it again. Its energy builds up in steps, without needing a huge voltage.</li>
+<li>Because the particle keeps getting faster but the voltage switches at a fixed frequency, each tube must be <b>longer</b> than the one before.</li></ol>
+<h4>Cyclotron</h4>
+${fig(f9_cyc, "Figure 9.6: A cyclotron. The magnetic field bends the particle round inside each dee, and the electric field across the gap speeds it up twice per revolution.")}
+<ol><li>Two hollow D-shaped electrodes (<b>dees</b>) sit between the poles of a strong magnet, with an alternating voltage across the gap between them.</li>
+<li>The <b>magnetic field</b> bends the particle into a semicircle inside each dee.</li>
+<li>Each time the particle crosses the gap, the voltage has reversed, so the <b>electric field</b> accelerates it again.</li>
+<li>As it speeds up, the radius r = mv/qB gets bigger, so the particle spirals outwards until it leaves the cyclotron.</li></ol>
+<h4>Detectors</h4>
+${fig(f9_tracks, "Figure 9.7: Tracks in a detector with a magnetic field. Opposite charges curve opposite ways, and faster (higher momentum) particles curve less.")}
+<ul><li>A charged particle moving through a detector <b>ionises</b> the material, leaving a visible or electrical track.</li>
+<li>Thicker tracks mean more ionisation and a slower particle.</li>
+<li>In a magnetic field, positive and negative particles curve in <b>opposite</b> directions. The amount of curvature gives the momentum: a straighter track means more momentum. As particles lose energy, they spiral inwards.</li></ul>
+<h4>Why such high energies?</h4>
+<p>A nucleus is about 10<sup>&minus;15</sup> to 10<sup>&minus;14</sup> m across (r = r<sub>0</sub>A<sup>1/3</sup>, with r<sub>0</sub> about 1.2 &times; 10<sup>&minus;15</sup> m). To see detail this small, the probing particles need a de Broglie wavelength &lambda; = h/p about this size or smaller. A short wavelength needs a <b>large momentum</b>, which means a <b>very high energy</b>.</p>
+${ex("energy needed to probe a nucleon", `<p>For &lambda; = 1.0 &times; 10<sup>&minus;15</sup> m: p = h/&lambda; = 6.63 &times; 10<sup>&minus;34</sup>/1.0 &times; 10<sup>&minus;15</sup> = 6.6 &times; 10<sup>&minus;19</sup> kg m s<sup>&minus;1</sup>.</p>
+<p>At these speeds, the energy is about pc = (6.6 &times; 10<sup>&minus;19</sup>)(3.0 &times; 10<sup>8</sup>) = 2.0 &times; 10<sup>&minus;10</sup> J, which is about <b>1.2 GeV</b>. Only large accelerators can reach this.</p>`)}
+${trap(`Saying the magnetic field speeds the particle up. The magnetic force is perpendicular to the motion, so it only changes the direction. The electric field does the accelerating.`)}`;
+
+C9[3].html = `
+<p>Are protons and neutrons the smallest pieces of matter? Experiments in accelerators showed they are not: they are made of even smaller particles. The <b>Standard Model</b> describes the particles that are truly fundamental (with no internal structure) and the forces between them.</p>
+${fig(f9_tree, "Figure 9.8: How particles are classified. Quarks and leptons are fundamental. Quarks combine to form hadrons.")}
+<h4>Quarks</h4>
+<ul><li>There are <b>six quarks</b>, in three pairs: up and down, charm and strange, top and bottom.</li>
+<li>Quarks have fractional charges: up (u) = +&#8532;e and down (d) = &minus;&#8531;e.</li>
+<li>Quarks are never found alone. They combine to form <b>hadrons</b>, particles that feel the strong force.</li></ul>
+<h4>Hadrons: baryons and mesons</h4>
+<table class="cmp"><tr><th>Type</th><th>Made of</th><th>Examples</th></tr>
+<tr><td><b>Baryons</b></td><td>three quarks</td><td>proton = uud, neutron = udd</td></tr>
+<tr><td><b>Mesons</b></td><td>one quark and one antiquark</td><td>pion &pi;<sup>+</sup> = u d&#773;</td></tr></table>
+<p>Check the charges: proton uud = +&#8532; + &#8532; &minus; &#8531; = <b>+1</b>. Neutron udd = +&#8532; &minus; &#8531; &minus; &#8531; = <b>0</b>.</p>
+<h4>Leptons</h4>
+<p>There are <b>six leptons</b>: the electron, the muon, the tau, and a neutrino for each of them. Leptons are fundamental (they contain no quarks), are light, and do <b>not</b> feel the strong force.</p>
+<h4>Force carriers (gauge bosons)</h4>
+<table class="cmp"><tr><th>Force</th><th>Carried by</th></tr>
+<tr><td>Electromagnetic</td><td>photon</td></tr><tr><td>Weak</td><td>W and Z bosons</td></tr><tr><td>Strong</td><td>gluon</td></tr><tr><td>Gravity</td><td>(not yet part of the Standard Model)</td></tr></table>
+<h4>Antiparticles</h4>
+<p>Every particle has an <b>antiparticle</b> with the <b>same mass</b> but <b>opposite charge</b> (and other opposite properties). The positron e<sup>+</sup> is the antiparticle of the electron. Quarks have antiquarks: the anti-up quark has charge &minus;&#8532;e. When a particle meets its antiparticle, they can annihilate and turn into energy (photons).</p>
+${trap(`Calling the proton a fundamental particle. It is a baryon made of three quarks. The electron is fundamental, because it is a lepton.`)}`;
+
 })();
 
 /* ---------- Cats (original line drawings) ---------- */
