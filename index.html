@@ -558,6 +558,231 @@ const CH5 = {
   ]
 };
 
+function ind(x, y, label){ let d=`M${x-24},${y}`; for(let i=0;i<4;i++) d+=` a6,7 0 0 1 12,0`; return `<rect x="${x-25}" y="${y-10}" width="50" height="12" fill="#fff"/><path d="${d}" fill="none" stroke="#1b2232" stroke-width="1.6"/>` + (label?`<text x="${x}" y="${y-14}" text-anchor="middle" font-size="12" fill="#1b2232">${label}</text>`:""); }
+function acsrc(x, y, label){ return `<circle cx="${x}" cy="${y}" r="13" fill="#fff" stroke="#1b2232" stroke-width="1.5"/><path d="M${x-7},${y} q3.5,-8 7,0 t7,0" fill="none" stroke="#1b2232" stroke-width="1.5"/><text x="${x}" y="${y+30}" text-anchor="middle" font-size="12" fill="#1b2232">${label}</text>`; }
+FIG.rcl6 = svg(360, 190, w(40,50,320,50)+w(40,50,40,140)+w(320,50,320,140)+w(40,140,320,140)
+  + res(90,50,"R = 40 &#937;")+ind(180,50,"L = 60 mH")+cap(270,50,"C = 8.0 &#956;F")+acsrc(180,140,"120 V rms, 500 Hz"));
+FIG.sine6 = (function(){ let d="M50,100"; for(let i=0;i<=200;i++){ const x=50+i*1.4, y=100-60*Math.sin(2*Math.PI*i/100); d+=` L${x.toFixed(1)},${y.toFixed(1)}`; }
+  return svg(372, 205, `<line x1="50" y1="20" x2="50" y2="180" stroke="#9aa3b2"/><line x1="50" y1="100" x2="340" y2="100" stroke="#9aa3b2"/>
+  <path d="${d}" fill="none" stroke="#2a6aa3" stroke-width="2.2"/>
+  <line x1="45" y1="40" x2="85" y2="40" stroke="#c9c5b9" stroke-dasharray="4 3"/><line x1="45" y1="160" x2="155" y2="160" stroke="#c9c5b9" stroke-dasharray="4 3"/>
+  <line x1="190" y1="100" x2="190" y2="182" stroke="#c9c5b9" stroke-dasharray="3 3"/><line x1="330" y1="100" x2="330" y2="182" stroke="#c9c5b9" stroke-dasharray="3 3"/>${lbl(30,44,"60")}${lbl(28,164,"&#8722;60")}${lbl(26,16,"I (mA)")}${lbl(352,104,"t (s)")}${lbl(190,196,"0.020")}${lbl(330,196,"0.040")}`); })();
+
+const CH6 = {
+  id: 6, title: "Alternating Current", open: true,
+  subtopics: [
+    { id:"6.1", name:"Alternating current and its equation",
+      note:`<p>An alternating current changes its magnitude and direction periodically. A sinusoidal AC is written with its peak value and angular frequency.</p>
+      <div class="formula" data-tex="I=I_0\\sin\\omega t||V=V_0\\sin\\omega t||\\omega=2\\pi f=\\dfrac{2\\pi}{T}">I = I<sub>0</sub> sin &omega;t &nbsp;&nbsp; V = V<sub>0</sub> sin &omega;t &nbsp;&nbsp; &omega; = 2&pi;f = 2&pi;/T</div>
+      <h4>Problem-solving steps</h4>
+      <ul><li>Read I<sub>0</sub> (or V<sub>0</sub>) and &omega; straight from the equation. Then f = &omega;/2&pi; and T = 1/f.</li>
+      <li>From a graph: peak from the highest point, T from one full cycle, then &omega; = 2&pi;/T.</li>
+      <li>For an instantaneous value, &omega;t is in <b>radians</b>: set your calculator to RAD.</li></ul>
+      <div class="trap"><b>Common trap:</b> calculating sin &omega;t in DEG mode, or giving &omega; as the frequency.</div>
+      <div class="ex"><b>Worked example.</b> V = 520 sin 100t.<br>&omega; = 100 rad s<sup>&minus;1</sup><br>f = &omega; / 2&pi;<br>f = 100 / 2&pi;<br>f = 15.9 Hz</div>` },
+    { id:"6.2", name:"Root mean square values",
+      note:`<p>The rms value is the steady DC value that gives the same average power in a resistor as the AC. Meters and mains ratings (240 V) are rms values.</p>
+      <div class="formula" data-tex="I_{\\text{rms}}=\\dfrac{I_0}{\\sqrt2}||V_{\\text{rms}}=\\dfrac{V_0}{\\sqrt2}">I<sub>rms</sub> = I<sub>0</sub>/&radic;2 &nbsp;&nbsp; V<sub>rms</sub> = V<sub>0</sub>/&radic;2</div>
+      <h4>Problem-solving steps</h4>
+      <ul><li>A rating such as "120 V" is rms. Use rms values in P = IV and V = IR.</li>
+      <li>Peak = rms &times; &radic;2.</li></ul>
+      <div class="ex"><b>Worked example.</b> V = 500 sin &omega;t across 250 &Omega;.<br>V<sub>rms</sub> = 500 / &radic;2<br>V<sub>rms</sub> = 354 V<br>I<sub>rms</sub> = 354 / 250<br>I<sub>rms</sub> = 1.41 A</div>` },
+    { id:"6.3", name:"Reactance, impedance, phase angle and resonance",
+      note:`<p>In a resistor V and I are in phase. In a capacitor the current leads the voltage by 90&deg;. In an inductor the voltage leads the current by 90&deg;. In a series circuit the same current flows through every component, and the voltages add as phasors.</p>
+      <div class="formula" data-tex="X_C=\\dfrac{1}{2\\pi fC}||X_L=2\\pi fL||Z=\\sqrt{R^2+\\left(X_L-X_C\\right)^2}||\\tan\\phi=\\dfrac{X_L-X_C}{R}||f_r=\\dfrac{1}{2\\pi\\sqrt{LC}}">X<sub>C</sub> = 1/(2&pi;fC) &nbsp;&nbsp; X<sub>L</sub> = 2&pi;fL &nbsp;&nbsp; Z = &radic;[R<sup>2</sup> + (X<sub>L</sub> &minus; X<sub>C</sub>)<sup>2</sup>] &nbsp;&nbsp; tan &phi; = (X<sub>L</sub> &minus; X<sub>C</sub>)/R &nbsp;&nbsp; f<sub>r</sub> = 1/(2&pi;&radic;LC)</div>
+      <h4>Problem-solving steps</h4>
+      <ul><li>Convert mH and &mu;F first. Find X<sub>L</sub> and X<sub>C</sub>, then Z, then I = V/Z.</li>
+      <li>From component voltages: V = &radic;[V<sub>R</sub><sup>2</sup> + (V<sub>L</sub> &minus; V<sub>C</sub>)<sup>2</sup>]. Do not add them.</li>
+      <li>X<sub>L</sub> &gt; X<sub>C</sub>: inductive, voltage leads current. X<sub>C</sub> &gt; X<sub>L</sub>: capacitive, current leads voltage.</li>
+      <li>Resonance: X<sub>L</sub> = X<sub>C</sub>, Z = R (minimum), current maximum, V and I in phase.</li></ul>
+      <div class="trap"><b>Common trap:</b> adding X<sub>L</sub> and X<sub>C</sub>, or using a peak current with an rms voltage.</div>
+      <div class="ex"><b>Worked example.</b> 2.0 &mu;F and 1000 &Omega; in series, 12 V, 50 Hz.<br>X<sub>C</sub> = 1 / (2&pi; &times; 50 &times; 2.0&times;10<sup>&minus;6</sup>)<br>X<sub>C</sub> = 1592 &Omega;<br>Z = &radic;(1000<sup>2</sup> + 1592<sup>2</sup>)<br>Z = 1880 &Omega;<br>I = 12 / 1880<br>I = 6.38&times;10<sup>&minus;3</sup> A</div>` },
+    { id:"6.4", name:"Power and power factor",
+      note:`<p>Only the resistor dissipates power. A pure capacitor or inductor takes energy in one quarter-cycle and returns it in the next, so its average power is zero.</p>
+      <div class="formula" data-tex="P_{\\text{av}}=I_{\\text{rms}}V_{\\text{rms}}\\cos\\phi=I_{\\text{rms}}^2R||\\cos\\phi=\\dfrac{R}{Z}=\\dfrac{V_R}{V}">P<sub>av</sub> = I<sub>rms</sub>V<sub>rms</sub> cos &phi; = I<sub>rms</sub><sup>2</sup>R &nbsp;&nbsp; cos &phi; = R/Z = V<sub>R</sub>/V</div>
+      <h4>Problem-solving steps</h4>
+      <ul><li>Power factor = R/Z. Average (real) power = I<sub>rms</sub><sup>2</sup>R, using R only, not Z.</li>
+      <li>I<sup>2</sup>Z or IV gives the apparent power, not the power used.</li></ul>
+      <div class="ex"><b>Worked example.</b> I<sub>rms</sub> = 2.0 A, R = 30 &Omega;, Z = 50 &Omega;.<br>cos &phi; = R / Z<br>cos &phi; = 30 / 50<br>cos &phi; = 0.60<br>P = I<sup>2</sup>R<br>P = (2.0)<sup>2</sup>(30)<br>P = 120 W</div>` }
+  ],
+
+  diagnostic: [
+    { stem:"The voltage across a 2.5 &Omega; resistor is V = 18 sin (5&pi;t), where V is in volts and t in seconds.", parts:[
+      { sub:"6.1", skill:"calc", type:"num", prompt:"Calculate the voltage at t = 0.040 s.", unit:"V", ans:10.58,
+        wrong:[[0.197,"Your calculator was in DEG mode. 5&pi;t is in radians."],[18,"That is the peak voltage. Substitute t = 0.040 s."]],
+        exp:"V = 18 sin (5&pi; &times; 0.040) = 18 sin (0.628 rad) = 18 &times; 0.588 = 10.6 V." },
+      { sub:"6.1", skill:"calc", type:"num", prompt:"Calculate the frequency of the supply.", unit:"Hz", ans:2.5,
+        wrong:[[15.7,"5&pi; = 15.7 is &omega;, the angular frequency. f = &omega;/2&pi;."],[5,"&omega; = 5&pi; and f = &omega;/2&pi; = 2.5 Hz."],[0.4,"That is the period, T = 1/f."]],
+        exp:"&omega; = 5&pi; rad s<sup>&minus;1</sup>. f = &omega;/2&pi; = 5&pi;/2&pi; = 2.5 Hz." },
+      { sub:"6.1", skill:"theory", type:"mcq", prompt:"Which equation gives the current in the resistor?",
+        opts:[ {t:"I = 7.2 sin (5&pi;t)", ok:true},
+               {t:"I = 7.2 sin (5&pi;t + &pi;/2)", mis:"In a pure resistor current and voltage are in phase. There is no phase shift."},
+               {t:"I = 45 sin (5&pi;t)", mis:"I<sub>0</sub> = V<sub>0</sub>/R = 18/2.5 = 7.2 A, not V<sub>0</sub> &times; R."} ],
+        exp:"I<sub>0</sub> = V<sub>0</sub>/R = 7.2 A and I is in phase with V, so I = 7.2 sin (5&pi;t)." } ]},
+
+    { stem:"The graph shows how the current from an AC generator varies with time.", fig:FIG.sine6, parts:[
+      { sub:"6.1", skill:"calc", type:"num", prompt:"Calculate the frequency of the current.", unit:"Hz", ans:50,
+        wrong:[[25,"One full cycle ends at 0.020 s, so T = 0.020 s."],[0.02,"That is the period. f = 1/T."]],
+        exp:"T = 0.020 s, so f = 1/T = 50 Hz." },
+      { sub:"6.1", skill:"theory", type:"mcq", prompt:"Which equation describes this current?",
+        opts:[ {t:"I = 0.060 sin (100&pi;t)", ok:true},
+               {t:"I = 60 sin (50t)", mis:"Use SI units (0.060 A) and &omega; = 2&pi;f = 100&pi;, not f."},
+               {t:"I = 0.042 sin (100&pi;t)", mis:"0.042 A is the rms value. The equation uses the peak, 0.060 A."} ],
+        exp:"I<sub>0</sub> = 60 mA = 0.060 A and &omega; = 2&pi;(50) = 100&pi; rad s<sup>&minus;1</sup>." } ]},
+
+    { stem:"An AC source V = 500 sin &omega;t is connected across a 250 &Omega; resistor.", parts:[
+      { sub:"6.2", skill:"calc", type:"num", prompt:"Calculate the rms current in the resistor.", unit:"A", ans:1.414,
+        wrong:[[2.0,"That is the peak current. I<sub>rms</sub> = I<sub>0</sub>/&radic;2."],[2.83,"You multiplied by &radic;2. Divide by &radic;2."]],
+        exp:"I<sub>0</sub> = 500/250 = 2.0 A. I<sub>rms</sub> = 2.0/&radic;2 = 1.41 A." },
+      { sub:"6.2", skill:"calc", type:"num", prompt:"Calculate the average power dissipated in the resistor.", unit:"W", ans:500,
+        wrong:[[1000,"You used the peak current. Average power = I<sub>rms</sub><sup>2</sup>R."],[354,"Square the current: P = I<sub>rms</sub><sup>2</sup>R."]],
+        exp:"P = I<sub>rms</sub><sup>2</sup>R = (1.414)<sup>2</sup>(250) = 500 W." },
+      { sub:"6.2", skill:"theory", type:"mcq", prompt:"The rms current is defined as",
+        opts:[ {t:"the steady direct current that dissipates the same average power in a resistor as the AC", ok:true},
+               {t:"the average value of the alternating current over one cycle", mis:"The average of a sinusoidal current over a cycle is zero. The rms value is defined through power."},
+               {t:"the maximum value of the current divided by 2", mis:"I<sub>rms</sub> = I<sub>0</sub>/&radic;2, and it is defined by equal power, not by halving."} ],
+        exp:"rms = the effective DC value: the same heating effect in a resistor." } ]},
+
+    { stem:"A lamp rated 30 W is connected to a 120 V AC supply.", parts:[
+      { sub:"6.2", skill:"calc", type:"num", prompt:"Calculate the peak current in the lamp.", unit:"A", ans:0.354,
+        wrong:[[0.25,"That is the rms current. Peak = rms &times; &radic;2."],[0.177,"You divided by &radic;2. Peak is larger than rms."]],
+        exp:"I<sub>rms</sub> = P/V = 30/120 = 0.25 A. I<sub>0</sub> = &radic;2 &times; 0.25 = 0.354 A." },
+      { sub:"6.2", skill:"calc", type:"num", prompt:"Calculate the resistance of the lamp.", unit:"&Omega;", ans:480,
+        wrong:[[679,"You mixed peak voltage with rms current. Use rms values for both."],[4.0,"R = V<sup>2</sup>/P, not V/P."]],
+        exp:"R = V<sub>rms</sub><sup>2</sup>/P = 120<sup>2</sup>/30 = 480 &Omega;." } ]},
+
+    { stem:"A capacitor carries an rms current of 21 mA when an rms voltage of 14 V at 60 Hz is across it.", parts:[
+      { sub:"6.3", skill:"calc", type:"num", prompt:"Calculate the capacitance.", unit:"F", ans:3.98e-6,
+        wrong:[[2.5e-5,"You left out 2&pi;. X<sub>C</sub> = 1/(2&pi;fC)."],[2.51e5,"You calculated 1/C. Rearrange X<sub>C</sub> = 1/(2&pi;fC) for C."]],
+        exp:"X<sub>C</sub> = V/I = 14/0.021 = 667 &Omega;. C = 1/(2&pi;fX<sub>C</sub>) = 1/(2&pi; &times; 60 &times; 667) = 3.98&times;10<sup>&minus;6</sup> F." },
+      { sub:"6.3", skill:"theory", type:"mcq", prompt:"The frequency is increased while the rms voltage stays at 14 V. What happens to the current?",
+        opts:[ {t:"It increases, because X<sub>C</sub> = 1/(2&pi;fC) decreases", ok:true},
+               {t:"It decreases, because the reactance increases with frequency", mis:"That is true for an inductor. A capacitor's reactance falls as f rises."},
+               {t:"It stays the same, because C is fixed", mis:"C is fixed but X<sub>C</sub> depends on f as well."} ],
+        exp:"X<sub>C</sub> &prop; 1/f, so a higher frequency gives a smaller reactance and a larger current." } ]},
+
+    { stem:"A resistor, inductor and capacitor are connected in series to an AC source, as shown.", fig:FIG.rcl6, parts:[
+      { sub:"6.3", skill:"calc", type:"num", prompt:"Calculate the impedance of the circuit.", unit:"&Omega;", ans:154,
+        wrong:[[232,"You added X<sub>L</sub> and X<sub>C</sub>. They act in opposite directions: use X<sub>L</sub> &minus; X<sub>C</sub>."],[268,"You added R, X<sub>L</sub> and X<sub>C</sub>. Impedance combines them with Pythagoras."],[193,"You left out X<sub>C</sub>."]],
+        exp:"X<sub>L</sub> = 2&pi;(500)(0.060) = 188.5 &Omega;. X<sub>C</sub> = 1/[2&pi;(500)(8.0&times;10<sup>&minus;6</sup>)] = 39.8 &Omega;. Z = &radic;[40<sup>2</sup> + (188.5 &minus; 39.8)<sup>2</sup>] = 154 &Omega;." },
+      { sub:"6.3", skill:"calc", type:"num", prompt:"Calculate the peak current.", unit:"A", ans:1.102,
+        wrong:[[0.779,"That is the rms current. Peak = rms &times; &radic;2."],[0.551,"You divided by &radic;2 again. 120 V is already rms."]],
+        exp:"I<sub>rms</sub> = 120/154 = 0.779 A. I<sub>0</sub> = &radic;2 &times; 0.779 = 1.10 A." },
+      { sub:"6.3", skill:"calc", type:"num", prompt:"Calculate the phase angle between the current and the supply voltage.", unit:"&deg;", ans:74.9,
+        wrong:[[15.1,"You used tan &phi; = R/(X<sub>L</sub> &minus; X<sub>C</sub>). It is (X<sub>L</sub> &minus; X<sub>C</sub>)/R."],[80.1,"You used X<sub>L</sub> + X<sub>C</sub>."]],
+        exp:"tan &phi; = (X<sub>L</sub> &minus; X<sub>C</sub>)/R = 148.7/40 = 3.72, so &phi; = 74.9&deg;." },
+      { sub:"6.3", skill:"theory", type:"mcq", prompt:"Which statement about the phase is correct?",
+        opts:[ {t:"The voltage leads the current, because X<sub>L</sub> &gt; X<sub>C</sub> and the circuit is inductive", ok:true},
+               {t:"The current leads the voltage, because there is a capacitor in the circuit", mis:"Both components are present. The larger reactance wins: here X<sub>L</sub> is larger."},
+               {t:"They are in phase, because the components are in series", mis:"V and I are in phase only at resonance, when X<sub>L</sub> = X<sub>C</sub>."} ],
+        exp:"X<sub>L</sub> &gt; X<sub>C</sub> gives a positive &phi;: the circuit is inductive and the supply voltage leads the current." },
+      { sub:"6.3", skill:"calc", type:"num", prompt:"Calculate the resonant frequency of this circuit.", unit:"Hz", ans:229.7,
+        wrong:[[1443,"That is &omega;. f<sub>r</sub> = 1/(2&pi;&radic;LC)."]],
+        exp:"f<sub>r</sub> = 1/(2&pi;&radic;LC) = 1/(2&pi;&radic;[(0.060)(8.0&times;10<sup>&minus;6</sup>)]) = 230 Hz." },
+      { sub:"6.4", skill:"calc", type:"num", prompt:"Calculate the power factor.", unit:"", ans:0.260,
+        wrong:[[0.966,"That is sin &phi; or X/Z. Power factor = cos &phi; = R/Z."],[3.85,"You inverted it. cos &phi; = R/Z, which is always 1 or less."]],
+        exp:"cos &phi; = R/Z = 40/154 = 0.260." },
+      { sub:"6.4", skill:"calc", type:"num", prompt:"Calculate the average power dissipated.", unit:"W", ans:24.3,
+        wrong:[[93.5,"That is the apparent power, I<sub>rms</sub>V<sub>rms</sub>. Multiply by cos &phi;, or use I<sup>2</sup>R."],[48.6,"You used the peak current. Use I<sub>rms</sub>."]],
+        exp:"P = I<sub>rms</sub><sup>2</sup>R = (0.779)<sup>2</sup>(40) = 24.3 W." } ]},
+
+    { stem:"In a series RC circuit the rms voltage across the resistor is 4.0 V and across the capacitor is 3.0 V. The current is I = 2.0 sin (100&pi;t).", parts:[
+      { sub:"6.3", skill:"calc", type:"num", prompt:"Calculate the rms voltage of the supply.", unit:"V", ans:5.0,
+        wrong:[[7.0,"You added the voltages. They are 90&deg; out of phase, so use Pythagoras."],[1.0,"Subtracting is only for V<sub>L</sub> and V<sub>C</sub>. V<sub>R</sub> and V<sub>C</sub> are at right angles."]],
+        exp:"V = &radic;(V<sub>R</sub><sup>2</sup> + V<sub>C</sub><sup>2</sup>) = &radic;(4.0<sup>2</sup> + 3.0<sup>2</sup>) = 5.0 V." },
+      { sub:"6.3", skill:"calc", type:"num", prompt:"Calculate the impedance of the circuit.", unit:"&Omega;", ans:3.54,
+        wrong:[[2.5,"You used the peak current 2.0 A with an rms voltage. I<sub>rms</sub> = 2.0/&radic;2 = 1.41 A."]],
+        exp:"I<sub>rms</sub> = 2.0/&radic;2 = 1.414 A. Z = V/I = 5.0/1.414 = 3.54 &Omega;." },
+      { sub:"6.3", skill:"calc", type:"num", prompt:"Calculate the capacitance.", unit:"F", ans:1.50e-3,
+        wrong:[[2.12e-3,"You used the peak current. X<sub>C</sub> = V<sub>C</sub>/I<sub>rms</sub> = 2.12 &Omega;."],[4.71e-3,"You used &omega; = 100. &omega; = 100&pi;."]],
+        exp:"X<sub>C</sub> = 3.0/1.414 = 2.12 &Omega;. &omega; = 100&pi;. C = 1/(&omega;X<sub>C</sub>) = 1/(100&pi; &times; 2.12) = 1.50&times;10<sup>&minus;3</sup> F." },
+      { sub:"6.4", skill:"calc", type:"num", prompt:"Calculate the power factor.", unit:"", ans:0.80,
+        wrong:[[0.60,"That is V<sub>C</sub>/V. Power factor = V<sub>R</sub>/V."],[1.33,"That is V<sub>R</sub>/V<sub>C</sub>. Use V<sub>R</sub>/V."]],
+        exp:"cos &phi; = V<sub>R</sub>/V = 4.0/5.0 = 0.80." } ]},
+
+    { stem:"In a series RCL circuit the rms voltages across the resistor, inductor and capacitor are 120 V, 200 V and 110 V.", parts:[
+      { sub:"6.3", skill:"calc", type:"num", prompt:"Calculate the rms supply voltage.", unit:"V", ans:150,
+        wrong:[[430,"You added all three. V = &radic;[V<sub>R</sub><sup>2</sup> + (V<sub>L</sub> &minus; V<sub>C</sub>)<sup>2</sup>]."],[210,"You added V<sub>R</sub> and (V<sub>L</sub> &minus; V<sub>C</sub>). Use Pythagoras."]],
+        exp:"V = &radic;[120<sup>2</sup> + (200 &minus; 110)<sup>2</sup>] = &radic;(14400 + 8100) = 150 V." },
+      { sub:"6.3", skill:"calc", type:"num", prompt:"Calculate the phase angle.", unit:"&deg;", ans:36.9,
+        wrong:[[53.1,"You used tan &phi; = V<sub>R</sub>/(V<sub>L</sub> &minus; V<sub>C</sub>). It is (V<sub>L</sub> &minus; V<sub>C</sub>)/V<sub>R</sub>."]],
+        exp:"tan &phi; = (200 &minus; 110)/120 = 0.75, &phi; = 36.9&deg;. The voltage leads the current." } ]},
+
+    { stem:"A coil of inductance 0.15 H and resistance 12 &Omega; is connected to a 230 V, 25 Hz supply.", parts:[
+      { sub:"6.3", skill:"calc", type:"num", prompt:"Calculate the rms current in the coil.", unit:"A", ans:8.70,
+        wrong:[[19.2,"You ignored the inductive reactance. The coil's impedance is &radic;(R<sup>2</sup> + X<sub>L</sub><sup>2</sup>)."],[9.76,"You used X<sub>L</sub> only. Include R in Z."],[6.47,"You added R and X<sub>L</sub>. Use Pythagoras."]],
+        exp:"X<sub>L</sub> = 2&pi;(25)(0.15) = 23.6 &Omega;. Z = &radic;(12<sup>2</sup> + 23.6<sup>2</sup>) = 26.4 &Omega;. I = 230/26.4 = 8.70 A." },
+      { sub:"6.4", skill:"calc", type:"num", prompt:"Calculate the power factor.", unit:"", ans:0.454,
+        wrong:[[0.891,"That is X<sub>L</sub>/Z. Power factor = R/Z."],[0.509,"That is R/X<sub>L</sub>. Use R/Z."]],
+        exp:"cos &phi; = R/Z = 12/26.4 = 0.454." },
+      { sub:"6.4", skill:"calc", type:"num", prompt:"Calculate the average power used by the coil.", unit:"W", ans:908,
+        wrong:[[2000,"You used I<sup>2</sup>Z, the apparent power. Only R dissipates power."],[1816,"You used the peak current."]],
+        exp:"P = I<sup>2</sup>R = (8.70)<sup>2</sup>(12) = 908 W." },
+      { sub:"6.3", skill:"calc", type:"num", prompt:"What capacitance must be added in series so that the current is in phase with the supply voltage?", unit:"F", ans:2.70e-4,
+        wrong:[[1.70e-3,"You used &omega; = f. &omega; = 2&pi;f = 50&pi;."],[0.150,"You used X<sub>C</sub> = 2&pi;fC. It is 1/(2&pi;fC)."]],
+        exp:"In phase means resonance: X<sub>C</sub> = X<sub>L</sub> = 23.6 &Omega;. C = 1/(2&pi;fX<sub>C</sub>) = 1/(2&pi; &times; 25 &times; 23.6) = 2.70&times;10<sup>&minus;4</sup> F." },
+      { sub:"6.4", skill:"theory", type:"mcq", prompt:"Why is the average power taken by a pure inductor zero?",
+        opts:[ {t:"It stores energy in one quarter-cycle and returns it to the source in the next", ok:true},
+               {t:"No current flows through a pure inductor in an AC circuit", mis:"Current does flow: I = V/X<sub>L</sub>. It is 90&deg; out of phase with V."},
+               {t:"Its reactance is infinite", mis:"X<sub>L</sub> = 2&pi;fL is finite for any finite frequency."} ],
+        exp:"With V and I 90&deg; apart, P = IV is positive half the time and negative half the time, averaging to zero." } ]},
+
+    { stem:"The graphs of R, X<sub>L</sub> and X<sub>C</sub> against frequency f are compared.", parts:[
+      { sub:"6.3", skill:"theory", type:"mcq", prompt:"Which description of X<sub>C</sub> against f is correct?",
+        opts:[ {t:"A curve that falls as f increases, because X<sub>C</sub> &prop; 1/f", ok:true},
+               {t:"A straight line through the origin", mis:"That is X<sub>L</sub> = 2&pi;fL, which is proportional to f."},
+               {t:"A horizontal line", mis:"That is R, which does not depend on frequency."} ],
+        exp:"X<sub>C</sub> = 1/(2&pi;fC) is inversely proportional to f: very large at low f and small at high f." } ]}
+  ],
+
+  practice: [
+    { stem:"An AC source is given by V = 10 sin (4&pi;t).", parts:[
+      { sub:"6.1", skill:"calc", type:"num", prompt:"Calculate the period.", unit:"s", ans:0.5,
+        wrong:[[2,"That is the frequency. T = 1/f."],[0.0796,"You used T = 1/&omega;. T = 2&pi;/&omega;."]],
+        exp:"&omega; = 4&pi;, so f = 2.0 Hz and T = 1/f = 0.50 s." } ]},
+    { stem:"A current is given by I = 1.5 sin (100&pi;t).", parts:[
+      { sub:"6.1", skill:"calc", type:"num", prompt:"Calculate the current at t = 2.5 ms.", unit:"A", ans:1.06,
+        wrong:[[0.0206,"Your calculator was in DEG mode."],[1.5,"That is the peak. Substitute t = 0.0025 s."]],
+        exp:"I = 1.5 sin (100&pi; &times; 0.0025) = 1.5 sin (&pi;/4) = 1.06 A." },
+      { sub:"6.1", skill:"theory", type:"mcq", prompt:"Alternating current is defined as current that",
+        opts:[ {t:"changes its magnitude and direction periodically", ok:true}, {t:"changes its magnitude but always flows in one direction", mis:"That is a varying DC. AC reverses direction."}, {t:"flows in one direction with constant magnitude", mis:"That is steady DC."} ],
+        exp:"AC reverses direction periodically, and its size changes over each cycle." } ]},
+    { stem:"A 1.2 kW heater runs on a 240 V AC supply.", parts:[
+      { sub:"6.2", skill:"calc", type:"num", prompt:"Calculate the peak current.", unit:"A", ans:7.07,
+        wrong:[[5.0,"That is the rms current."],[3.54,"Peak = rms &times; &radic;2, not &divide;."]],
+        exp:"I<sub>rms</sub> = 1200/240 = 5.0 A. I<sub>0</sub> = 5.0&radic;2 = 7.07 A." } ]},
+    { stem:"An oscilloscope shows a sinusoidal voltage with a peak of 34 V.", parts:[
+      { sub:"6.2", skill:"calc", type:"num", prompt:"Calculate the rms voltage.", unit:"V", ans:24.0,
+        wrong:[[48.1,"Divide by &radic;2, do not multiply."],[17,"rms is V<sub>0</sub>/&radic;2, not V<sub>0</sub>/2."]],
+        exp:"V<sub>rms</sub> = 34/&radic;2 = 24.0 V." },
+      { sub:"6.2", skill:"theory", type:"mcq", prompt:"A 24 V DC supply and this AC supply are each connected to identical lamps. Which is true?",
+        opts:[ {t:"The lamps are equally bright", ok:true}, {t:"The AC lamp is brighter, because its peak is 34 V", mis:"Brightness depends on average power, which is set by the rms value."}, {t:"The DC lamp is brighter, because AC keeps reversing", mis:"The rms value is defined so that the heating is the same."} ],
+        exp:"An rms of 24 V gives the same average power as 24 V DC." } ]},
+    { stem:"A 0.290 mH inductor is connected to a 12.2 V rms supply at 1.00 kHz.", parts:[
+      { sub:"6.3", skill:"calc", type:"num", prompt:"Calculate the rms current.", unit:"A", ans:6.70,
+        wrong:[[42.1,"You used X<sub>L</sub> = fL. It is 2&pi;fL."],[9.47,"That is the peak current."]],
+        exp:"X<sub>L</sub> = 2&pi;(1000)(0.290&times;10<sup>&minus;3</sup>) = 1.82 &Omega;. I = 12.2/1.82 = 6.70 A." } ]},
+    { stem:"A 20 &mu;F capacitor and a 1.0 k&Omega; resistor are in series with a 13 V, 40 Hz supply.", parts:[
+      { sub:"6.3", skill:"calc", type:"num", prompt:"Calculate the current.", unit:"A", ans:1.275e-2,
+        wrong:[[1.08e-2,"You added R and X<sub>C</sub>. Use Pythagoras."]],
+        exp:"X<sub>C</sub> = 1/(2&pi; &times; 40 &times; 20&times;10<sup>&minus;6</sup>) = 199 &Omega;. Z = &radic;(1000<sup>2</sup> + 199<sup>2</sup>) = 1020 &Omega;. I = 13/1020 = 1.27&times;10<sup>&minus;2</sup> A." },
+      { sub:"6.3", skill:"theory", type:"mcq", prompt:"In this RC circuit,",
+        opts:[ {t:"the current leads the supply voltage", ok:true}, {t:"the voltage leads the current", mis:"That happens when the circuit is inductive."}, {t:"current and voltage are in phase", mis:"Only at resonance, or with R alone."} ],
+        exp:"A capacitive circuit has a negative phase angle: the current leads." } ]},
+    { stem:"An AC source of 240 V, 50 Hz is connected to a 0.10 H inductor and a 12 &Omega; resistor in series.", parts:[
+      { sub:"6.4", skill:"calc", type:"num", prompt:"Calculate the average power.", unit:"W", ans:611,
+        wrong:[[1713,"You used I<sup>2</sup>Z, the apparent power."],[4800,"You ignored X<sub>L</sub>."]],
+        exp:"X<sub>L</sub> = 31.4 &Omega;, Z = &radic;(12<sup>2</sup> + 31.4<sup>2</sup>) = 33.6 &Omega;, I = 7.14 A. P = I<sup>2</sup>R = (7.14)<sup>2</sup>(12) = 612 W." } ]},
+    { stem:"A series circuit has R = 30 &Omega; and impedance 50 &Omega;. The rms current is 2.0 A.", parts:[
+      { sub:"6.4", skill:"calc", type:"num", prompt:"Calculate the average power.", unit:"W", ans:120,
+        wrong:[[200,"That is I<sup>2</sup>Z, the apparent power."],[240,"You used the peak current, or forgot to use R."]],
+        exp:"P = I<sup>2</sup>R = (2.0)<sup>2</sup>(30) = 120 W." },
+      { sub:"6.4", skill:"theory", type:"mcq", prompt:"At resonance, the power factor of a series RCL circuit is",
+        opts:[ {t:"1", ok:true}, {t:"0", mis:"At resonance Z = R, so cos &phi; = R/Z = 1."}, {t:"0.5", mis:"&phi; = 0 at resonance, so cos &phi; = 1."} ],
+        exp:"At resonance X<sub>L</sub> = X<sub>C</sub>, Z = R and &phi; = 0, so cos &phi; = 1." } ]}
+  ]
+};
+
 const CH3 = {
   id: 3, title: "Electric Current and Direct-Current Circuits", open: true,
   subtopics: [
@@ -1199,7 +1424,7 @@ const CHAPTERS = [
 CH3,
 { id:4, title:"Magnetism", open:true, noDiag:true },
 CH5,
-{ id:6, title:"Alternating Current", open:true },
+CH6,
 { id:7, title:"Optics", open:true },
 { id:8, title:"Wave Properties of Particle", open:true },
 { id:9, title:"Nuclear and Particle Physics", open:true }
