@@ -855,7 +855,7 @@ const CHAPTERS = [
 
     { stem:"C<sub>1</sub> = 4.0 &mu;F and C<sub>2</sub> = 6.0 &mu;F are in series, and this pair is in parallel with C<sub>3</sub> = 5.0 &mu;F, across a 12 V supply.", fig:FIG.c2, parts:[
       { sub:"2.1", skill:"circuit", type:"num", prompt:"Calculate the effective capacitance.", unit:"&mu;F", ans:7.4,
-        wrong:[[15,"You added all three as if they were in parallel. C<sub>1</sub> and C<sub>2</sub> are in series, so combine them with 1/C first."],[1.62,"You put all three in series. C<sub>3</sub> is in parallel with the C<sub>1</sub>&ndash;C<sub>2</sub> branch."],[15.4,"You treated C<sub>1</sub> and C<sub>2</sub> as parallel. For series use 1/C<sub>eff</sub> = 1/C<sub>1</sub> + 1/C<sub>2</sub>."]],
+        wrong:[[15,"You added all three as if they were in parallel. C<sub>1</sub> and C<sub>2</sub> are in series, so combine them with 1/C first."],[1.62,"You put all three in series. C<sub>3</sub> is in parallel with the C<sub>1</sub>&ndash;C<sub>2</sub> branch."]],
         exp:"C<sub>12</sub> = (4.0&times;6.0)/(4.0+6.0) = 2.4 &mu;F. In parallel with C<sub>3</sub>: C<sub>eff</sub> = 2.4 + 5.0 = 7.4 &mu;F." },
       { sub:"2.1", skill:"circuit", type:"num", prompt:"Calculate the charge on C<sub>1</sub>.", unit:"C", ans:2.88e-5,
         wrong:[[4.8e-5,"You used Q = C<sub>1</sub> &times; 12 V. C<sub>1</sub> does not have the full 12 V across it, because it shares the branch with C<sub>2</sub>."],[8.88e-5,"That is the total charge. Only the C<sub>1</sub>&ndash;C<sub>2</sub> branch charge passes through C<sub>1</sub>."]],
@@ -1953,7 +1953,137 @@ function renderHome(){
 
 /* Diagnostic length follows tutorial hours in the planner (about 3 questions per hour).
    Chapter 2 has 4 tutorial hours, so three overlapping questions are left out (2.1 mixed network, 2.2 single-step tau, 2.3 connected-battery repeat). */
-CHAPTERS[1].diagnostic = CHAPTERS[1].diagnostic.filter((q,i) => ![2,4,8].includes(i));
+/* ---------- Exam-style additions (patterns from PYQ and pre-PSPM papers) ---------- */
+function meter(x, y, t){ return `<circle cx="${x}" cy="${y}" r="12" fill="#fff" stroke="#1b2232" stroke-width="1.5"/><text x="${x}" y="${y+5}" text-anchor="middle" font-size="12" font-weight="700">${t}</text>`; }
+function lbl(x, y, t, c){ return `<text x="${x}" y="${y}" text-anchor="middle" font-size="12" fill="${c||"#5b6476"}">${t}</text>`; }
+
+FIG.ang3 = svg(330, 230, `<line x1="50" y1="190" x2="290" y2="190" stroke="#9aa3b2"/><text x="296" y="194" font-size="12" fill="#5b6476">x</text>
+  <line x1="50" y1="190" x2="125" y2="60" stroke="#c9c5b9" stroke-dasharray="4 4"/><line x1="256" y1="190" x2="125" y2="60" stroke="#c9c5b9" stroke-dasharray="4 4"/>
+  <path d="M78,190 A28,28 0 0 0 64,166" fill="none" stroke="#5b6476"/><path d="M228,190 A28,28 0 0 1 236,170" fill="none" stroke="#5b6476"/>
+  ${lbl(92,182,"60&#176;")}${lbl(214,182,"45&#176;")}${lbl(66,118,"0.30 m")}${lbl(214,118,"0.37 m")}`
+  + chg(50,190,"+","Q&#8321; = +5.0 &#956;C",0,32) + chg(256,190,"&#8722;","Q&#8322; = &#8722;4.0 &#956;C",0,32) + chg(125,60,"+","Q&#8323; = +2.0 &#956;C",0,-20));
+
+FIG.cap4 = svg(360, 290, w(30,70,160,70)+w(300,70,330,70)+w(160,50,160,100)+w(300,50,300,100)+w(160,50,300,50)+w(160,100,300,100)
+  + w(30,70,30,245)+w(330,70,330,245)+w(30,180,330,180)+w(30,245,330,245)
+  + w(60,70,60,25)+w(120,70,120,25)+w(60,25,78,25)+w(102,25,120,25)+meter(90,25,"V")
+  + cap(90,70,"") + lbl(90,104,"C&#8321; = 6.0 &#956;F","#1b2232")
+  + cap(230,50,"C&#8322; = 2.0 &#956;F")+cap(230,100,"")+lbl(230,132,"C&#8323; = 4.0 &#956;F","#1b2232")
+  + cap(180,180,"C&#8324; = 3.0 &#956;F")+bat(180,245,"20 V"));
+
+FIG.rc2 = svg(340, 175, w(40,40,300,40)+w(300,40,300,140)+w(40,140,300,140)+w(40,40,40,75)+w(40,105,40,140)
+  + `<line x1="40" y1="105" x2="58" y2="80" stroke="#1b2232" stroke-width="1.5"/><circle cx="40" cy="105" r="3" fill="#1b2232"/><circle cx="40" cy="75" r="3" fill="#1b2232"/>${lbl(24,94,"S","#1b2232")}`
+  + cap(130,40,"C&#8321; = 60 &#956;F")+cap(220,40,"C&#8322; = 30 &#956;F")+res(170,140,"R = 5.0 k&#937;",true));
+
+FIG.amm3 = svg(360, 220, w(30,70,190,70)+w(190,40,190,100)+w(320,40,320,100)+w(190,40,320,40)+w(190,100,320,100)+w(320,70,340,70)
+  + w(30,70,30,180)+w(340,70,340,180)+w(30,180,340,180)
+  + res(80,70,"8.0 &#937;")+meter(145,70,"A")+meter(220,40,"A&#8321;")+res(280,40,"12 &#937;")+meter(220,100,"A&#8322;")+res(280,100,"24 &#937;",true)
+  + bat(185,180,"V"));
+
+FIG.vm3 = svg(360, 235, w(30,80,170,80)+w(170,50,170,110)+w(330,50,330,110)+w(170,50,330,50)+w(170,110,330,110)
+  + w(30,80,30,195)+w(330,80,330,195)+w(30,195,330,195)
+  + w(60,80,60,30)+w(120,80,120,30)+w(60,30,78,30)+w(102,30,120,30)+meter(90,30,"V")
+  + res(90,80,"R&#8321; = 10 &#937;",true)+res(230,50,"R&#8322; = 20 &#937;")+meter(295,50,"A")+res(215,110,"R&#8323; = 15 &#937;",true)+res(285,110,"R&#8324; = 15 &#937;",true)
+  + bat(180,195,"&#949;"));
+
+FIG.int3 = svg(340, 200, w(40,40,300,40)+w(40,40,40,150)+w(300,40,300,150)+w(40,150,300,150)
+  + res(120,40,"R&#8321; = 4.0 &#937;")+res(220,40,"R&#8322; = 8.0 &#937;")+bat(150,150,"")+res(205,150,"")
+  + `<rect x="128" y="126" width="110" height="48" fill="none" stroke="#9aa3b2" stroke-dasharray="4 3"/>` + lbl(183,192,"&#949; = 8.0 V, internal resistance r","#1b2232"));
+
+function addDiag(chId, afterSub, q){
+  const D = CHAPTERS.find(c => c.id === chId).diagnostic;
+  let at = D.length;
+  for(let i = D.length - 1; i >= 0; i--){ if(D[i].parts[0].sub <= afterSub){ at = i + 1; break; } }
+  D.splice(at, 0, q);
+}
+
+/* Chapter 1 */
+addDiag(1, "1.1", { stem:"Three point charges are arranged as shown. Q<sub>3</sub> is 0.30 m from Q<sub>1</sub> and 0.37 m from Q<sub>2</sub>. The lines Q<sub>1</sub>Q<sub>3</sub> and Q<sub>2</sub>Q<sub>3</sub> make angles of 60&deg; and 45&deg; with the x-axis.", fig:FIG.ang3, parts:[
+  { sub:"1.1", skill:"vector", type:"num", prompt:"Calculate the magnitude of the net electrostatic force on Q<sub>3</sub>.", unit:"N", ans:1.00,
+    wrong:[[1.53,"You added the two magnitudes. The forces are at an angle, so add their x- and y-components."],[1.24,"Check each direction. Q<sub>1</sub> repels Q<sub>3</sub> (along Q<sub>1</sub>&rarr;Q<sub>3</sub>, 60&deg; above +x) and Q<sub>2</sub> attracts Q<sub>3</sub> (toward Q<sub>2</sub>, 45&deg; below +x). Use cos for x and sin for y."]],
+    exp:"F<sub>13</sub> = k(5.0&times;10<sup>&minus;6</sup>)(2.0&times;10<sup>&minus;6</sup>)/(0.30)<sup>2</sup> = 1.00 N, repulsive, at 60&deg; above +x. F<sub>23</sub> = k(4.0&times;10<sup>&minus;6</sup>)(2.0&times;10<sup>&minus;6</sup>)/(0.37)<sup>2</sup> = 0.526 N, attractive, at 45&deg; below +x. F<sub>x</sub> = 1.00 cos 60&deg; + 0.526 cos 45&deg; = 0.872 N. F<sub>y</sub> = 1.00 sin 60&deg; &minus; 0.526 sin 45&deg; = 0.494 N. F = &radic;(0.872<sup>2</sup> + 0.494<sup>2</sup>) = 1.00 N." },
+  { sub:"1.1", skill:"vector", type:"num", prompt:"Calculate the angle the net force makes above the +x axis.", unit:"&deg;", ans:29.5,
+    wrong:[[60.5,"You calculated tan<sup>&minus;1</sup>(F<sub>x</sub>/F<sub>y</sub>). The angle from the x-axis is tan<sup>&minus;1</sup>(F<sub>y</sub>/F<sub>x</sub>)."]],
+    exp:"&theta; = tan<sup>&minus;1</sup>(F<sub>y</sub>/F<sub>x</sub>) = tan<sup>&minus;1</sup>(0.494/0.872) = 29.5&deg; above the +x axis." } ]});
+
+addDiag(1, "1.3", { stem:"Look again at the right-angled triangle: q<sub>1</sub> = +4.0 &mu;C is 0.30 m from P and q<sub>2</sub> = &minus;6.0 &mu;C is 0.40 m from P.", fig:FIG.triangle, parts:[
+  { sub:"1.3", skill:"calc", type:"num", prompt:"Calculate the electric potential at P. Include the sign.", unit:"V", ans:-1.5e4,
+    wrong:[[2.55e5,"You ignored the sign of q<sub>2</sub>. Potential keeps the sign of each charge."],[1.5e4,"Check the sign: the negative charge contributes more."],[-9.4e4,"You used r<sup>2</sup>. Potential uses 1/r."]],
+    exp:"V = k(4.0&times;10<sup>&minus;6</sup>)/0.30 + k(&minus;6.0&times;10<sup>&minus;6</sup>)/0.40 = 1.20&times;10<sup>5</sup> &minus; 1.35&times;10<sup>5</sup> = &minus;1.5&times;10<sup>4</sup> V." },
+  { sub:"1.3", skill:"calc", type:"num", prompt:"Calculate the work needed to bring a +2.0 nC test charge from infinity to P. Include the sign.", unit:"J", ans:-3.0e-5,
+    wrong:[[3.0e-5,"V at P is negative, so W = qV is negative."],[-3.0e-14,"2.0 nC = 2.0&times;10<sup>&minus;9</sup> C."]],
+    exp:"V at infinity is zero, so W = q(V<sub>P</sub> &minus; 0) = (2.0&times;10<sup>&minus;9</sup>)(&minus;1.5&times;10<sup>4</sup>) = &minus;3.0&times;10<sup>&minus;5</sup> J." } ]});
+
+/* Chapter 2 */
+addDiag(2, "2.1", { stem:"Four capacitors are connected to a 20 V battery as shown. The voltmeter is connected across C<sub>1</sub>.", fig:FIG.cap4, parts:[
+  { sub:"2.1", skill:"circuit", type:"num", prompt:"Calculate the effective capacitance.", unit:"&mu;F", ans:6.0,
+    wrong:[[15,"You added all four. C<sub>1</sub> is in series with the C<sub>2</sub>&ndash;C<sub>3</sub> pair."],[4.0,"You missed C<sub>4</sub>, which is in parallel with the whole upper branch."],[5.0,"Check the upper branch: C<sub>2</sub> + C<sub>3</sub> = 6.0 &mu;F, then in series with C<sub>1</sub> = 6.0 &mu;F gives 3.0 &mu;F."]],
+    exp:"C<sub>2</sub> &#8741; C<sub>3</sub> = 2.0 + 4.0 = 6.0 &mu;F. In series with C<sub>1</sub>: (6.0&times;6.0)/(6.0+6.0) = 3.0 &mu;F. In parallel with C<sub>4</sub>: C<sub>eff</sub> = 3.0 + 3.0 = 6.0 &mu;F." },
+  { sub:"2.1", skill:"circuit", type:"num", prompt:"Calculate the voltmeter reading.", unit:"V", ans:10,
+    wrong:[[20,"The full 20 V is across the whole upper branch, which is shared between C<sub>1</sub> and the pair."],[3.33,"Series capacitors share the charge, not the voltage ratio of their capacitances. Q = 60 &mu;C on C<sub>1</sub>."]],
+    exp:"Upper branch: Q = (3.0&times;10<sup>&minus;6</sup>)(20) = 60 &mu;C. V<sub>1</sub> = Q/C<sub>1</sub> = 60/6.0 = 10 V." },
+  { sub:"2.1", skill:"circuit", type:"num", prompt:"Calculate the charge on C<sub>2</sub>.", unit:"C", ans:2.0e-5,
+    wrong:[[6.0e-5,"60 &mu;C is shared between C<sub>2</sub> and C<sub>3</sub>, which are in parallel."],[3.0e-5,"Parallel capacitors share charge in proportion to capacitance, not equally."],[4.0e-5,"That is the charge on C<sub>3</sub>."]],
+    exp:"The pair has 20 &minus; 10 = 10 V across it. Q<sub>2</sub> = C<sub>2</sub>V = (2.0&times;10<sup>&minus;6</sup>)(10) = 2.0&times;10<sup>&minus;5</sup> C." } ]});
+
+addDiag(2, "2.2", { stem:"Two fully charged capacitors are connected in series with a resistor and an open switch S, as shown.", fig:FIG.rc2, parts:[
+  { sub:"2.2", skill:"calc", type:"num", prompt:"Calculate the time constant when S is closed.", unit:"s", ans:0.10,
+    wrong:[[0.45,"You added the capacitances. Series capacitors combine as 1/C = 1/C<sub>1</sub> + 1/C<sub>2</sub>."],[100,"Convert: 20 &mu;F = 20&times;10<sup>&minus;6</sup> F and 5.0 k&Omega; = 5000 &Omega;."]],
+    exp:"C<sub>eff</sub> = (60&times;30)/(60+30) = 20 &mu;F. &tau; = RC = (5.0&times;10<sup>3</sup>)(20&times;10<sup>&minus;6</sup>) = 0.10 s." },
+  { sub:"2.2", skill:"calc", type:"num", prompt:"Calculate the time for the charge to fall to 25% of its initial value.", unit:"s", ans:0.139,
+    wrong:[[0.0288,"You used ln(1/0.75). The charge falls <b>to</b> 25%, so Q/Q<sub>0</sub> = 0.25."],[0.025,"You multiplied &tau; by 0.25. Use Q = Q<sub>0</sub>e<sup>&minus;t/&tau;</sup> and take ln."]],
+    exp:"0.25 = e<sup>&minus;t/0.10</sup>. t = 0.10 ln(1/0.25) = 0.10 &times; 1.386 = 0.139 s." } ]});
+
+addDiag(2, "2.2", { stem:"An uncharged 47 &mu;F capacitor is charged by a 9.0 V supply through a 3.0 k&Omega; resistor.", parts:[
+  { sub:"2.2", skill:"calc", type:"num", prompt:"Calculate the time taken for the capacitor to reach 90% of its maximum charge.", unit:"s", ans:0.325,
+    wrong:[[0.0149,"You used the discharging equation with 0.90. While charging, Q/Q<sub>0</sub> = 1 &minus; e<sup>&minus;t/&tau;</sup>, so e<sup>&minus;t/&tau;</sup> = 0.10."],[0.127,"That is 0.90&tau;. Solve 0.90 = 1 &minus; e<sup>&minus;t/&tau;</sup> with ln."],[0.141,"That is one time constant (63%). 90% takes longer."]],
+    exp:"&tau; = (3.0&times;10<sup>3</sup>)(47&times;10<sup>&minus;6</sup>) = 0.141 s. 0.90 = 1 &minus; e<sup>&minus;t/&tau;</sup>, so e<sup>&minus;t/&tau;</sup> = 0.10 and t = &tau; ln 10 = 0.325 s." },
+  { sub:"2.2", skill:"theory", type:"mcq", prompt:"How does the time to reach 90% change if the supply is increased to 18 V?",
+    opts:[ {t:"It stays the same, because &tau; = RC does not depend on the supply voltage", ok:true},
+           {t:"It halves, because the current is twice as large", mis:"The current doubles but so does the final charge. The fraction charged at any time depends only on t/RC."},
+           {t:"It doubles, because there is twice as much charge to store", mis:"The final charge doubles, but so does the charging current. The time depends only on RC."} ],
+    exp:"Q/Q<sub>0</sub> = 1 &minus; e<sup>&minus;t/RC</sup> contains no V, so the time to reach any percentage is fixed by R and C." } ]});
+
+/* Chapter 3 */
+(function(){
+  const D = CHAPTERS.find(c => c.id === 3).diagnostic;
+  const res = D.find(q => q.fig === FIG.ser3);
+  res.parts.push({ sub:"3.5", skill:"circuit", type:"num", prompt:"Calculate the potential difference across the 4.0 &Omega; resistor.", unit:"V", ans:8.0,
+    wrong:[[4.0,"That is the p.d. across the parallel pair. The 4.0 &Omega; carries the full 2.0 A."],[12,"The 12 V is shared between the 4.0 &Omega; and the parallel pair."]],
+    exp:"V = IR = (2.0)(4.0) = 8.0 V. Check: 8.0 + 4.0 = 12 V." });
+  const wire = D.find(q => q.parts[0].sub === "3.2" && /mm<sup>2<\/sup>/.test(q.stem));
+  wire.stem = "A wire 1.5 m long has a diameter of 0.50 mm. A potential difference of 1.2 V across it drives a current of 0.80 A.";
+  Object.assign(wire.parts[0], { ans:1.96e-7,
+    wrong:[[7.85e-7,"You used the diameter as the radius. r = 0.25 mm."],[0.196,"Convert 0.50 mm to 0.50&times;10<sup>&minus;3</sup> m before finding the area."],[8.73e-8,"You used R = I/V. R = V/I = 1.5 &Omega;."]],
+    exp:"R = V/I = 1.2/0.80 = 1.5 &Omega;. A = &pi;(0.25&times;10<sup>&minus;3</sup>)<sup>2</sup> = 1.96&times;10<sup>&minus;7</sup> m<sup>2</sup>. &rho; = RA/l = (1.5)(1.96&times;10<sup>&minus;7</sup>)/1.5 = 1.96&times;10<sup>&minus;7</sup> &Omega; m." });
+})();
+
+addDiag(3, "3.4", { stem:"A battery of emf 8.0 V and unknown internal resistance r is connected to R<sub>1</sub> = 4.0 &Omega; and R<sub>2</sub> = 8.0 &Omega; in series, as shown. The p.d. across R<sub>1</sub> is 2.5 V.", fig:FIG.int3, parts:[
+  { sub:"3.4", skill:"calc", type:"num", prompt:"Calculate the terminal voltage of the battery.", unit:"V", ans:7.5,
+    wrong:[[8.0,"The terminal voltage is less than the emf when current flows."],[5.0,"That is the p.d. across R<sub>2</sub> only. Add the p.d. across R<sub>1</sub>."],[2.5,"That is only the p.d. across R<sub>1</sub>."]],
+    exp:"I = 2.5/4.0 = 0.625 A. V = I(R<sub>1</sub> + R<sub>2</sub>) = (0.625)(12) = 7.5 V." },
+  { sub:"3.4", skill:"calc", type:"num", prompt:"Calculate the internal resistance r.", unit:"&Omega;", ans:0.8,
+    wrong:[[0.2,"You divided the lost volts by 2.5 A. The current is 0.625 A."],[12.8,"That is the total resistance, &epsilon;/I. Subtract the external 12 &Omega;."]],
+    exp:"Ir = &epsilon; &minus; V = 8.0 &minus; 7.5 = 0.50 V. r = 0.50/0.625 = 0.80 &Omega;." } ]});
+
+addDiag(3, "3.5", { stem:"In the circuit shown, the battery has negligible internal resistance. Ammeter A reads 0.60 A. The ammeters have negligible resistance.", fig:FIG.amm3, parts:[
+  { sub:"3.5", skill:"circuit", type:"num", prompt:"Calculate the effective resistance of the circuit.", unit:"&Omega;", ans:16,
+    wrong:[[44,"You added all three. The 12 &Omega; and 24 &Omega; are in parallel."],[26,"You added the 8.0 &Omega; to (12 + 24)/2. Use (12&times;24)/(12+24) = 8.0 &Omega; for the pair."]],
+    exp:"12 &#8741; 24 = (12&times;24)/(12+24) = 8.0 &Omega;. R<sub>eff</sub> = 8.0 + 8.0 = 16 &Omega;." },
+  { sub:"3.5", skill:"circuit", type:"num", prompt:"Calculate the potential difference across the 12 &Omega; resistor.", unit:"V", ans:4.8,
+    wrong:[[7.2,"You used the full 0.60 A through the 12 &Omega;. The current splits between the two branches."],[9.6,"That is the supply voltage. Part of it is across the 8.0 &Omega;."]],
+    exp:"The pair has R = 8.0 &Omega; and carries 0.60 A, so V = (0.60)(8.0) = 4.8 V across both 12 &Omega; and 24 &Omega;." },
+  { sub:"3.5", skill:"circuit", type:"num", prompt:"Calculate the reading of ammeter A<sub>2</sub>.", unit:"A", ans:0.20,
+    wrong:[[0.40,"That is A<sub>1</sub>. The larger resistance takes the smaller current."],[0.30,"The current does not split equally between unequal resistors."]],
+    exp:"I<sub>2</sub> = 4.8/24 = 0.20 A (and A<sub>1</sub> = 4.8/12 = 0.40 A; 0.20 + 0.40 = 0.60 A)." } ]});
+
+addDiag(3, "3.5", { stem:"In the circuit shown, the ammeter in series with R<sub>2</sub> reads 0.90 A. The battery has negligible internal resistance and the meters are ideal.", fig:FIG.vm3, parts:[
+  { sub:"3.5", skill:"circuit", type:"num", prompt:"Calculate the current in R<sub>4</sub>.", unit:"A", ans:0.60,
+    wrong:[[0.90,"R<sub>2</sub> and the R<sub>3</sub>&ndash;R<sub>4</sub> branch are in parallel. They have the same p.d., not the same current."],[1.2,"R<sub>3</sub> and R<sub>4</sub> are in series in one branch, so the branch resistance is 30 &Omega;."]],
+    exp:"P.d. across R<sub>2</sub> = (0.90)(20) = 18 V. The R<sub>3</sub>&ndash;R<sub>4</sub> branch has the same 18 V across 30 &Omega;, so I = 18/30 = 0.60 A." },
+  { sub:"3.5", skill:"circuit", type:"num", prompt:"Calculate the voltmeter reading.", unit:"V", ans:15,
+    wrong:[[9.0,"You used 0.90 A through R<sub>1</sub>. R<sub>1</sub> carries the total current, 0.90 + 0.60 = 1.5 A."],[18,"18 V is across the parallel section, not across R<sub>1</sub>."]],
+    exp:"Total current = 0.90 + 0.60 = 1.5 A, all through R<sub>1</sub>. V<sub>1</sub> = (1.5)(10) = 15 V." } ]});
+
 /* ---------- Richer lessons with figures ---------- */
 (function(){
 const INK="#1b2232", MUT="#5b6476", RED="#c0392b", BLU="#2a6aa3", FLD="#1d7448";
