@@ -113,6 +113,12 @@ summary{cursor:pointer;font-weight:600}
 .chap .acts .btn{display:flex;flex-direction:column;align-items:flex-start;text-align:left;line-height:1.25}
 .chap .acts .btn small{font-weight:500;font-size:12px;opacity:.8}
 .chapters{grid-template-columns:repeat(auto-fill,minmax(300px,1fr))}
+.symbox{margin:14px 0 4px}.symh{font-weight:600;font-size:14px;color:var(--brand2);margin-bottom:6px}
+table.sym,table.cmp{border-collapse:collapse;width:100%;font-size:14px;margin:8px 0}
+table.sym th,table.sym td,table.cmp th,table.cmp td{border:1px solid #dbe2ea;padding:6px 8px;text-align:left;vertical-align:top}
+table.sym th,table.cmp th{background:#f3f6fa;font-weight:600}
+table.sym td.s{font-family:"Cambria Math",Cambria,Georgia,serif;font-size:16px;white-space:nowrap}
+@media(max-width:560px){table.sym,table.cmp{font-size:13px}table.sym th,table.sym td,table.cmp th,table.cmp td{padding:5px}}
 </style>
 </head>
 <body>
@@ -528,13 +534,13 @@ const CHAPTERS = [
   ]
 },
 
-{ id:3, title:"Electric Current and DC Circuits", open:false },
-{ id:4, title:"Magnetism", open:false },
-{ id:5, title:"Electromagnetic Induction", open:false },
-{ id:6, title:"Geometrical Optics", open:false },
-{ id:7, title:"Physical Optics", open:false },
-{ id:8, title:"Quantum Physics", open:false },
-{ id:9, title:"Nuclear Physics", open:false }
+{ id:3, title:"Electric Current and Direct-Current Circuits", open:true },
+{ id:4, title:"Magnetism", open:true },
+{ id:5, title:"Electromagnetic Induction", open:true },
+{ id:6, title:"Alternating Current", open:true },
+{ id:7, title:"Optics", open:true },
+{ id:8, title:"Wave Properties of Particle", open:true },
+{ id:9, title:"Nuclear and Particle Physics", open:true }
 ];
 
 
@@ -718,6 +724,605 @@ const THEORY = {
 ]
 };
 
+/* ---------- helpers for writing theory questions ----------
+   Q(bloom, prompt, correct, wrongs, explanation)
+   wrongs: list of "text" or ["text", "why it's wrong"] */
+function Q(bloom, prompt, correct, wrongs, exp){
+  return { bloom, prompt, exp,
+    opts: [{t:correct, ok:true}].concat(wrongs.map(w => Array.isArray(w) ? {t:w[0], mis:w[1]} : {t:w})) };
+}
+
+/* ---------- Chapter 1 and 2: symbols and extra exam-style questions ---------- */
+(function(){
+  const t1 = THEORY[1], t2 = THEORY[2];
+  t1[0].sym = [["F","Electrostatic (Coulomb) force","N"],["q<sub>1</sub>, q<sub>2</sub>, Q","Point charges","C"],["r","Distance between the two charges","m"],
+    ["k","Coulomb's constant, 1/(4πε<sub>0</sub>)","N m<sup>2</sup> C<sup>−2</sup>"],["ε<sub>0</sub>","Permittivity of free space","C<sup>2</sup> N<sup>−1</sup> m<sup>−2</sup>"]];
+  t1[0].qs.push(Q("C2","Which statement about the electrostatic force between two point charges is CORRECT?",
+    "It acts along the straight line joining the two charges",
+    [["It is a scalar quantity","Force has a direction, so it is a vector."],["It is measured in joules","Force is measured in newtons. The joule is the unit of energy."],
+     ["It increases when the product of the charges decreases","F is directly proportional to q<sub>1</sub>q<sub>2</sub>, so a smaller product gives a smaller force."]],
+    "F = kq<sub>1</sub>q<sub>2</sub>/r<sup>2</sup> is a vector acting along the line joining the charges, measured in newtons."));
+  t1[1].sym = [["E","Electric field strength","N C<sup>−1</sup> (= V m<sup>−1</sup>)"],["q<sub>0</sub>","Small positive test charge","C"],["Q","Charge producing the field","C"]];
+  t1[1].qs.push(
+    Q("C2","Electric field lines always end on","a negative charge",
+      [["a positive charge","Field lines start on positive charges and end on negative charges."],["a point of zero potential","Field lines are not attracted to zero potential. They end on negative charges."],["the nearest metal plate","Only a negatively charged plate would receive them."]],
+      "Field lines show the direction a positive test charge would be pushed: away from + and towards −."),
+    Q("C2","Point P is directly above a small positively charged sphere. In which direction is the electric field at P?","Upwards, directly away from the sphere",
+      [["Downwards, towards the sphere","That would be the field of a negative charge."],["Horizontally to the right","The field of a point charge is radial, along the line from the charge to P."],["There is no field, because P is outside the sphere","A charged sphere produces a field in the space around it."]],
+      "The field of a positive charge points radially outward, so at P it points straight up, away from the sphere."));
+  t1[2].sym = [["V","Electric potential","V (= J C<sup>−1</sup>)"],["W","Work done by an external force","J"],["U","Electric potential energy","J"],["ΔV","Potential difference, V<sub>final</sub> − V<sub>initial</sub>","V"]];
+  t1[2].qs.push(
+    Q("C2","Points A and B lie on the same field line of a positive point charge +Q, with A closer to +Q. Which statement is CORRECT?","The potential at A is higher than the potential at B",
+      [["The potential at A equals the potential at B","A and B are at different distances, and V = kQ/r depends on r."],["The potential at A is lower than the potential at B","For a positive charge, V decreases with distance, so the nearer point has the higher potential."],["The potential is zero at both points","V = kQ/r is zero only at infinity."]],
+      "V = kQ/r: for +Q, a smaller r gives a larger V. Field lines also point from high to low potential."),
+    Q("C1","An equipotential surface is a surface on which every point has the same","electric potential",
+      [["electric potential energy","Different charges at the same point have different potential energies. It is the potential that is equal."],["electric field strength","The field strength can vary along an equipotential."],["electric charge","Equipotentials are about potential, not charge."]],
+      "Every point on an equipotential surface is at the same potential, so no work is done moving a charge along it."));
+  t1[3].sym = [["d","Separation between the parallel plates","m"],["a","Acceleration of the charge","m s<sup>−2</sup>"],["m","Mass of the particle","kg"],["e","Elementary charge, 1.60 × 10<sup>−19</sup>","C"]];
+  t1[3].qs.push(Q("C2","Plate A is positive and plate B is negative. What is the direction of the electric field between them?","From A to B",
+    [["From B to A","Field lines run from the positive plate to the negative plate."],["Into the page","The field between parallel plates is perpendicular to the plates, from + to −."],["There is no field between the plates","A potential difference across the plates creates a uniform field between them."]],
+    "E points from the positive plate to the negative plate."));
+
+  t2[0].sym = [["C","Capacitance","F (= C V<sup>−1</sup>)"],["Q","Charge on either plate","C"],["V","Potential difference across the plates","V"],["U","Energy stored in the capacitor","J"],["C<sub>eff</sub>","Effective capacitance of a combination","F"]];
+  t2[0].qs.push(Q("C1","Three capacitors C<sub>1</sub>, C<sub>2</sub> and C<sub>3</sub> are connected in parallel. Their effective capacitance is",
+    "C<sub>1</sub> + C<sub>2</sub> + C<sub>3</sub>",
+    [["(1/C<sub>1</sub> + 1/C<sub>2</sub> + 1/C<sub>3</sub>)<sup>−1</sup>","That is the series rule."],["(C<sub>1</sub> + C<sub>2</sub> + C<sub>3</sub>)/3","Capacitances in parallel add. They are not averaged."],["C<sub>1</sub>C<sub>2</sub>C<sub>3</sub>","Capacitances in parallel add. They are not multiplied."]],
+    "In parallel each capacitor has the same V, and the charges add, so C<sub>eff</sub> = C<sub>1</sub> + C<sub>2</sub> + C<sub>3</sub>."));
+  t2[1].sym = [["R","Resistance","Ω"],["τ","Time constant, RC","s"],["t","Time","s"],["Q<sub>0</sub>","Maximum (or initial) charge","C"],["I<sub>0</sub>","Initial (maximum) current","A"]];
+  t2[1].qs.push(
+    Q("C2","A capacitor is fully charged when","the potential difference across it equals the supply voltage",
+      [["the potential difference across it is half the supply voltage","It keeps charging until its voltage matches the supply."],["the current in the circuit is at its maximum","The current is largest at the start and zero when fully charged."],["the supply voltage drops to zero","The supply keeps its voltage. The capacitor's voltage rises to meet it."]],
+      "When V<sub>C</sub> = V<sub>0</sub>, there is no net voltage across R, so the current stops."),
+    Q("C2","The time a capacitor takes to charge or discharge depends on","the resistance and the capacitance",
+      [["the supply voltage and the resistance","τ = RC does not involve the voltage."],["the supply voltage and the capacitance","τ = RC does not involve the voltage."],["the current and the capacitance","τ = RC: it is R, not the current, that sets the rate."]],
+      "τ = RC, so only R and C decide how fast the capacitor charges or discharges."));
+  t2[2].sym = [["ε<sub>r</sub>","Dielectric constant (relative permittivity)","no unit"],["ε","Permittivity of the dielectric material","F m<sup>−1</sup>"],["ε<sub>0</sub>","Permittivity of free space, 8.85 × 10<sup>−12</sup>","F m<sup>−1</sup>"],
+    ["A","Area of overlap of the plates","m<sup>2</sup>"],["d","Separation of the plates","m"],["C<sub>0</sub>","Capacitance with air (vacuum) between the plates","F"]];
+  t2[2].qs.push(Q("C2","A charged capacitor is disconnected from its supply, and a dielectric is then slid between its plates. What happens to the electric field between the plates?",
+    "It becomes weaker, so fewer net field lines cross the gap",
+    [["It becomes stronger","The polarised dielectric sets up an opposing field, which reduces the net field."],["It stays the same","With Q fixed, the dielectric's opposing field reduces E (and V)."],["It becomes zero","The field is reduced by a factor of ε<sub>r</sub>, not cancelled completely."]],
+    "E = E<sub>0</sub> − E<sub>d</sub>: the induced field of the dipoles partly cancels the original field, so E and V both fall."));
+})();
+
+
+/* ---------- Chapter 3: Electric Current and Direct-Current Circuits ---------- */
+THEORY[3] = [
+  { sub:"3.1", title:"Electric current",
+    html:`<p><b>Microscopic model:</b> a metal contains free electrons that act as charge carriers. With no electric field, they move randomly in all directions, so there is no net flow. When a potential difference is applied, the field E pushes them (F = eE) so they drift slowly along the conductor, <b>opposite</b> to E, with a small average speed called the <b>drift velocity</b>, v<sub>d</sub>.</p>
+    <p><b>Electric current</b> is defined as the <b>rate of flow of charge</b>. It is a scalar with SI unit the ampere (A).</p>
+    <div class="formula">I = dQ/dt &nbsp;&nbsp; Q = ne</div>
+    <ul><li><b>1 ampere</b> is a flow of 1 coulomb of charge past a point in 1 second.</li>
+    <li>Current flows only while there is a potential difference.</li>
+    <li>Conventional current flows from + to −. Electrons flow the opposite way, from − to +.</li>
+    <li>Current is measured with an ammeter connected in series.</li></ul>`,
+    sym:[["I","Electric current","A"],["Q","Charge","C"],["t","Time","s"],["n","Number of electrons","no unit"],["e","Charge of one electron, 1.60 × 10<sup>−19</sup>","C"],["v<sub>d</sub>","Drift velocity of free electrons","m s<sup>−1</sup>"]],
+    qs:[
+      Q("C1","Electric current is defined as","the rate of flow of electric charge",
+        [["the total amount of charge in a conductor","Current is about how fast charge flows, not how much there is."],["the flow of electrons from the positive to the negative terminal","Electrons flow from − to +, and the definition is about rate of charge flow."],["the product of charge and time","I = Q/t, not Q × t."]],
+        "I = dQ/dt: current is the rate at which charge passes a point."),
+      Q("C2","In a metal wire with no potential difference across it, the free electrons","move randomly, so there is no net flow of charge",
+        [["are all at rest","Free electrons are always moving. Without a field, their motion is random."],["drift steadily towards one end","A steady drift needs an electric field."],["form a current that slowly dies away","With no field, the random motion gives no net current at all."]],
+        "Random thermal motion averages to zero net flow. A field adds the small drift velocity."),
+      Q("C2","How does the direction of conventional current compare with the direction of electron flow in a wire?","They are opposite",
+        [["They are the same","Electrons are negative, so they move opposite to conventional current."],["They are at right angles","Both are along the wire, in opposite directions."],["It depends on the material of the wire","In metals the charge carriers are always electrons, so it is always opposite."]],
+        "Conventional current is defined as the direction positive charge would flow, from + to −. Electrons go from − to +."),
+      Q("C1","One ampere is equivalent to","one coulomb per second",
+        [["one joule per coulomb","That is the volt."],["one coulomb per volt","That is the farad."],["one volt per ohm squared","I = V/R gives V Ω<sup>−1</sup>, not V Ω<sup>−2</sup>."]],
+        "1 A = 1 C s<sup>−1</sup>.") ] },
+
+  { sub:"3.2", title:"Ohm's law and resistivity",
+    html:`<p><b>Ohm's law:</b> the potential difference across a conductor is <b>directly proportional</b> to the current flowing through it, <b>provided its temperature and other physical conditions stay constant</b>.</p>
+    <div class="formula">V = IR &nbsp;&nbsp; R = ρl / A &nbsp;&nbsp; ρ = RA / l</div>
+    <ul><li><b>Resistance</b> is the ratio of the potential difference across a component to the current through it. Unit: ohm (Ω).</li>
+    <li>Conductors that obey Ohm's law are called <b>ohmic</b>. Their V–I graph is a straight line through the origin.</li>
+    <li>R is directly proportional to length l and inversely proportional to cross-sectional area A.</li>
+    <li><b>Resistivity</b> is the resistance of a sample of unit length and unit cross-sectional area. It measures how strongly a material opposes current. Unit: Ω m. It depends only on the <b>material</b> and its <b>temperature</b>, not on the shape of the wire.</li></ul>`,
+    sym:[["V","Potential difference across the conductor","V"],["R","Resistance","Ω"],["ρ","Resistivity of the material","Ω m"],["l","Length of the conductor","m"],["A","Cross-sectional area of the conductor","m<sup>2</sup>"]],
+    qs:[
+      Q("C1","Which statement of Ohm's law is CORRECT?","The potential difference across a metal conductor is directly proportional to the current through it, if its temperature stays constant",
+        [["The potential difference across a metal conductor is directly proportional to the current through it","The condition of constant temperature (physical conditions) is essential."],["The potential difference across a metal conductor is inversely proportional to the current through it, if its temperature stays constant","V ∝ I, not 1/I."],["The resistance of a metal conductor is proportional to the current through it","For an ohmic conductor R is constant."]],
+        "Ohm's law: V ∝ I at constant temperature and physical conditions."),
+      Q("C1","What is the SI unit of resistivity?","Ω m",[["Ω m<sup>−1</sup>","From ρ = RA/l: Ω × m<sup>2</sup> / m = Ω m."],["Ω<sup>−1</sup> m<sup>−1</sup>","That is the unit of conductivity, the inverse of resistivity."],["Ω<sup>−1</sup> m","Work it out from ρ = RA/l."]],"ρ = RA/l, so the unit is Ω m<sup>2</sup>/m = Ω m."),
+      Q("C2","Wires X and Y are made of the same metal with the same cross-sectional area. Y is twice as long as X. How does the resistance of Y compare with X?","Twice the resistance of X",
+        [["Half the resistance of X","R ∝ l, so a longer wire has more resistance."],["The same resistance, since the material is the same","Same material means the same resistivity, but R also depends on length."],["Four times the resistance of X","R is proportional to l, not l<sup>2</sup>."]],
+        "R = ρl/A: doubling l doubles R."),
+      Q("C2","What does the V–I graph of an ohmic conductor at constant temperature look like?","A straight line passing through the origin",
+        [["A curve that bends towards the V-axis","That is the shape for a filament lamp, whose temperature rises."],["A horizontal straight line","That would mean V stays fixed while I changes."],["A straight line that does not pass through the origin","V = IR gives V = 0 when I = 0."]],
+        "V ∝ I gives a straight line through the origin, and its gradient is R."),
+      Q("C2","The resistivity of a metal depends on","the type of material and its temperature",
+        [["the length and cross-sectional area of the wire","Those change the resistance R, not the resistivity ρ."],["the current flowing through it","At constant temperature, ρ is a property of the material only."],["the potential difference across it","ρ is a property of the material at a given temperature."]],
+        "ρ is a material property that changes with temperature. Shape affects R, not ρ.") ] },
+
+  { sub:"3.3", title:"Variation of resistance with temperature",
+    html:`<p>The resistance of a <b>metal increases with temperature</b>. As the temperature rises, the metal ions vibrate with larger amplitude, so the free electrons collide with them more often. This hinders the drift of the electrons, so the resistance increases.</p>
+    <div class="formula">R = R<sub>0</sub>[1 + α(T − T<sub>0</sub>)] &nbsp;&nbsp; ρ = ρ<sub>0</sub>[1 + α(T − T<sub>0</sub>)]</div>
+    <ul><li>α is the <b>temperature coefficient of resistivity</b>: the fractional increase in resistivity per degree rise in temperature. It is usually quoted at 20 °C.</li>
+    <li>Unit of α: °C<sup>−1</sup> (equivalent to K<sup>−1</sup>).</li></ul>`,
+    sym:[["R<sub>0</sub>","Resistance at the reference temperature T<sub>0</sub>","Ω"],["R","Resistance at temperature T","Ω"],["T, T<sub>0</sub>","Final and reference (initial) temperature","°C"],["α","Temperature coefficient of resistivity","°C<sup>−1</sup>"],["ρ<sub>0</sub>","Resistivity at the reference temperature","Ω m"]],
+    qs:[
+      Q("C2","Why does the resistance of a metal increase when its temperature rises?","The metal ions vibrate more, so free electrons collide with them more often",
+        [["The metal ions vibrate less, so they block the electrons","Heating makes the ions vibrate <i>more</i>, not less."],["More current flows, so resistance increases","R increases because of collisions, not because of the current."],["The kinetic energy of the ions decreases","Heating increases the ions' vibrational energy."]],
+        "Larger-amplitude vibrations mean more frequent electron–ion collisions, which hinder the drift."),
+      Q("C1","What is the SI unit of the temperature coefficient of resistivity, α?","°C<sup>−1</sup>",[["Ω °C<sup>−1</sup>","α is a fractional change per degree, so it has no ohms."],["Ω m","That is the unit of resistivity."],["°C","It is <i>per</i> degree, so °C<sup>−1</sup>."]],"α = Δρ/(ρ<sub>0</sub>ΔT): a fraction per degree, unit °C<sup>−1</sup>."),
+      Q("C2","A metal wire is heated from 20 °C to 80 °C. Its resistance will","increase",[["decrease","For metals α is positive, so R rises with temperature."],["stay exactly the same","Metal resistance depends on temperature."],["drop to zero","Only superconductors at very low temperatures have zero resistance."]],"For metals, R = R<sub>0</sub>[1 + α(T − T<sub>0</sub>)] with α > 0, so R increases.") ] },
+
+  { sub:"3.4", title:"Emf, internal resistance and terminal potential difference",
+    html:`<p><b>Electromotive force (emf), ε</b>: the energy supplied by the source to each unit charge that flows through the whole circuit (external and internal resistances).</p>
+    <p><b>Terminal potential difference, V</b>: the work done in moving a unit charge through the external resistance only.</p>
+    <p><b>Internal resistance, r</b>: the resistance of the chemicals inside the battery, between its terminals.</p>
+    <div class="formula">V = ε − Ir &nbsp;&nbsp; ε = V + Ir &nbsp;&nbsp; I = ε / (R + r)</div>
+    <ul><li>When current flows, part of the emf is used to drive current through r (a "lost volt" Ir), so V &lt; ε.</li>
+    <li>V = ε only when <b>no current</b> flows (an open circuit).</li>
+    <li>The smaller r is, the more current and power the source can deliver.</li>
+    <li><b>Factors affecting r:</b> the concentration of ions in the electrolyte, the temperature, the distance between the electrodes, and the age of the cell (r increases as the electrolyte dries out).</li></ul>`,
+    sym:[["ε","Electromotive force (emf) of the source","V"],["V","Terminal potential difference","V"],["r","Internal resistance of the battery","Ω"],["R","External (load) resistance","Ω"]],
+    qs:[
+      Q("C1","The emf of a battery is","the energy supplied by the battery to each unit charge that flows through the whole circuit",
+        [["the force that pushes electrons around the circuit","Despite its name, emf is energy per unit charge, not a force."],["the work done per unit charge through the external resistor only","That is the terminal potential difference."],["the resistance of the chemicals in the battery","That is the internal resistance."]],
+        "ε is energy per unit charge for the complete circuit, including the internal resistance."),
+      Q("C2","Why is the terminal potential difference less than the emf when current flows?","Some energy per unit charge is used to drive current through the internal resistance",
+        [["The external resistor uses up some of the charge","Charge is conserved. Energy is what gets transferred."],["The emf decreases whenever current flows","ε is fixed. The terminal voltage drops by Ir."],["The battery stores some of the current","Current cannot be stored."]],
+        "V = ε − Ir: the 'lost volts' Ir are dropped across the internal resistance."),
+      Q("C1","Which factors affect the internal resistance of a battery?","The concentration of ions in the electrolyte, the temperature and the distance between the electrodes",
+        [["Only the external resistance connected to it","r is inside the battery and does not depend on the load."],["Only the emf of the battery","r depends on the chemistry and construction of the cell."],["The length of the connecting wires","Wire resistance is external, not internal."]],
+        "r depends on the electrolyte, the temperature, the electrode separation and the age of the cell."),
+      Q("C2","The terminal potential difference of a battery equals its emf when","no current is flowing",[["the external resistance is zero","Then I is largest and the lost volts Ir are largest."],["the current is at its maximum","More current means a larger Ir drop."],["the internal resistance is large","A large r makes the drop larger, not smaller."]],"With I = 0, Ir = 0, so V = ε.") ] },
+
+  { sub:"3.5", title:"Resistors in series and parallel",
+    html:`<table class="cmp"><tr><th>Series</th><th>Parallel</th></tr>
+    <tr><td>Same current through every resistor</td><td>Same potential difference across every resistor</td></tr>
+    <tr><td>Voltage is shared: V = V<sub>1</sub> + V<sub>2</sub> + ...</td><td>Current splits: I = I<sub>1</sub> + I<sub>2</sub> + ...</td></tr>
+    <tr><td>R<sub>eff</sub> = R<sub>1</sub> + R<sub>2</sub> + ...</td><td>1/R<sub>eff</sub> = 1/R<sub>1</sub> + 1/R<sub>2</sub> + ...</td></tr>
+    <tr><td>R<sub>eff</sub> is larger than the largest resistor</td><td>R<sub>eff</sub> is smaller than the smallest resistor</td></tr></table>`,
+    sym:[["R<sub>eff</sub>","Effective (equivalent) resistance","Ω"]],
+    qs:[
+      Q("C2","Another resistor is connected in parallel with an existing resistor. The effective resistance","decreases",[["increases","Adding a parallel path gives current another route, so the total resistance falls."],["stays the same","Any extra parallel path lowers R<sub>eff</sub>."],["doubles","That would be true only for two equal resistors in series."]],"In parallel, R<sub>eff</sub> is always smaller than the smallest resistor."),
+      Q("C2","For resistors connected in series, which quantity is the same for every resistor?","The current",[["The potential difference","Equal voltage is the parallel rule."],["The power","P = I<sup>2</sup>R differs when R differs."],["The resistance","Series resistors can have any values."]],"There is only one path, so the same current passes through each resistor.") ] },
+
+  { sub:"3.6", title:"Kirchhoff's rules",
+    html:`<p><b>First rule (junction rule):</b> the sum of the currents entering any junction equals the sum of the currents leaving it. This follows from <b>conservation of charge</b>.</p>
+    <p><b>Second rule (loop rule):</b> in any closed loop, the sum of the emfs equals the sum of the IR products. This follows from <b>conservation of energy</b>.</p>
+    <div class="formula">ΣI<sub>in</sub> = ΣI<sub>out</sub> &nbsp;&nbsp; Σε = ΣIR</div>
+    <ul><li>Choose a direction for each current and for travelling around each loop.</li>
+    <li>If a current comes out <b>negative</b>, its actual direction is opposite to the one you assumed.</li></ul>`,
+    sym:[["ΣI<sub>in</sub>, ΣI<sub>out</sub>","Total current entering and leaving a junction","A"],["Σε","Sum of emfs around a loop","V"],["ΣIR","Sum of potential drops across resistors in a loop","V"]],
+    qs:[
+      Q("C1","Kirchhoff's first (junction) rule is based on the conservation of","charge",[["energy","Energy conservation is the basis of the loop rule."],["momentum","Momentum is not involved in circuit rules."],["mass","Mass is not involved in circuit rules."]],"Charge cannot pile up at a junction, so what flows in must flow out."),
+      Q("C1","Kirchhoff's second (loop) rule is based on the conservation of","energy",[["charge","Charge conservation is the basis of the junction rule."],["current","Current is not a conserved quantity around a loop."],["power","The rule is a statement about energy per unit charge."]],"Around a closed loop, energy gained from emfs equals energy dropped across resistances."),
+      Q("C2","After solving Kirchhoff's equations, one current comes out as −0.5 A. This means","the current is 0.5 A, flowing opposite to the direction you assumed",
+        [["the working has an error, because current cannot be negative","A negative answer is fine. It only means the assumed direction was wrong."],["no current flows in that branch","The size is 0.5 A, which is not zero."],["the current is 0.5 A, in the direction you assumed","The sign shows it flows the other way."]],
+        "The sign shows direction relative to your assumption. The magnitude is still 0.5 A.") ] },
+
+  { sub:"3.7", title:"Electrical energy and power",
+    html:`<p><b>Electrical energy</b> is the energy transferred by charge passing through a device. <b>Power</b> is the rate of energy transfer.</p>
+    <div class="formula">W = IVt &nbsp;&nbsp; P = W/t = IV = I<sup>2</sup>R = V<sup>2</sup>/R</div>
+    <ul><li>For a resistor, I<sup>2</sup>R and V<sup>2</sup>/R give the rate at which heat is produced (power loss).</li>
+    <li>Units: energy in joules (J), power in watts (W = J s<sup>−1</sup>).</li></ul>`,
+    sym:[["W","Electrical energy transferred","J"],["P","Electrical power","W"],["t","Time","s"]],
+    qs:[
+      Q("C1","The watt is equivalent to","J s<sup>−1</sup>",[["J s","Power is energy <i>per</i> second."],["J C<sup>−1</sup>","That is the volt."],["A Ω","That is V = IR, which gives volts."]],"P = W/t, so 1 W = 1 J s<sup>−1</sup>."),
+      Q("C2","For a resistor, the expressions I<sup>2</sup>R and V<sup>2</sup>/R both give","the rate at which electrical energy is converted to heat",
+        [["the total heat produced","Total heat needs time: W = I<sup>2</sup>Rt."],["the current through the resistor","They have units of watts, not amperes."],["the resistance of the resistor","They contain R but give power."]],
+        "They are forms of P = IV, the power dissipated as heat in the resistor.") ] },
+
+  { sub:"3.8", title:"Potential divider",
+    html:`<p>A potential divider uses resistors <b>in series</b> to provide a fraction of the supply voltage. The same current passes through each resistor, so the supply voltage is shared <b>in proportion to the resistances</b>.</p>
+    <div class="formula">V<sub>1</sub> = [R<sub>1</sub> / (R<sub>1</sub> + R<sub>2</sub> + ... + R<sub>n</sub>)] V</div>
+    <ul><li>The larger resistor takes the larger share of the voltage.</li>
+    <li>Connecting a meter or load across one resistor puts it in parallel, which lowers that part's resistance and so reduces the output voltage.</li></ul>`,
+    sym:[["V","Supply (input) voltage","V"],["V<sub>1</sub>","Output voltage across R<sub>1</sub>","V"],["R<sub>1</sub>, R<sub>2</sub>","Resistances in series","Ω"]],
+    qs:[
+      Q("C2","Which statement describes the principle of a potential divider?","Resistors in series share the supply voltage in the ratio of their resistances, so the output is a fraction of the input",
+        [["Two resistors in parallel across the supply give a larger voltage","A divider uses series resistors and gives a smaller output."],["It turns a small voltage into a larger one","The output of a divider is always less than the input."],["The resistance of a wire is inversely proportional to its length","R ∝ l, and this is not the principle of a divider anyway."]],
+        "Same current through series resistors means V ∝ R, so each resistor takes its share of the supply."),
+      Q("C2","In a potential divider, R<sub>1</sub> = 2 kΩ and R<sub>2</sub> = 8 kΩ are across 10 V. Which resistor has the larger voltage across it?","R<sub>2</sub>, because it has the larger resistance",
+        [["R<sub>1</sub>, because it comes first in the circuit","Position does not matter. In series V ∝ R."],["Both have 5 V","The voltage splits in the ratio 2 : 8, not equally."],["Neither, because the current is too small","Each gets V = IR."]],
+        "V<sub>2</sub> = (8/10) × 10 = 8 V and V<sub>1</sub> = 2 V.") ] },
+
+  { sub:"3.9", title:"Potentiometer",
+    html:`<p>A potentiometer is used to <b>measure an unknown emf</b>, <b>compare the emfs</b> of two cells, and <b>measure the internal resistance</b> of a cell.</p>
+    <ul><li>A steady current flows through a uniform resistance wire AB, so the potential drop along it is <b>proportional to length</b>: V = kl.</li>
+    <li>The jockey is moved along the wire until the galvanometer reads <b>zero</b>. This is the balance point, and the length is the <b>balance length</b>.</li>
+    <li>At balance <b>no current is drawn</b> from the cell being tested, so its full emf is measured, with no Ir drop.</li></ul>
+    <div class="formula">V ∝ l &nbsp;&nbsp; ε<sub>1</sub>/ε<sub>2</sub> = l<sub>1</sub>/l<sub>2</sub></div>`,
+    sym:[["l","Balance length on the potentiometer wire","m"],["k","Potential drop per unit length of the wire","V m<sup>−1</sup>"],["ε<sub>1</sub>, ε<sub>2</sub>","Emfs being compared","V"]],
+    qs:[
+      Q("C1","A potentiometer is used to","measure the unknown emf of a cell",[["measure power","A wattmeter, or I and V together, gives power."],["measure current","An ammeter measures current."],["measure the energy lost in a circuit","That is not what a potentiometer does."]],"It compares an unknown voltage with a known potential drop along a uniform wire."),
+      Q("C2","At the balance point of a potentiometer, the galvanometer reads","zero, because no current flows through it",[["its maximum value","Balance means the opposing voltages are equal, so the current is zero."],["the emf of the cell","A galvanometer detects current. It does not show emf."],["half of the driver cell's current","At balance it reads zero."]],"At balance the p.d. along AC exactly opposes the cell's emf, so no current flows in the galvanometer."),
+      Q("C2","Why does a potentiometer measure emf more accurately than an ordinary voltmeter?","No current is drawn from the cell at balance, so there is no voltage drop across its internal resistance",
+        [["Its wire has zero resistance","The wire has resistance, which is why V ∝ l."],["It uses a larger current","A larger current would make the Ir drop larger."],["The galvanometer is more sensitive than a voltmeter","Sensitivity helps, but the key reason is that zero current is drawn."]],
+        "With I = 0, V = ε − Ir = ε exactly.") ] }
+];
+
+
+/* ---------- Chapter 4: Magnetism ---------- */
+THEORY[4] = [
+  { sub:"4.1", title:"Magnetic field",
+    html:`<p>A <b>magnetic field</b> is a region around a magnet (or a current-carrying conductor) in which a magnetic force can be experienced. It is a vector quantity.</p>
+    <ul><li><b>Sources:</b> bar magnets, current-carrying conductors (straight wire, circular coil, solenoid) and the Earth. A stationary charge does <b>not</b> produce a magnetic field.</li>
+    <li>Outside a magnet, field lines run from the <b>north pole to the south pole</b>. They never cross, and closer lines mean a stronger field.</li>
+    <li>Like poles repel. Unlike poles attract.</li>
+    <li>The Earth behaves like a giant bar magnet whose <b>magnetic south pole is near the geographic north pole</b>. That is why a compass needle's north end points north.</li></ul>`,
+    sym:[["B","Magnetic flux density (magnetic field strength)","T"],["B<sub>E</sub>","Horizontal component of the Earth's magnetic field","T"]],
+    qs:[
+      Q("C1","A magnetic field is defined as","a region around a magnet where a magnetic force can be experienced",
+        [["a region around a charge where an electric force can be experienced","That is an electric field."],["the force per unit charge on a moving charge","That is not the definition of a magnetic field."],["the number of field lines passing through an area","That describes magnetic flux."]],"Any magnetic material or moving charge placed in the region feels a magnetic force."),
+      Q("C2","Which of these does NOT produce a magnetic field?","A stationary charged sphere",
+        [["The Earth","The Earth has a magnetic field, which is why compasses work."],["A bar magnet","Bar magnets are permanent sources of magnetic field."],["A wire carrying a current","Moving charges (currents) always produce magnetic fields."]],"Magnetic fields come from magnets and moving charges. A charge at rest gives only an electric field."),
+      Q("C2","The north pole of one bar magnet is brought near the north pole of another. The force between them is","repulsive",[["attractive","Only unlike poles attract."],["zero","Magnets exert forces on each other without touching."],["attractive, then repulsive","Like poles always repel."]],"Like poles repel. Unlike poles attract."),
+      Q("C2","Outside a bar magnet, the magnetic field lines point","from the north pole to the south pole",[["from the south pole to the north pole","Outside the magnet the lines leave N and enter S."],["away from both poles","Field lines form closed loops from N to S."],["towards both poles","Field lines form closed loops from N to S."]],"By convention, B points the way a compass north pole would point: out of N, into S.") ] },
+
+  { sub:"4.2", title:"Magnetic field produced by a current-carrying conductor",
+    html:`<p><b>Right-hand grip rule:</b> grip the conductor with your right hand. The <b>thumb</b> points along the <b>current</b>, and the <b>curled fingers</b> show the direction of the <b>magnetic field</b>. For a coil or solenoid, curl your fingers with the current and your thumb gives the field direction, which marks the north end.</p>
+    <div class="formula">straight wire: B = μ<sub>0</sub>I / 2πr &nbsp;&nbsp; centre of coil: B = μ<sub>0</sub>NI / 2R &nbsp;&nbsp; solenoid centre: B = μ<sub>0</sub>nI &nbsp;&nbsp; solenoid end: B = ½μ<sub>0</sub>nI</div>
+    <ul><li>Around a straight wire the field lines are concentric circles. B is inversely proportional to the distance r.</li>
+    <li>Inside a long solenoid the field is uniform. At its ends it is half the value at the centre.</li>
+    <li>μ<sub>0</sub> = 4π × 10<sup>−7</sup> T m A<sup>−1</sup>.</li></ul>`,
+    sym:[["μ<sub>0</sub>","Permeability of free space","T m A<sup>−1</sup> (= H m<sup>−1</sup>)"],["I","Current in the conductor","A"],["r","Perpendicular distance from the wire","m"],["R","Radius of the circular coil","m"],["N","Number of turns of the coil","no unit"],["n","Number of turns per unit length of the solenoid","m<sup>−1</sup>"]],
+    qs:[
+      Q("C2","For the right-hand grip rule applied to a straight wire, which statement is TRUE?","The thumb shows the current, and the curled fingers show the magnetic field",
+        [["The thumb shows the magnetic field, and the fingers show the current","For a straight wire it is the other way round."],["The fingers show the magnetic force","The grip rule gives the field direction, not the force."],["The thumb shows the force on the wire","Forces use Fleming's left-hand rule."]],"For a straight wire: thumb along I, fingers curl in the direction of B."),
+      Q("C2","How does the magnetic field at the end of a long solenoid compare with the field at its centre?","It is half as strong",[["It is twice as strong","The field spreads out at the ends, so it is weaker."],["It is the same","Inside it is uniform, but at the ends it drops to ½μ<sub>0</sub>nI."],["It is zero","There is still a field at the ends, ½μ<sub>0</sub>nI."]],"B<sub>end</sub> = ½μ<sub>0</sub>nI = ½B<sub>centre</sub>."),
+      Q("C2","The distance from a long straight current-carrying wire is doubled. The magnetic field","halves",[["doubles","B decreases with distance from the wire."],["becomes one quarter","B ∝ 1/r, not 1/r<sup>2</sup>."],["stays the same","B = μ<sub>0</sub>I/2πr depends on r."]],"B ∝ 1/r, so doubling r halves B."),
+      Q("C1","The magnetic field lines around a long straight current-carrying wire are","concentric circles centred on the wire",[["straight lines parallel to the wire","The lines circle around the wire."],["straight lines spreading out from the wire","Those are electric field lines from a charged wire."],["parallel, equally spaced lines","That is the field inside a solenoid."]],"Use the grip rule: the fingers trace circles around the wire.") ] },
+
+  { sub:"4.3", title:"Force on a moving charge in a uniform magnetic field",
+    html:`<div class="formula">F = qvB sin θ &nbsp;&nbsp; (perpendicular entry) qvB = mv<sup>2</sup>/r → r = mv/qB</div>
+    <ul><li>The force is perpendicular to both v and B. Find its direction with Fleming's left-hand rule or the right-hand palm rule, and reverse it for a negative charge.</li>
+    <li>If v is <b>perpendicular</b> to B, the charge moves in a <b>circle</b>. The magnetic force provides the centripetal force.</li>
+    <li>If v is <b>parallel</b> to B (θ = 0), there is <b>no force</b>, and the charge moves in a straight line.</li>
+    <li>The magnetic force is always perpendicular to the velocity, so it <b>does no work</b>. The speed and kinetic energy stay constant. Only the direction changes.</li></ul>`,
+    sym:[["F","Magnetic force on the charge","N"],["q","Charge of the particle","C"],["v","Velocity of the particle","m s<sup>−1</sup>"],["θ","Angle between v and B","° or rad"],["m","Mass of the particle","kg"],["r","Radius of the circular path","m"]],
+    qs:[
+      Q("C2","A positively charged particle enters a uniform magnetic field at right angles to the field. It will","move in a circular path",
+        [["move in a helical path","A helix needs a velocity component parallel to B as well."],["move in a parabolic path","A parabola comes from a uniform electric field, where the force has a fixed direction."],["continue in a straight line, undeflected","It feels F = qvB, which bends its path."]],"The force is always perpendicular to v, which is exactly a centripetal force."),
+      Q("C2","Why does a magnetic field not change the speed of a moving charge?","The magnetic force is always perpendicular to the velocity, so it does no work",
+        [["The magnetic force is zero for moving charges","Moving charges do feel a magnetic force."],["The magnetic force is parallel to the velocity","It is perpendicular, which is why only the direction changes."],["The charge loses and gains energy equally","The force does no work at all."]],"W = Fs cos 90° = 0, so the kinetic energy (and speed) is unchanged."),
+      Q("C2","A charged particle moves parallel to a uniform magnetic field. The magnetic force on it is","zero",[["maximum","Maximum force is when v ⊥ B."],["equal to qvB","With θ = 0, sin θ = 0."],["along the field","When v ∥ B there is no force at all."]],"F = qvB sin 0° = 0.") ] },
+
+  { sub:"4.4", title:"Force on a current-carrying conductor",
+    html:`<div class="formula">F = IlB sin θ</div>
+    <ul><li><b>Fleming's left-hand rule:</b> First finger = Field, seCond finger = Current, thuMb = Motion (force).</li>
+    <li>The force is greatest when the conductor is perpendicular to the field (θ = 90°), and zero when it is parallel.</li></ul>`,
+    sym:[["l","Length of conductor in the field","m"],["θ","Angle between the conductor (current) and B","° or rad"]],
+    qs:[
+      Q("C2","The force on a current-carrying wire in a magnetic field is greatest when the current is","perpendicular to the field lines",[["parallel to the field lines","sin 0° = 0 gives no force."],["at 60° to the field lines","sin 60° &lt; sin 90°."],["at 30° to the field lines","sin 30° = 0.5, half the maximum."]],"F = IlB sin θ is largest when θ = 90°."),
+      Q("C1","In Fleming's left-hand rule, the thumb represents the direction of the","force (motion) on the conductor",[["magnetic field","The first finger is the field."],["current","The second finger is the current."],["induced emf","Induced current uses the right-hand rule."]],"First finger: Field. Second finger: Current. Thumb: Motion/force.") ] },
+
+  { sub:"4.5", title:"Forces between two parallel current-carrying conductors",
+    html:`<p>Each wire sits in the magnetic field of the other, so each feels a force.</p>
+    <div class="formula">F/l = μ<sub>0</sub>I<sub>1</sub>I<sub>2</sub> / 2πd</div>
+    <ul><li>Currents in the <b>same direction</b> attract. Currents in <b>opposite directions</b> repel.</li>
+    <li>The forces on the two wires are equal in size and opposite in direction (Newton's third law), even if the currents are different.</li></ul>`,
+    sym:[["F/l","Force per unit length on each wire","N m<sup>−1</sup>"],["I<sub>1</sub>, I<sub>2</sub>","Currents in the two wires","A"],["d","Distance between the wires","m"]],
+    qs:[
+      Q("C2","Two long parallel wires carry currents in OPPOSITE directions. The force between them is","repulsive",[["attractive","Like currents attract and unlike currents repel."],["zero","Each wire is in the other's field, so there is a force."],["attractive or repulsive depending on the wire material","Only the current directions matter."]],"Opposite currents repel. Same-direction currents attract."),
+      Q("C2","Wire P carries 2 A and wire Q carries 6 A, parallel to each other. Compared with the force on P, the force per unit length on Q is","the same size, in the opposite direction",[["three times larger","Both forces use the product I<sub>1</sub>I<sub>2</sub>, so they are equal (Newton's third law)."],["one third as large","The forces form an action–reaction pair."],["zero","Both wires feel a force."]],"F/l = μ<sub>0</sub>I<sub>1</sub>I<sub>2</sub>/2πd is the same expression for both wires.") ] },
+
+  { sub:"4.6", title:"Velocity selector",
+    html:`<p>In a velocity selector, a uniform electric field E and a uniform magnetic field B are <b>perpendicular to each other and to the velocity</b>. The electric force qE and the magnetic force qvB point in opposite directions.</p>
+    <div class="formula">qE = qvB → v = E / B</div>
+    <ul><li>Only particles with speed v = E/B pass straight through, undeflected. This does not depend on their charge or mass.</li>
+    <li>Faster particles are deflected by the magnetic force, and slower ones by the electric force. This is used in the Bainbridge mass spectrometer.</li></ul>`,
+    sym:[["E","Electric field strength","V m<sup>−1</sup>"],["v","Selected speed of the particles","m s<sup>−1</sup>"]],
+    qs:[
+      Q("C2","In a velocity selector, a charged particle passes through undeflected when","its speed equals E/B",[["its speed equals B/E","Balance gives qE = qvB, so v = E/B."],["its charge is zero","The selector works for charged particles, and the condition is on speed."],["the electric and magnetic fields are parallel","The fields must be perpendicular."]],"The electric and magnetic forces cancel when qE = qvB."),
+      Q("C2","Does the speed selected by a velocity selector depend on the particle's charge or mass?","No, it depends only on E and B",[["Yes, it depends on the charge","q cancels in qE = qvB."],["Yes, it depends on the mass","Mass does not appear in v = E/B."],["Yes, it depends on both","Both forces are proportional to q, and mass is not involved."]],"v = E/B for any charged particle.") ] }
+];
+
+/* ---------- Chapter 5: Electromagnetic Induction ---------- */
+THEORY[5] = [
+  { sub:"5.1", title:"Magnetic flux",
+    html:`<p><b>Magnetic flux</b> is the scalar product of the magnetic flux density B and the area vector A. You can picture it as the number of field lines passing through an area.</p>
+    <div class="formula">φ = B · A = BA cos θ &nbsp;&nbsp; flux linkage Φ = Nφ</div>
+    <ul><li>θ is the angle between B and the <b>normal</b> to the surface (the area vector is perpendicular to the surface).</li>
+    <li>The flux is maximum when B is perpendicular to the surface (θ = 0), and zero when B is parallel to the surface (θ = 90°).</li>
+    <li>Unit: weber (Wb = T m<sup>2</sup>). It is a scalar.</li></ul>`,
+    sym:[["φ","Magnetic flux through one turn","Wb (= T m<sup>2</sup>)"],["Φ","Flux linkage, Nφ","Wb"],["A","Area of the coil","m<sup>2</sup>"],["θ","Angle between B and the normal to the area","° or rad"],["N","Number of turns","no unit"]],
+    qs:[
+      Q("C1","Magnetic flux is defined as","the scalar product of the magnetic flux density and the area vector",[["the force on a unit current in a magnetic field","That describes B."],["the rate of change of magnetic field","Flux is BA cos θ, not a rate."],["the vector product of B and A","Flux is a scalar (dot) product."]],"φ = B · A = BA cos θ."),
+      Q("C2","Which statement about magnetic flux is NOT TRUE?","It does not depend on the area it passes through",
+        [["It is zero when the field is parallel to the surface","This is true: cos 90° = 0."],["It represents the total magnetic field passing through a surface","This is true: it counts the field lines through the area."],["It is a scalar quantity","This is true: it is a dot product."]],"φ = BA cos θ depends directly on the area A."),
+      Q("C2","The flux through a flat coil is maximum when","the magnetic field is perpendicular to the plane of the coil",[["the field is parallel to the plane of the coil","Then no field lines pass through, so φ = 0."],["the field is at 45° to the plane","cos θ &lt; 1 at that angle."],["the coil has no turns","The number of turns affects flux linkage, not φ."]],"θ (between B and the normal) = 0 gives cos θ = 1.") ] },
+
+  { sub:"5.2", title:"Induced emf, Faraday's law and Lenz's law",
+    html:`<p><b>Faraday's experiment:</b> moving a magnet into or out of a coil makes a galvanometer deflect. An emf is induced only while the flux through the coil is <b>changing</b>. A magnet held still inside the coil induces nothing.</p>
+    <p><b>Faraday's law:</b> the magnitude of the induced emf is directly proportional to the <b>rate of change of magnetic flux linkage</b>.</p>
+    <p><b>Lenz's law:</b> the induced current always flows in a direction that <b>opposes the change</b> in flux producing it. This is the meaning of the minus sign.</p>
+    <div class="formula">ε = −N dφ/dt &nbsp;&nbsp; straight conductor: ε = Blv sin θ &nbsp;&nbsp; rotating coil: ε = NABω sin ωt</div>
+    <ul><li>The induced current direction in a moving straight conductor is given by Fleming's right-hand rule.</li>
+    <li>For a rotating coil, the peak emf NABω increases with more turns, a stronger field, a larger area, or faster rotation.</li></ul>`,
+    sym:[["ε","Induced emf","V"],["dφ/dt","Rate of change of magnetic flux","Wb s<sup>−1</sup>"],["l","Length of the moving conductor","m"],["v","Speed of the conductor","m s<sup>−1</sup>"],["ω","Angular velocity of the rotating coil","rad s<sup>−1</sup>"]],
+    qs:[
+      Q("C1","Faraday's law states that the induced emf is directly proportional to","the rate of change of magnetic flux linkage",[["the change of magnetic flux","It is how <i>fast</i> the flux changes that matters."],["the magnetic field multiplied by time","That is not the law."],["the current divided by time","Faraday's law is about flux, not current."]],"ε = −N dφ/dt."),
+      Q("C1","Which law is used to find the direction of the induced current?","Lenz's law",[["Faraday's law","Faraday gives the size of the emf."],["Coulomb's law","Coulomb's law is about forces between charges."],["Ohm's law","Ohm's law relates V, I and R."]],"Lenz: the induced current opposes the change that causes it."),
+      Q("C2","A magnet is held stationary inside a coil. The induced emf in the coil is","zero, because the flux is not changing",[["maximum, because the flux is largest","A large but steady flux induces nothing."],["equal to the magnet's field strength","Emf depends on the rate of change of flux."],["changing direction continuously","Nothing is changing, so there is no emf."]],"Induction needs a changing flux: dφ/dt = 0 gives ε = 0."),
+      Q("C2","The negative sign in ε = −N dφ/dt shows that","the induced emf opposes the change in flux that produces it (Lenz's law)",[["the emf is always negative","The sign is about direction relative to the change."],["the flux decreases with time","It applies to any change, increasing or decreasing."],["energy is destroyed","Lenz's law is a consequence of energy conservation."]],"The minus sign is Lenz's law."),
+      Q("C2","Which change will NOT increase the maximum emf induced in a coil rotating in a uniform magnetic field?","Using thicker wire with the same number of turns",[["Increasing the number of turns","ε<sub>max</sub> = NABω increases with N."],["Rotating the coil faster","ε<sub>max</sub> increases with ω."],["Using a stronger magnet","ε<sub>max</sub> increases with B."]],"ε<sub>max</sub> = NABω. Wire thickness does not appear.") ] },
+
+  { sub:"5.3", title:"Self-inductance",
+    html:`<p><b>Self-inductance</b> is the property of a coil by which a <b>changing current in the coil itself</b> induces an emf (a back emf) that opposes the change. The self-inductance L is the ratio of the self-induced emf to the rate of change of current.</p>
+    <div class="formula">ε = −L dI/dt &nbsp;&nbsp; L = Nφ / I &nbsp;&nbsp; L<sub>solenoid</sub> = μ<sub>0</sub>N<sup>2</sup>A / l &nbsp;&nbsp; L<sub>coil</sub> = μ<sub>0</sub>N<sup>2</sup>A / 2r</div>
+    <ul><li>Unit: henry (H = V s A<sup>−1</sup> = Wb A<sup>−1</sup>).</li></ul>`,
+    sym:[["L","Self-inductance","H"],["dI/dt","Rate of change of current","A s<sup>−1</sup>"],["l","Length of the solenoid","m"]],
+    qs:[
+      Q("C1","Producing an induced emf in a coil because of a changing current in the SAME coil is called","self-induction",[["mutual induction","Mutual induction involves a second, nearby coil."],["magnetic flux","Flux is a quantity, not a process."],["flux linkage","Flux linkage is Nφ, a quantity."]],"The coil induces a back emf in itself."),
+      Q("C1","The henry is equivalent to","V s A<sup>−1</sup>",[["V A s<sup>−1</sup>","From L = ε/(dI/dt): V ÷ (A s<sup>−1</sup>) = V s A<sup>−1</sup>."],["Wb A","L = Nφ/I gives Wb A<sup>−1</sup>."],["T m<sup>2</sup>","That is the weber."]],"L = ε/(dI/dt), so 1 H = 1 V s A<sup>−1</sup>.") ] },
+
+  { sub:"5.4", title:"Energy stored in an inductor",
+    html:`<div class="formula">U = ½LI<sup>2</sup></div><p>Work is done against the back emf while the current builds up. This energy is stored in the <b>magnetic field</b> of the inductor.</p>`,
+    sym:[["U","Energy stored in the inductor","J"]],
+    qs:[ Q("C2","The energy stored in a current-carrying inductor is stored in its","magnetic field",[["electric field","Capacitors store energy in electric fields."],["resistance, as heat","Heat is lost energy, not stored energy."],["insulation","The energy is in the magnetic field of the coil."]],"U = ½LI<sup>2</sup> is stored in the magnetic field.") ] },
+
+  { sub:"5.5", title:"Mutual inductance",
+    html:`<p><b>Mutual inductance</b> is the ratio of the emf induced in one coil to the rate of change of current in another, nearby coil.</p>
+    <div class="formula">ε<sub>2</sub> = −M dI<sub>1</sub>/dt &nbsp;&nbsp; M = μ<sub>0</sub>N<sub>1</sub>N<sub>2</sub>A / l (two coaxial solenoids)</div><ul><li>Unit: henry (H).</li></ul>`,
+    sym:[["M","Mutual inductance","H"],["N<sub>1</sub>, N<sub>2</sub>","Number of turns in coils 1 and 2","no unit"]],
+    qs:[ Q("C2","Mutual induction is the production of an emf in a solenoid due to","a changing current in a nearby solenoid",[["a changing current in the same solenoid","That is self-induction."],["a steady current in a nearby solenoid","The current must change."],["the motion of a wire in a magnetic field","That is motional emf."]],"A changing I<sub>1</sub> changes the flux linking coil 2, which induces ε<sub>2</sub>.") ] }
+];
+
+
+/* ---------- Chapter 6: Alternating Current ---------- */
+THEORY[6] = [
+  { sub:"6.1", title:"Alternating current",
+    html:`<p><b>Alternating current (AC)</b> is a current whose magnitude and direction change periodically. Its waveform is a sine curve (sinusoidal).</p>
+    <div class="formula">V = V<sub>0</sub> sin ωt &nbsp;&nbsp; I = I<sub>0</sub> sin ωt &nbsp;&nbsp; ω = 2πf = 2π/T</div>
+    <ul><li>V<sub>0</sub> and I<sub>0</sub> are the peak (maximum) values. The sign of I shows the direction of flow at that instant.</li></ul>`,
+    sym:[["V","Instantaneous voltage","V"],["V<sub>0</sub>","Peak (maximum) voltage","V"],["I<sub>0</sub>","Peak (maximum) current","A"],["ω","Angular frequency","rad s<sup>−1</sup>"],["f","Frequency","Hz"],["T","Period","s"]],
+    qs:[
+      Q("C1","A current whose magnitude and direction reverse periodically is called","alternating current",[["direct current","Direct current flows in one direction only."],["induced current","An induced current may or may not alternate."],["steady current","A steady current does not change."]],"AC changes its direction and size periodically."),
+      Q("C2","A supply is described by V = 325 sin (100πt). Its frequency is","50 Hz",[["100 Hz","ω = 100π = 2πf, so f = 50 Hz."],["100π Hz","100π is the angular frequency in rad s<sup>−1</sup>."],["325 Hz","325 V is the peak voltage."]],"ω = 2πf → f = 100π/2π = 50 Hz.") ] },
+
+  { sub:"6.2", title:"Root mean square (rms) values",
+    html:`<p><b>Rms current:</b> the value of the steady direct current that produces the same power (heating) in a resistor as the alternating current. The rms voltage is defined in the same way.</p>
+    <div class="formula">I<sub>rms</sub> = I<sub>0</sub>/√2 &nbsp;&nbsp; V<sub>rms</sub> = V<sub>0</sub>/√2</div>
+    <ul><li>Rms values are also called the effective values. Mains ratings (e.g. 240 V) and AC meter readings are rms values.</li></ul>`,
+    sym:[["I<sub>rms</sub>","Root mean square current","A"],["V<sub>rms</sub>","Root mean square voltage","V"]],
+    qs:[
+      Q("C1","The rms value of an alternating current is","the steady direct current that produces the same power in a resistor",[["the average value of the current over one cycle","The average over a full cycle is zero."],["the peak value of the current","I<sub>rms</sub> = I<sub>0</sub>/√2 is less than the peak."],["half of the peak current","I<sub>rms</sub> = I<sub>0</sub>/√2 ≈ 0.707 I<sub>0</sub>."]],"Rms is defined by equal heating."),
+      Q("C2","A mains supply is labelled 240 V. This value is the","rms voltage",[["peak voltage","The peak is 240√2 ≈ 340 V."],["average voltage","The average over a full cycle is zero."],["peak-to-peak voltage","Ratings are given as rms values."]],"Mains and meter readings are rms values.") ] },
+
+  { sub:"6.3", title:"Resistance, reactance and impedance",
+    html:`<p>A <b>phasor</b> is a vector that rotates anticlockwise at angular frequency ω. Its length is the peak value, and its projection on the y-axis gives the instantaneous value.</p>
+    <table class="cmp"><tr><th>Pure component</th><th>Phase</th><th>Opposition</th></tr>
+    <tr><td>Resistor R</td><td>I and V <b>in phase</b></td><td>R (does not depend on f)</td></tr>
+    <tr><td>Capacitor C</td><td>I <b>leads</b> V by π/2</td><td>X<sub>C</sub> = 1/2πfC (decreases as f increases)</td></tr>
+    <tr><td>Inductor L</td><td>V <b>leads</b> I by π/2</td><td>X<sub>L</sub> = 2πfL (increases as f increases)</td></tr></table>
+    <div class="formula">Z = √[R<sup>2</sup> + (X<sub>L</sub> − X<sub>C</sub>)<sup>2</sup>] &nbsp;&nbsp; tan φ = (X<sub>L</sub> − X<sub>C</sub>)/R</div>
+    <ul><li><b>Impedance Z</b> is the total opposition of a circuit to alternating current. Unit: Ω.</li>
+    <li><b>Resonance</b> in a series RLC circuit happens when X<sub>L</sub> = X<sub>C</sub>. Then Z is <b>minimum</b> (Z = R), the current is <b>maximum</b>, and V and I are in phase. The resonant frequency is f<sub>0</sub> = 1/(2π√LC).</li></ul>`,
+    sym:[["X<sub>C</sub>","Capacitive reactance","Ω"],["X<sub>L</sub>","Inductive reactance","Ω"],["Z","Impedance","Ω"],["φ","Phase angle between the supply voltage and the current","rad (or °)"],["L","Inductance","H"],["C","Capacitance","F"],["f<sub>0</sub>","Resonant frequency","Hz"]],
+    qs:[
+      Q("C2","For a pure resistor in an AC circuit,","the current is in phase with the voltage",[["the current leads the voltage by π/2","That is a pure capacitor."],["the voltage leads the current by π/2","That is a pure inductor."],["the current lags the voltage by π","A resistor gives no phase difference."]],"In a resistor V = IR at every instant, so they are in phase."),
+      Q("C2","For a pure capacitor in an AC circuit,","the current leads the voltage by π/2 rad",[["the current is in phase with the voltage","That is a resistor."],["the voltage leads the current by π/2 rad","That is an inductor."],["the current lags the voltage by π rad","The phase difference is π/2, with I ahead."]],"Remember 'ICE': in a Capacitor, I comes before E (voltage)."),
+      Q("C2","For a pure inductor in an AC circuit,","the voltage leads the current by π/2 rad",[["the current leads the voltage by π/2 rad","That is a capacitor."],["the current and voltage are in phase","That is a resistor."],["the voltage lags the current by π/2 rad","In an inductor, V is ahead."]],"Remember 'ELI': in an inductor (L), E (voltage) comes before I."),
+      Q("C2","When the frequency of the AC supply increases, the inductive reactance","increases in direct proportion to the frequency",[["decreases in direct proportion","X<sub>L</sub> = 2πfL increases with f."],["increases with the square of the frequency","X<sub>L</sub> ∝ f, not f<sup>2</sup>."],["is inversely proportional to the frequency","That describes X<sub>C</sub>."]],"X<sub>L</sub> = 2πfL ∝ f."),
+      Q("C2","When the frequency of the AC supply increases, the capacitive reactance","decreases",[["increases","X<sub>C</sub> = 1/2πfC falls as f rises."],["stays the same","X<sub>C</sub> depends on f."],["becomes infinite","X<sub>C</sub> is infinite only for DC (f = 0)."]],"X<sub>C</sub> ∝ 1/f."),
+      Q("C1","The impedance Z of an AC circuit is","the total opposition of the circuit to alternating current",[["the frequency at which resonance occurs","That is the resonant frequency."],["the condition where voltage and current are in phase","That describes resonance or a pure resistor."],["the energy stored per cycle","Impedance is measured in ohms."]],"Z combines R, X<sub>L</sub> and X<sub>C</sub>."),
+      Q("C2","Resonance in a series RLC circuit occurs when","the impedance is minimum",[["the resistance is maximum","R does not change with frequency."],["the current is minimum","At resonance the current is maximum."],["the power is negative","The average power is positive, and at its largest at resonance."]],"X<sub>L</sub> = X<sub>C</sub> gives Z = R (minimum), so I is maximum."),
+      Q("C2","Which statement about a phasor diagram is NOT TRUE?","It shows the relationship between time and the maximum voltage",
+        [["It shows the phase relationship between current and voltage","This is true: that is its purpose."],["The projection of a phasor on the y-axis gives the instantaneous value","This is true."],["Each phasor rotates about the origin at angular frequency ω, with length equal to the peak value","This is true."]],"A phasor diagram shows phase relationships, not a graph of voltage against time.") ] },
+
+  { sub:"6.4", title:"Power and power factor",
+    html:`<div class="formula">P<sub>av</sub> = I<sub>rms</sub>V<sub>rms</sub> cos φ &nbsp;&nbsp; P = IV (instantaneous) &nbsp;&nbsp; power factor cos φ = P<sub>av</sub> / (I<sub>rms</sub>V<sub>rms</sub>) = R/Z</div>
+    <ul><li>The <b>average (real) power</b> is dissipated only in the resistance.</li>
+    <li>For a <b>pure resistor</b>, φ = 0, so cos φ = 1.</li>
+    <li>For a <b>pure capacitor or pure inductor</b>, φ = π/2, so cos φ = 0. <b>No average power</b> is dissipated: energy is stored and returned each cycle.</li>
+    <li>The power factor is the ratio of real power to apparent power. It has no unit.</li></ul>`,
+    sym:[["P<sub>av</sub>","Average (real) power","W"],["P","Instantaneous power","W"],["cos φ","Power factor","no unit"],["I<sub>rms</sub>V<sub>rms</sub>","Apparent power","V A"]],
+    qs:[
+      Q("C2","An AC voltage is applied separately to a pure resistor, a pure capacitor and a pure inductor. Which statement is NOT TRUE?","The power factor of the pure capacitor circuit is 1",
+        [["No average power is dissipated in the pure inductor","This is true: φ = π/2, so cos φ = 0."],["No average power is dissipated in the pure capacitor","This is true: φ = π/2, so cos φ = 0."],["The pure resistor dissipates average power I<sub>rms</sub>V<sub>rms</sub>","This is true: cos φ = 1."]],"For a pure capacitor φ = π/2, so the power factor is 0, not 1."),
+      Q("C1","The power factor of an AC circuit is","the ratio of the average (real) power to the apparent power",[["the product of I<sub>rms</sub> and V<sub>rms</sub>","That is the apparent power."],["the ratio of reactance to resistance","That is tan φ."],["the peak power divided by the rms power","The power factor is cos φ = P<sub>av</sub>/(I<sub>rms</sub>V<sub>rms</sub>)."]],"cos φ = P<sub>av</sub>/(I<sub>rms</sub>V<sub>rms</sub>) = R/Z."),
+      Q("C2","In a series RLC circuit, average power is dissipated in","the resistor only",[["the inductor only","An ideal inductor stores and returns energy."],["the capacitor only","An ideal capacitor stores and returns energy."],["all three components equally","Only R turns electrical energy into heat."]],"Real power loss happens only in resistance.") ] }
+];
+
+/* ---------- Chapter 7: Optics ---------- */
+THEORY[7] = [
+  { sub:"7.1", title:"Reflection at a spherical surface",
+    html:`<div class="formula">R = 2f &nbsp;&nbsp; 1/f = 1/u + 1/v &nbsp;&nbsp; M = h<sub>i</sub>/h<sub>o</sub> = −v/u</div>
+    <ul><li><b>Sign convention:</b> f and R are <b>positive for a concave</b> mirror and <b>negative for a convex</b> mirror. A positive v is a real image (in front of the mirror). A negative v is a virtual image (behind the mirror).</li>
+    <li><b>Magnification:</b> negative M means an <b>inverted</b> image. Positive M means an upright image. |M| &gt; 1 means magnified, and |M| &lt; 1 means diminished.</li>
+    <li>A <b>convex mirror</b> always forms a virtual, upright, diminished image.</li>
+    <li>Ray diagrams use at least two rays: parallel to the axis then through (or from) F, through C back on itself, or through F then parallel.</li></ul>`,
+    sym:[["f","Focal length","m"],["R","Radius of curvature","m"],["u","Object distance","m"],["v","Image distance","m"],["M","Linear magnification","no unit"],["h<sub>i</sub>, h<sub>o</sub>","Image height and object height","m"]],
+    qs:[
+      Q("C1","The focal length of a convex mirror is always","negative",[["positive","Positive f is for concave mirrors."],["infinite","Only a plane mirror has infinite f."],["zero","A curved mirror has a finite focal length."]],"Sign convention: convex mirror f and R are negative."),
+      Q("C2","A negative magnification, M, means the image is","inverted",[["upright","Upright images have positive M."],["magnified","Size depends on |M|, not on the sign."],["diminished","Size depends on |M|, not on the sign."]],"The sign of M shows orientation. Its size shows magnification."),
+      Q("C2","The image formed by a convex mirror is always","virtual, upright and diminished",[["real, inverted and diminished","A convex mirror cannot form a real image of a real object."],["virtual, upright and magnified","That is a concave mirror with the object inside F."],["real, inverted and the same size","That is a concave mirror with the object at C."]],"This is why convex mirrors are used as wide-view security and car wing mirrors."),
+      Q("C1","For a spherical mirror, the radius of curvature R and the focal length f are related by","R = 2f",[["f = 2R","The focus is halfway between the pole and C."],["R = f","C and F are different points."],["R = f/2","The focus is halfway between the pole and C, so R = 2f."]],"F is halfway between the pole and the centre of curvature.") ] },
+
+  { sub:"7.2", title:"Refraction at a spherical surface",
+    html:`<div class="formula">n<sub>1</sub>/u + n<sub>2</sub>/v = (n<sub>2</sub> − n<sub>1</sub>)/R</div>
+    <ul><li>n<sub>1</sub> is the refractive index of the medium the object is in. n<sub>2</sub> is the refractive index of the medium the light enters.</li>
+    <li><b>Sign convention for R:</b> positive for a <b>convex</b> surface facing the object, negative for a <b>concave</b> surface.</li>
+    <li>Refractive index is a ratio of speeds, so it has no unit.</li></ul>`,
+    sym:[["n<sub>1</sub>","Refractive index of the medium containing the object","no unit"],["n<sub>2</sub>","Refractive index of the second medium","no unit"],["R","Radius of curvature of the refracting surface","m"]],
+    qs:[
+      Q("C2","When using n<sub>1</sub>/u + n<sub>2</sub>/v = (n<sub>2</sub> − n<sub>1</sub>)/R, the radius of curvature of a concave refracting surface is taken as","negative",[["positive","Positive R is for convex surfaces."],["zero","A curved surface has a finite R."],["always equal to the focal length","There is no such rule."]],"Sign convention: convex R is positive, concave R is negative."),
+      Q("C1","The refractive index of a material has the unit","none (it is dimensionless)",[["m s<sup>−1</sup>","n = c/v is a ratio of two speeds."],["m","n is a ratio, not a length."],["degree","n is not an angle."]],"n = c/v: speed ÷ speed gives no unit.") ] },
+
+  { sub:"7.3", title:"Thin lenses",
+    html:`<div class="formula">1/f = 1/u + 1/v &nbsp;&nbsp; M = h<sub>i</sub>/h<sub>o</sub> = −v/u &nbsp;&nbsp; lens maker's: 1/f = (n<sub>material</sub>/n<sub>medium</sub> − 1)(1/R<sub>1</sub> − 1/R<sub>2</sub>)</div>
+    <ul><li><b>Sign convention:</b> f is <b>positive for a convex</b> (converging) lens and <b>negative for a concave</b> (diverging) lens.</li>
+    <li>A concave lens always forms a virtual, upright, diminished image.</li>
+    <li>A convex lens with the object at 2F forms a real, inverted, same-size image at 2F.</li>
+    <li>If a lens is placed in a medium closer in refractive index to the glass (e.g. water), (n<sub>material</sub>/n<sub>medium</sub> − 1) becomes smaller, so the focal length <b>increases</b>.</li>
+    <li>For two lenses: the image from the first lens is the object for the second.</li></ul>`,
+    sym:[["n<sub>material</sub>","Refractive index of the lens material","no unit"],["n<sub>medium</sub>","Refractive index of the surrounding medium","no unit"],["R<sub>1</sub>, R<sub>2</sub>","Radii of curvature of the two lens surfaces","m"]],
+    qs:[
+      Q("C2","The image formed by a concave lens is always","virtual, upright and diminished",[["real, inverted and magnified","A diverging lens cannot form a real image of a real object."],["real, inverted and diminished","A diverging lens cannot form a real image of a real object."],["virtual, upright and magnified","A magnified virtual image comes from a convex lens with the object inside F."]],"Diverging rays only appear to come from a point in front of the lens."),
+      Q("C2","A glass convex lens is moved from air into water. Its focal length","increases",[["decreases","n<sub>glass</sub>/n<sub>water</sub> is closer to 1, so 1/f is smaller."],["stays the same","f depends on the surrounding medium."],["becomes negative","Glass (n ≈ 1.5) is still denser than water (n ≈ 1.33), so the lens still converges."]],"The lens maker's equation: a smaller (n<sub>material</sub>/n<sub>medium</sub> − 1) gives a larger f."),
+      Q("C1","For the thin lens equation, the focal length of a concave lens is taken as","negative",[["positive","Positive f is for a convex (converging) lens."],["infinite","A curved lens has a finite f."],["equal to its radius of curvature","That relation is not used for lenses."]],"Concave lenses diverge light, so f &lt; 0.") ] },
+
+  { sub:"7.4", title:"Huygens's principle",
+    html:`<p><b>Huygens's principle:</b> every point on a wavefront acts as a source of secondary spherical wavelets. The new wavefront a short time later is the surface tangent to (the envelope of) all these wavelets.</p>
+    <ul><li>It explains how light spreads out after passing through a slit or around an obstacle (diffraction). It also underlies interference.</li>
+    <li>A plane wavefront stays plane in open space. At a narrow slit, the wavelets spread out to form curved (circular) wavefronts.</li></ul>`,
+    sym:[["λ","Wavelength","m"]],
+    qs:[
+      Q("C1","According to Huygens's principle,","each point on a wavefront acts as a source of secondary spherical wavelets",[["light travels as a stream of particles","Huygens's principle is a wave model."],["wavefronts always remain plane","Wavefronts curve after passing through a narrow gap."],["only the centre of a wavefront produces new waves","Every point on the wavefront is a source."]],"The new wavefront is the envelope of these wavelets."),
+      Q("C2","Which statement about Huygens's principle is NOT TRUE?","It can explain interference only",[["It can explain diffraction and interference","This is true."],["Each point on a wavefront acts as a secondary source","This is true."],["The new wavefront is tangent to all the secondary wavelets","This is true."]],"Huygens's principle explains diffraction as well as interference.") ] },
+
+  { sub:"7.5", title:"Coherence and interference",
+    html:`<p><b>Interference</b> is the superposition of two or more waves meeting at a point, giving a resultant displacement equal to the sum of their displacements (principle of superposition).</p>
+    <p><b>Coherent sources</b> have the same frequency (wavelength) and a constant phase difference.</p>
+    <p><b>Conditions for observable interference:</b> coherent sources, (nearly) equal amplitudes, monochromatic light, and slit separation small compared with the screen distance.</p>
+    <table class="cmp"><tr><th>Sources</th><th>Constructive (bright)</th><th>Destructive (dark)</th></tr>
+    <tr><td>In phase</td><td>path difference = mλ</td><td>path difference = (m + ½)λ</td></tr>
+    <tr><td>Antiphase</td><td>path difference = (m + ½)λ</td><td>path difference = mλ</td></tr></table>
+    <div class="formula">phase difference = (2π/λ) × path difference</div>`,
+    sym:[["Δ","Path difference between the two waves","m"],["m","Order number (0, 1, 2, ...)","no unit"],["φ","Phase difference","rad"]],
+    qs:[
+      Q("C1","Two light sources are coherent if they emit waves of","the same wavelength with a constant phase difference",[["the same wavelength only","They must also keep a constant phase difference."],["the same amplitude only","Equal amplitude helps contrast, but coherence means a constant phase difference."],["the same amplitude and wavelength","Coherence needs a constant phase difference, not equal amplitude."]],"Coherent = same frequency and constant phase relationship."),
+      Q("C2","Two in-phase coherent sources produce waves that meet at P with a path difference of 1.5λ. At P there is","destructive interference (a dark fringe)",[["constructive interference (a bright fringe)","Constructive needs a whole number of wavelengths for in-phase sources."],["no interference","Coherent waves always interfere."],["a bright fringe of double intensity","1.5λ = (m + ½)λ, which gives destructive interference."]],"For in-phase sources, (m + ½)λ gives a dark fringe."),
+      Q("C2","Two antiphase coherent sources produce waves with a path difference of λ at point Q. At Q there is","destructive interference",[["constructive interference","For antiphase sources the conditions are swapped: mλ gives a dark fringe."],["maximum intensity","The initial π phase difference makes mλ destructive."],["no change in intensity","The waves cancel."]],"Antiphase sources: path difference mλ gives destructive interference."),
+      Q("C2","Which pair of optical phenomena produces both bright and dark fringes on a screen?","Interference and diffraction",[["Interference and reflection","Reflection alone does not make fringes."],["Diffraction and refraction","Refraction alone does not make fringes."],["Reflection and refraction","Neither produces fringe patterns on its own."]],"Fringes come from superposition, which happens in interference and diffraction.") ] },
+
+  { sub:"7.6", title:"Young's double-slit interference",
+    html:`<div class="formula">bright: y<sub>m</sub> = mλD/d &nbsp;&nbsp; dark: y<sub>m</sub> = (m + ½)λD/d &nbsp;&nbsp; fringe separation Δy = λD/d</div>
+    <ul><li>The central fringe (m = 0) is bright.</li>
+    <li>To <b>increase</b> the fringe separation: use a longer wavelength, move the screen further away (larger D), or <b>decrease</b> the slit separation d.</li>
+    <li>Blue light (shorter λ) gives fringes closer together than red light.</li></ul>`,
+    sym:[["y<sub>m</sub>","Distance of the m-th fringe from the central fringe","m"],["D","Distance from the slits to the screen","m"],["d","Separation between the two slits","m"],["Δy","Fringe separation (fringe width)","m"]],
+    qs:[
+      Q("C2","Which change increases the fringe separation in a double-slit experiment?","Decreasing the distance between the two slits, d",[["Increasing the distance between the two slits, d","Δy = λD/d gets smaller when d increases."],["Using light of a shorter wavelength","Δy ∝ λ, so a shorter λ gives closer fringes."],["Moving the screen closer to the slits","Δy ∝ D, so a smaller D gives closer fringes."]],"Δy = λD/d."),
+      Q("C2","Red light is replaced by blue light in a double-slit experiment. The fringes become","closer together",[["further apart","Blue light has a shorter wavelength, so Δy decreases."],["brighter but at the same spacing","The spacing depends on λ."],["all dark","There are still bright and dark fringes."]],"Δy ∝ λ, and λ<sub>blue</sub> &lt; λ<sub>red</sub>."),
+      Q("C2","In Young's double-slit pattern, the central fringe (m = 0) is","bright, because the path difference is zero",[["dark, because the waves cancel","Zero path difference from in-phase slits gives constructive interference."],["the dimmest fringe","It is the central maximum."],["missing","There is always a central fringe."]],"At the centre, both waves travel equal distances.") ] },
+
+  { sub:"7.7", title:"Interference in thin films",
+    html:`<p>Light reflected from the top and bottom surfaces of a thin film interferes.</p>
+    <ul><li><b>Phase change on reflection:</b> a ray reflecting off a medium of <b>higher</b> refractive index gains a phase change of π (equivalent to a path of ½λ). Reflection off a lower-index medium gives no phase change.</li>
+    <li>For a soap film in air, the ray from the top surface (air → film) gains π, and the ray from the bottom surface (film → air) does not. So the two reflected rays are antiphase.</li></ul>
+    <table class="cmp"><tr><th>Relative phase of the reflected rays</th><th>Constructive</th><th>Destructive</th></tr>
+    <tr><td>No phase difference (non-reflective coating, e.g. air–MgF<sub>2</sub>–glass)</td><td>2nt = mλ</td><td>2nt = (m + ½)λ</td></tr>
+    <tr><td>Phase difference π (reflective coating, e.g. soap film in air)</td><td>2nt = (m + ½)λ</td><td>2nt = mλ</td></tr></table>
+    <ul><li><b>Applications:</b> anti-reflective coatings on solar panels and lenses (reflected light cancels, so more light is transmitted), and tinted glass that reflects heat.</li></ul>`,
+    sym:[["n","Refractive index of the film","no unit"],["t","Thickness of the film","m"]],
+    qs:[
+      Q("C2","Monochromatic light falls on a soap film in air. What phase change does the ray reflected from the TOP surface of the film experience?","π rad",[["0 rad","It reflects off a denser medium (air → soap), so it gains π."],["π/2 rad","The phase change on reflection is either 0 or π."],["π/4 rad","The phase change on reflection is either 0 or π."]],"Reflection off a higher-index medium gives a phase change of π."),
+      Q("C2","A ray inside a soap film reflects off the film–air boundary at the bottom surface. Its phase change is","0",[["π rad","It reflects off a lower-index medium (soap → air), so there is no phase change."],["π/2 rad","The phase change on reflection is either 0 or π."],["2π rad","There is no phase change."]],"Going from a higher to a lower index on reflection gives no phase change."),
+      Q("C2","Why is an anti-reflective coating applied to solar panels?","Reflected rays interfere destructively, so more light is transmitted into the panel",[["Reflected rays interfere constructively, so the panel looks brighter","That would reflect more and waste light."],["The coating absorbs all wavelengths","The coating works by interference, not absorption."],["The coating increases the panel's temperature","The aim is to transmit more light."]],"Destructive interference of the reflected light means less energy is reflected and more is transmitted.") ] },
+
+  { sub:"7.8", title:"Diffraction by a single slit",
+    html:`<p><b>Diffraction</b> is the spreading (bending) of waves as they pass through an aperture or around the edge of an obstacle. It is most noticeable when the gap is comparable to the wavelength.</p>
+    <div class="formula">dark: y<sub>m</sub> = mλD/a &nbsp;&nbsp; bright: y<sub>m</sub> = (m + ½)λD/a &nbsp;&nbsp; width of central maximum = 2λD/a</div>
+    <ul><li>The central bright fringe is the widest and brightest, about <b>twice</b> as wide as the others.</li>
+    <li>A <b>narrower slit</b> (smaller a) gives a <b>wider</b> central maximum.</li></ul>`,
+    sym:[["a","Width of the single slit","m"]],
+    qs:[
+      Q("C1","Diffraction is","the spreading of waves as they pass through an opening or around an obstacle",[["the bending of light as it passes from one medium to another","That is refraction."],["the bouncing of light off a surface","That is reflection."],["the splitting of white light into colours by a prism","That is dispersion."]],"Diffraction is most noticeable when the slit width is comparable to λ."),
+      Q("C2","In single-slit diffraction, the slit is made narrower. Which statement is TRUE?","The central bright fringe becomes wider",[["The intensity of every fringe becomes the same","The central fringe stays the brightest."],["The central bright fringe becomes dark","The centre is always a bright maximum."],["The pattern becomes brighter overall","Less light gets through a narrower slit."]],"y<sub>1</sub> = λD/a: a smaller a gives a wider central maximum."),
+      Q("C2","Compared with the other bright fringes, the central bright fringe in single-slit diffraction is","about twice as wide",[["the same width","It spans from the first dark fringe on one side to the first dark fringe on the other."],["half as wide","The central fringe is the widest."],["narrower but brighter","It is both the widest and the brightest."]],"Its width is 2λD/a, while each other fringe is about λD/a.") ] },
+
+  { sub:"7.9", title:"Diffraction grating",
+    html:`<p>A <b>diffraction grating</b> has a large number of equally spaced parallel slits. Light diffracted from all the slits interferes to give sharp, bright maxima.</p>
+    <div class="formula">d sin θ = mλ &nbsp;&nbsp; d = 1/N</div>
+    <ul><li>The highest order seen is the largest whole number m ≤ d/λ (because sin θ ≤ 1).</li>
+    <li><b>More lines per mm</b> (larger N, smaller d) spreads the maxima <b>further apart</b> but gives <b>fewer orders</b>.</li>
+    <li>Everyday examples: a CD, muslin cloth.</li></ul>`,
+    sym:[["N","Number of lines (slits) per unit length","m<sup>−1</sup>"],["d","Grating spacing (distance between adjacent slits)","m"],["θ","Angle of the m-th order maximum","°"]],
+    qs:[
+      Q("C2","In a diffraction grating experiment, the number of orders seen can be increased by","using a grating with a larger slit spacing d",[["using light of a longer wavelength","m<sub>max</sub> ≤ d/λ, so a longer λ gives fewer orders."],["moving the screen closer to the grating","The orders depend on d and λ, not on the screen distance."],["using a grating with more lines per unit length","More lines means a smaller d, so fewer orders."]],"m<sub>max</sub> = d/λ (rounded down)."),
+      Q("C1","The grating spacing d is related to the number of lines per unit length N by","d = 1/N",[["d = N","More lines per mm means a smaller spacing."],["d = N<sup>2</sup>","d is simply the inverse of N."],["d = Nλ","λ is not part of this relation."]],"If there are N lines per metre, each spacing is 1/N metres."),
+      Q("C2","A grating with more lines per millimetre is used with the same light. The first-order maxima appear","at larger angles",[["at smaller angles","A smaller d gives a larger sin θ = λ/d."],["at the same angles","θ depends on d."],["only on one side","Maxima appear symmetrically on both sides."]],"sin θ = mλ/d: a smaller d gives a larger θ.") ] }
+];
+
+
+/* ---------- Chapter 8: Wave Properties of Particle ---------- */
+THEORY[8] = [
+  { sub:"8.1", title:"De Broglie wavelength",
+    html:`<p><b>Wave–particle duality:</b> light behaves as a wave (interference, diffraction) and as a particle (photoelectric effect). In the same way, moving particles such as electrons have wave properties.</p>
+    <p><b>De Broglie's hypothesis:</b> every moving particle has a wavelength associated with it, called the de Broglie wavelength.</p>
+    <div class="formula">λ = h/p = h/mv &nbsp;&nbsp; for a charge accelerated through V: λ = h/√(2meV) &nbsp;&nbsp; from kinetic energy: λ = h/√(2mK)</div>
+    <ul><li>A larger momentum gives a <b>shorter</b> wavelength.</li>
+    <li>Everyday objects have huge momentum, so their λ is far too small to detect. Wave behaviour is noticeable only for very small particles.</li></ul>`,
+    sym:[["λ","De Broglie wavelength","m"],["h","Planck's constant (6.63 × 10<sup>−34</sup>)","J s"],["p","Momentum of the particle","kg m s<sup>−1</sup>"],["m","Mass of the particle","kg"],["v","Speed of the particle","m s<sup>−1</sup>"],["V","Accelerating potential difference","V"],["K","Kinetic energy of the particle","J"]],
+    qs:[
+      Q("C1","The de Broglie hypothesis states that","a moving particle has a wavelength associated with it",[["light consists only of waves","Light shows both wave and particle behaviour."],["electrons can only behave as particles","De Broglie said electrons also behave as waves."],["the wavelength of a particle increases with its momentum","λ = h/p, so λ decreases as p increases."]],"λ = h/p links a particle property (p) to a wave property (λ)."),
+      Q("C2","An electron is accelerated through a larger potential difference. Its de Broglie wavelength","decreases",[["increases","A larger V gives a larger momentum, so λ = h/p is smaller."],["stays the same","λ depends on momentum, which depends on V."],["becomes zero","λ gets smaller but never reaches zero."]],"λ = h/√(2meV) ∝ 1/√V."),
+      Q("C2","Why is the wave nature of a moving car never observed?","Its momentum is so large that its de Broglie wavelength is far too small to detect",[["A car has no momentum","A moving car has momentum."],["Only charged objects have a wavelength","Any moving particle has a de Broglie wavelength."],["Its wavelength is too long to detect","λ = h/p is extremely short for a large p."]],"h is tiny (≈10<sup>−34</sup> J s), so a large mv gives a negligible λ."),
+      Q("C1","Wave–particle duality means that","both light and matter can show wave properties and particle properties",[["light is a wave and matter is a particle","Each can behave as either."],["particles turn into waves when they stop","A stationary particle has p = 0, and λ = h/p is then undefined."],["only electrons can diffract","Any small particle (e.g. neutrons) can show diffraction."]],"The behaviour you observe depends on the experiment.") ] },
+
+  { sub:"8.2", title:"Electron diffraction and the electron microscope",
+    html:`<p><b>Davisson–Germer experiment:</b> a beam of electrons fired at a nickel crystal was scattered strongly at particular angles, giving a diffraction pattern. Diffraction is a wave property, so this confirmed that electrons behave as waves. The measured wavelength agreed with λ = h/p.</p>
+    <p><b>Electron microscope:</b> uses a beam of electrons instead of light. Magnetic (or electric) fields act as lenses to focus the beam.</p>
+    <ul><li><b>Advantage over an optical microscope:</b> electrons can have a de Broglie wavelength much <b>shorter</b> than visible light. A shorter wavelength gives less diffraction and therefore a <b>higher resolving power</b> (finer detail) and higher magnification.</li>
+    <li>A higher accelerating voltage gives a shorter λ and better resolution.</li></ul>`,
+    sym:[["d","Spacing between atomic planes in the crystal","m"],["e","Charge of an electron (1.60 × 10<sup>−19</sup>)","C"],["m<sub>e</sub>","Mass of an electron (9.11 × 10<sup>−31</sup>)","kg"]],
+    qs:[
+      Q("C2","The Davisson–Germer experiment provided evidence that","electrons behave as waves",[["light behaves as particles","That is the photoelectric effect."],["electrons have no mass","Electrons do have mass."],["atoms have a nucleus","That was Rutherford's scattering experiment."]],"A diffraction pattern can only be produced by waves."),
+      Q("C2","An electron microscope can resolve finer detail than an optical microscope because","the electrons have a much shorter wavelength than visible light",[["electrons travel faster than light","Electrons always travel slower than light."],["electrons have a longer wavelength than light","A longer λ would give poorer resolution."],["electrons are not affected by diffraction","They are diffracted, but less so because λ is small."]],"Shorter λ → less diffraction → higher resolving power."),
+      Q("C1","In an electron microscope, the electron beam is focused by","magnetic (or electric) fields",[["glass lenses","Glass lenses focus light, not electrons."],["curved mirrors","Mirrors are used for light."],["a diffraction grating","A grating spreads waves rather than focusing them."]],"Charged particles are bent by electric and magnetic fields.") ] }
+];
+
+/* ---------- Chapter 9: Nuclear and Particle Physics ---------- */
+THEORY[9] = [
+  { sub:"9.1", title:"Binding energy and mass defect",
+    html:`<p>A nucleus is written <b><sup>A</sup><sub>Z</sub>X</b>. A (nucleon number) is the number of protons plus neutrons. Z (proton number) is the number of protons. Neutron number = A − Z.</p>
+    <p><b>Mass defect Δm:</b> the difference between the total mass of the separate nucleons and the mass of the nucleus.</p>
+    <p><b>Binding energy:</b> the energy needed to separate a nucleus completely into its individual protons and neutrons. It is equal to the energy released when the nucleus forms.</p>
+    <div class="formula">Δm = Zm<sub>p</sub> + (A − Z)m<sub>n</sub> − m<sub>nucleus</sub> &nbsp;&nbsp; E<sub>B</sub> = Δmc<sup>2</sup> &nbsp;&nbsp; 1 u = 931.5 MeV/c<sup>2</sup></div>
+    <ul><li><b>Binding energy per nucleon</b> = E<sub>B</sub>/A. The higher it is, the <b>more stable</b> the nucleus.</li>
+    <li>The curve of E<sub>B</sub>/A against A peaks near iron-56 (≈ 8.8 MeV per nucleon). Light nuclei release energy by fusion, and heavy nuclei release energy by fission, because both processes move towards the peak.</li></ul>`,
+    sym:[["A","Nucleon (mass) number","no unit"],["Z","Proton (atomic) number","no unit"],["Δm","Mass defect","kg (or u)"],["E<sub>B</sub>","Binding energy","J (or MeV)"],["c","Speed of light (3.00 × 10<sup>8</sup>)","m s<sup>−1</sup>"],["u","Atomic mass unit","— (1 u = 1.66 × 10<sup>−27</sup> kg)"],["m<sub>p</sub>, m<sub>n</sub>","Mass of a proton and mass of a neutron","kg (or u)"]],
+    qs:[
+      Q("C1","The binding energy of a nucleus is","the energy needed to separate the nucleus completely into its individual nucleons",[["the energy needed to remove one electron from the atom","That is ionisation energy."],["the kinetic energy of the nucleus","Binding energy is related to the mass defect, not motion."],["the energy holding electrons in their orbits","That is electron binding energy, not nuclear."]],"E<sub>B</sub> = Δmc<sup>2</sup>."),
+      Q("C2","The mass of a nucleus is always","less than the total mass of its separate protons and neutrons",[["greater than the total mass of its separate nucleons","Energy is released when the nucleus forms, so mass is lost."],["equal to the total mass of its separate nucleons","The difference is the mass defect."],["equal to Z times the proton mass","This ignores the neutrons and the mass defect."]],"The missing mass (mass defect) became the binding energy."),
+      Q("C2","Which nucleus is the most stable?","The one with the highest binding energy per nucleon",[["The one with the largest nucleon number","Very heavy nuclei (e.g. uranium) are less stable."],["The one with the highest total binding energy","Stability depends on binding energy per nucleon."],["The one with the smallest mass defect","A small mass defect means weak binding."]],"Fe-56 is near the peak of the E<sub>B</sub>/A curve."),
+      Q("C1","For <sup>14</sup><sub>6</sub>C, the number of neutrons is","8",[["6","6 is the number of protons (Z)."],["14","14 is the nucleon number (A)."],["20","Neutron number = A − Z = 14 − 6."]],"N = A − Z.") ] },
+
+  { sub:"9.2", title:"Radioactivity",
+    html:`<p><b>Radioactive decay</b> is the spontaneous and random emission of radiation from an unstable nucleus.</p>
+    <table class="cmp"><tr><th>Decay</th><th>Particle</th><th>Change in A</th><th>Change in Z</th></tr>
+    <tr><td>α</td><td>helium nucleus <sup>4</sup><sub>2</sub>He</td><td>−4</td><td>−2</td></tr>
+    <tr><td>β<sup>−</sup></td><td>electron <sup>0</sup><sub>−1</sub>e (a neutron → proton)</td><td>0</td><td>+1</td></tr>
+    <tr><td>β<sup>+</sup></td><td>positron <sup>0</sup><sub>+1</sub>e (a proton → neutron)</td><td>0</td><td>−1</td></tr>
+    <tr><td>γ</td><td>photon (electromagnetic radiation)</td><td>0</td><td>0</td></tr></table>
+    <ul><li>In every nuclear equation, the <b>total A and the total Z are conserved</b>.</li>
+    <li>Penetrating power: α &lt; β &lt; γ. Ionising power: α &gt; β &gt; γ.</li></ul>`,
+    sym:[["α","Alpha particle (helium nucleus)","—"],["β<sup>−</sup>","Beta-minus particle (electron)","—"],["β<sup>+</sup>","Beta-plus particle (positron)","—"],["γ","Gamma ray (high-energy photon)","—"]],
+    qs:[
+      Q("C2","When a nucleus emits an α particle, its nucleon number and proton number change by","−4 and −2",[["−2 and −4","A decreases by 4 and Z by 2, not the other way round."],["0 and +1","That is β<sup>−</sup> decay."],["0 and 0","That is γ emission."]],"An α particle is <sup>4</sup><sub>2</sub>He."),
+      Q("C2","In β<sup>−</sup> decay,","a neutron changes into a proton, so Z increases by 1",[["a proton changes into a neutron, so Z decreases by 1","That is β<sup>+</sup> decay."],["the nucleon number decreases by 4","That is α decay."],["the nucleus emits a photon only","That is γ emission."]],"A stays the same and Z goes up by 1."),
+      Q("C2","Gamma emission changes","neither the nucleon number nor the proton number",[["the proton number by +1","γ is a photon with no charge."],["the nucleon number by −4","γ has no mass number."],["both A and Z by −1","γ has no charge and no mass number."]],"A γ ray only carries away energy from an excited nucleus."),
+      Q("C1","Radioactive decay is described as random because","it is impossible to predict when a particular nucleus will decay",[["it depends on the temperature","Decay is not affected by temperature or pressure."],["all nuclei decay at the same moment","Each nucleus decays at an unpredictable time."],["the half-life keeps changing","The half-life is constant for a nuclide."]],"Only the probability of decay per unit time (λ) is fixed.") ] },
+
+  { sub:"9.3", title:"Decay law, activity and half-life",
+    html:`<p><b>Decay law:</b> the rate of decay of a sample is directly proportional to the number of undecayed nuclei present.</p>
+    <div class="formula">dN/dt = −λN &nbsp;&nbsp; N = N<sub>0</sub>e<sup>−λt</sup> &nbsp;&nbsp; A = λN &nbsp;&nbsp; A = A<sub>0</sub>e<sup>−λt</sup> &nbsp;&nbsp; T<sub>½</sub> = ln 2 / λ</div>
+    <ul><li><b>Activity A:</b> the number of decays per second. Unit: becquerel (1 Bq = 1 decay per second).</li>
+    <li><b>Decay constant λ:</b> the probability that a nucleus decays per unit time. Unit: s<sup>−1</sup>.</li>
+    <li><b>Half-life T<sub>½</sub>:</b> the time taken for the number of undecayed nuclei (or the activity) to fall to half its initial value.</li>
+    <li>After n half-lives, N = N<sub>0</sub>(½)<sup>n</sup>.</li></ul>`,
+    sym:[["N (decay law)","Number of undecayed nuclei at time t","no unit"],["N<sub>0</sub>","Initial number of undecayed nuclei","no unit"],["λ","Decay constant","s<sup>−1</sup>"],["A (activity)","Activity of the sample","Bq"],["A<sub>0</sub>","Initial activity","Bq"],["T<sub>½</sub>","Half-life","s"],["t","Time elapsed","s"]],
+    qs:[
+      Q("C1","The SI unit of activity is","becquerel (Bq)",[["hertz (Hz)","Hz is used for frequency of waves."],["second (s)","The second is the unit of half-life."],["s<sup>−1</sup> only, with no special name","Activity has its own named unit, the becquerel."]],"1 Bq = 1 decay per second."),
+      Q("C1","The half-life of a radioactive nuclide is","the time for half of the undecayed nuclei in a sample to decay",[["half the time for all nuclei to decay","The decay is exponential, so it never reaches zero exactly."],["the time for one nucleus to decay","A single decay time is unpredictable."],["the probability of decay per second","That is the decay constant λ."]],"T<sub>½</sub> = ln 2/λ."),
+      Q("C2","A sample has a half-life of 2 hours. After 6 hours, the fraction of the original nuclei still undecayed is","1/8",[["1/3","6 h is 3 half-lives, so (½)<sup>3</sup>."],["1/6","Halving three times gives 1/8."],["1/4","That is after 2 half-lives (4 h)."]],"N/N<sub>0</sub> = (½)<sup>n</sup> with n = 6/2 = 3."),
+      Q("C2","A nuclide with a larger decay constant λ has","a shorter half-life",[["a longer half-life","T<sub>½</sub> = ln 2/λ, so a larger λ gives a smaller T<sub>½</sub>."],["the same half-life","T<sub>½</sub> depends on λ."],["zero activity","A larger λ gives a higher activity for the same N."]],"T<sub>½</sub> ∝ 1/λ.") ] },
+
+  { sub:"9.4", title:"Particle physics",
+    html:`<p><b>Thermionic emission:</b> the release of electrons from the surface of a heated metal. It is used as the source of electrons in accelerators and electron guns.</p>
+    <p><b>Particle accelerators</b> (e.g. linear accelerator, cyclotron): an <b>electric field</b> speeds the charged particles up, and a <b>magnetic field</b> bends their path.</p>
+    <p><b>Particle detectors</b> (e.g. cloud chamber, bubble chamber) show the tracks of charged particles. The curvature of a track in a magnetic field gives the sign of the charge and the momentum.</p>
+    <table class="cmp"><tr><th>Family</th><th>Examples</th><th>Feels the strong force?</th></tr>
+    <tr><td>Quarks</td><td>up, down, strange, charm, top, bottom</td><td>yes</td></tr>
+    <tr><td>Leptons (fundamental)</td><td>electron, muon, tau, neutrinos</td><td>no</td></tr>
+    <tr><td>Hadrons (made of quarks)</td><td>baryons (3 quarks: proton uud, neutron udd), mesons (quark + antiquark: pion)</td><td>yes</td></tr></table>
+    <ul><li>Every particle has an <b>antiparticle</b> with the same mass but opposite charge (e.g. the positron is the antiparticle of the electron).</li>
+    <li>Quark charges: up = +⅔e, down = −⅓e.</li></ul>`,
+    sym:[["e","Elementary charge (1.60 × 10<sup>−19</sup>)","C"],["u, d","Up quark (+⅔e) and down quark (−⅓e)","—"],["ν","Neutrino","—"],["e<sup>+</sup>","Positron (antielectron)","—"]],
+    qs:[
+      Q("C1","Thermionic emission is","the release of electrons from a heated metal surface",[["the release of electrons when light shines on a metal","That is the photoelectric effect."],["the emission of α particles from a nucleus","That is radioactive decay."],["the heating of a wire by an electric current","That is Joule heating."]],"Heat gives electrons enough energy to escape the metal."),
+      Q("C2","In a particle accelerator, the function of the magnetic field is to","bend the path of the charged particles",[["increase the speed of the particles","The electric field does work to speed them up."],["produce the particles","Particles come from a source such as thermionic emission."],["stop the particles","A magnetic force is perpendicular to v, so it does no work."]],"F = qvB sin θ acts at right angles to the motion."),
+      Q("C2","A proton is classified as a","baryon, made of three quarks (uud)",[["lepton","Leptons are fundamental and do not contain quarks."],["meson, made of a quark and an antiquark","A proton has three quarks."],["fundamental particle","A proton is made of quarks."]],"Charge check: +⅔ + ⅔ − ⅓ = +1."),
+      Q("C1","An antiparticle has","the same mass but opposite charge to its particle",[["opposite mass and the same charge","Mass is never negative."],["the same mass and the same charge","Then it would be identical to the particle."],["zero mass","Antiparticles have the same mass as their particles."]],"For example, the positron is the antiparticle of the electron."),
+      Q("C1","Which particle is a lepton?","Electron",[["Proton","A proton is a baryon (a hadron)."],["Neutron","A neutron is a baryon (a hadron)."],["Pion","A pion is a meson (a hadron)."]],"Leptons do not feel the strong force.") ] }
+];
+
+
+
 /* =====================================================================
    APP LOGIC (no need to edit below this line)
    ===================================================================== */
@@ -829,7 +1434,7 @@ function renderHome(){
     <div class="grid3">
       <label>Full name<input id="f-name" value="${esc(s.name)}" autocomplete="name"></label>
       <label>Matric no.<input id="f-matric" value="${esc(s.matric)}"></label>
-      <label>Tutorial group<input id="f-group" value="${esc(s.group)}" placeholder="e.g. T3"></label>
+      <label>Tutorial group<input id="f-group" value="${esc(s.group)}"></label>
     </div>
     <p id="f-err" class="err"></p>
     ${HAS_BACKEND ? "" : `<div class="preview">Preview mode. Results are only saved when this page runs from the lecturer's Google link.</div>`}
@@ -839,8 +1444,8 @@ function renderHome(){
     ${CHAPTERS.map(c => `<div class="chap ${c.open?"":"locked"}">
         <span class="num">${c.id}</span><span class="ct">${esc(c.title)}</span>
         ${c.open ? `<span class="acts">
-          ${THEORY[c.id] ? `<button class="btn sm ghost" data-go="theory" data-id="${c.id}">Theory lesson<small>${THEORY[c.id].reduce((t,s)=>t+s.qs.length,0)} questions, ~20 min</small></button>` : ""}
-          <button class="btn sm" data-go="diag" data-id="${c.id}">Diagnostic<small>${nParts(c)} questions, ~30 min</small></button></span>`
+          ${THEORY[c.id] ? `<button class="btn sm ghost" data-go="theory" data-id="${c.id}">Theory lesson<small>${THEORY[c.id].reduce((t,s)=>t+s.qs.length,0)+SYMQ_N} questions, ~50 min</small></button>` : ""}
+          ${c.diagnostic ? `<button class="btn sm" data-go="diag" data-id="${c.id}">Diagnostic<small>${nParts(c)} questions, ~30 min</small></button>` : `<span class="cs">Diagnostic coming soon</span>`}</span>`
           : `<span class="cs">Not open yet</span>`}</div>`).join("")}
   </div>`;
   app.querySelectorAll("[data-go]").forEach(b => b.onclick = () => {
@@ -852,10 +1457,50 @@ function renderHome(){
   });
 }
 
+
+/* ---------- Symbols and units ---------- */
+const SYMQ_N = 10;
+const UNIT_POOL = ["N","J","W","C","V","Ω","T","Hz","m","s","kg","A","F","H","Wb","m s<sup>−1</sup>","no unit"];
+function symTable(sym, title){
+  if(!sym || !sym.length) return "";
+  return `<div class="symbox"><div class="symh">${title}</div><table class="sym"><tr><th>Symbol</th><th>Meaning</th><th>SI unit</th></tr>${sym.map(r => `<tr><td class="s">${r[0]}</td><td>${r[1]}</td><td>${r[2]}</td></tr>`).join("")}</table></div>`;
+}
+function noUnit(u){ return String(u).charAt(0) === "—"; }
+function baseSym(x){ return String(x).split(" (")[0].trim(); }
+function baseUnit(u){ return String(u).split(" (")[0].trim(); }
+function chapterSyms(id){
+  const seen = {}, out = [];
+  (THEORY[id]||[]).forEach(s => (s.sym||[]).forEach(r => { const k = r[0]+"|"+r[1]; if(!seen[k]){ seen[k]=1; out.push(r); } }));
+  return out;
+}
+function symbolsSection(id){
+  const all = chapterSyms(id); if(all.length < 4) return [];
+  const pick = shuffle(all.slice()), qs = [];
+  for(const r of pick){
+    if(qs.length >= SYMQ_N) break;
+    const askUnit = qs.length % 2 === 1 && !noUnit(r[2]);
+    const sb = baseSym(r[0]);
+    if(askUnit){
+      const cu = baseUnit(r[2]);
+      let w = shuffle(all.map(x => x[2]).filter(u => !noUnit(u) && baseUnit(u) !== cu));
+      w = w.concat(shuffle(UNIT_POOL.filter(u => baseUnit(u) !== cu)));
+      const ds = []; w.forEach(u => { if(ds.length<3 && !ds.some(d => baseUnit(d)===baseUnit(u))) ds.push(u); });
+      qs.push(Q("C1", `What is the SI unit of <b>${sb}</b> (${r[1].charAt(0).toLowerCase()+r[1].slice(1)})?`, r[2], ds, `${sb} is the ${r[1].charAt(0).toLowerCase()+r[1].slice(1)}, measured in ${r[2]}.`));
+    } else {
+      const ds = []; shuffle(all.filter(x => baseSym(x[0]) !== sb && x[1] !== r[1])).forEach(x => { if(ds.length<3 && !ds.includes(x[1])) ds.push(x[1]); });
+      if(ds.length < 3) continue;
+      qs.push(Q("C1", `In this chapter, what does the symbol <b>${sb}</b> represent?`, r[1], ds, noUnit(r[2]) ? `${sb}: ${r[1]}.` : `${sb}: ${r[1]} (SI unit: ${r[2]}).`));
+    }
+  }
+  return [{ sub:"Sym", title:"Symbols and units check", review:true,
+    html:`<p>Before you finish, check that you know what every symbol in this chapter means and what it is measured in. PSPM questions expect the correct SI unit in every final answer.</p>`,
+    sym: all, qs }];
+}
+
 /* ---------- Theory lesson ---------- */
 function startTheory(ch){
   state.chapter = ch;
-  const secs = THEORY[ch.id].map(s => Object.assign({}, s, { qs: s.qs.map(q => Object.assign({type:"mcq", sub:s.sub, skill:"theory"}, q, {opts: shuffle(q.opts)})) }));
+  const secs = THEORY[ch.id].concat(symbolsSection(ch.id)).map(s => Object.assign({}, s, { qs: s.qs.map(q => Object.assign({type:"mcq", sub:s.sub, skill:"theory"}, q, {opts: shuffle(q.opts)})) }));
   state.theory = { secs, idx:0, ans: secs.map(s => s.qs.map(() => null)), startedAt: Date.now() };
   renderTheory();
 }
@@ -866,7 +1511,7 @@ function renderTheory(keep){
   app.innerHTML = `
   <div class="qhead"><span>Theory lesson: Chapter ${ch.id}</span><span>Part ${T.idx+1} of ${T.secs.length}</span></div>
   <div class="bar"><i style="width:${T.idx/T.secs.length*100}%"></i></div>
-  <section class="card note"><span class="tag">${sec.sub}</span><h2>${esc(sec.title)}</h2>${sec.html}</section>
+  <section class="card note"><span class="tag">${sec.sub}</span><h2>${esc(sec.title)}</h2>${sec.html}${symTable(sec.sym, sec.review ? "All symbols in this chapter" : "Symbols and units")}</section>
   <h2 class="sec">Check your understanding</h2>
   <section class="card">
     ${sec.qs.map((q,qi) => partHTML(q, qi, ans[qi], {locked: ans[qi]!=null, feedback: ans[qi]!=null, tag: q.bloom==="C1" ? "C1 Remember" : "C2 Understand"})).join("")}
