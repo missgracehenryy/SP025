@@ -234,6 +234,14 @@ ol.parts{list-style:none;padding-left:0;margin:6px 0}ol.parts li{margin:5px 0;pa
 .pl{display:inline-block;width:30px;text-indent:0;font-weight:700}
 .pl2{font-weight:700;margin:12px 0 2px}
 .given{font-size:14px;color:var(--muted);margin:8px 0 0}
+svg.anim .ar{stroke-dasharray:var(--len);stroke-dashoffset:var(--len)}
+svg.anim.play .ar{animation:rayDraw .85s linear var(--d) forwards}
+svg.anim .fade{opacity:0}
+svg.anim.play .fade{animation:fadeIn .5s ease var(--d) forwards}
+@keyframes rayDraw{to{stroke-dashoffset:0}}
+@keyframes fadeIn{to{opacity:1}}
+.replay{display:block;margin:6px auto 0;background:none;border:1px solid var(--line);border-radius:999px;padding:4px 12px;font:600 12.5px system-ui,-apple-system,sans-serif;color:var(--brand2);cursor:pointer}
+@media (prefers-reduced-motion:reduce){svg.anim .ar{stroke-dashoffset:0!important;animation:none!important}svg.anim .fade{opacity:1!important;animation:none!important}}
 </style>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
 <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js" onload="window.renderTex&&renderTex()"></script>
@@ -2764,39 +2772,46 @@ const OBJ = (x,y0,h,c=INK,dash) => L(x,y0,x,y0-h,c,2.4,dash?"4 3":null) + `<path
 const AXIS = (x1,x2,y) => L(x1,y,x2,y,MUT,1,"6 4");
 const PT = (x,y,lab) => DOT(x,y) + T(x,y+16,lab,{s:11,c:MUT});
 
+/* animated ray helpers: rays draw in order (--d = start time), then the image fades in */
+const AH = (x1,y1,x2,y2,c) => RAY(x1,y1,x2,y2,c).slice(L(x1,y1,x2,y2,c,1.6).length);
+const AR = (x1,y1,x2,y2,d,c=RED) => `<line class="ar" x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${c}" stroke-width="1.8" style="--len:${Math.hypot(x2-x1,y2-y1).toFixed(1)};--d:${d}s"/>` + `<g class="fade" style="--d:${(d+0.45).toFixed(2)}s">${AH(x1,y1,x2,y2,c)}</g>`;
+const FD = (html,d) => `<g class="fade" style="--d:${d}s">${html}</g>`;
+const figA = (svg, cap) => `<figure class="tfig">${svg.replace('class="tsvg"','class="tsvg anim"')}<button class="replay" type="button">&#8635; Replay</button><figcaption>${cap}</figcaption></figure>`;
 const f7_concave = S(360, 210, (() => { const y=110, mx=320; let o = AXIS(20,340,y);
   o += P(`M${mx},40 Q${mx+18},${y} ${mx},180`,INK,3) + PT(260,y,"F") + PT(200,y,"C") + PT(mx,y,"P");
-  o += OBJ(140,y,40) + OBJ(230,y,-20,BLU);
-  o += RAY(140,70,320,70) + RAY(320,70,230,130) + L(230,130,200,150,RED,1.6);
-  o += RAY(140,70,320,130) + RAY(320,130,170,130);
-  o += T(140,128,"object",{s:11}) + T(232,160,"image",{s:11,c:BLU});
+  o += OBJ(140,y,40) + T(140,128,"object",{s:11});
+  o += AR(140,70,320,70,0.3) + AR(320,70,200,150,1.2);
+  o += AR(140,70,320,130,2.3) + AR(320,130,170,130,3.2);
+  o += FD(OBJ(230,y,-20,BLU) + T(232,160,"image",{s:11,c:BLU}), 4.1);
   return o; })());
 const f7_convex = S(360, 200, (() => { const y=110, mx=200; let o = AXIS(20,340,y);
   o += P(`M${mx},40 Q${mx-18},${y} ${mx},180`,INK,3) + PT(260,y,"F") + PT(320,y,"C");
-  o += OBJ(80,y,40) + OBJ(240,y,13.3,BLU,1);
-  o += RAY(80,70,200,70) + RAY(200,70,140,30) + DASH(200,70,260,110);
-  o += RAY(80,70,197,89.5) + RAY(197,89.5,120,76.6) + DASH(197,89.5,320,110);
-  o += T(80,128,"object",{s:11}) + T(252,92,"image",{s:11,c:BLU,a:"start"}) + T(180,194,"virtual, upright, diminished",{s:11,c:MUT});
+  o += OBJ(80,y,40) + T(80,128,"object",{s:11});
+  o += AR(80,70,200,70,0.3) + AR(200,70,140,30,1.2) + FD(DASH(200,70,260,110),2.0);
+  o += AR(80,70,197,89.5,2.7) + AR(197,89.5,120,76.6,3.6) + FD(DASH(197,89.5,320,110),4.4);
+  o += FD(OBJ(240,y,13.3,BLU,1) + T(252,92,"image",{s:11,c:BLU,a:"start"}) + T(180,194,"virtual, upright, diminished",{s:11,c:MUT}), 5.1);
   return o; })());
 const f7_refr = S(360, 190, (() => { const y=100; let o = AXIS(20,340,y);
   o += `<path d="M200,20 Q170,${y} 200,180 L340,180 L340,20 z" fill="#dbeaf7" stroke="${INK}" stroke-width="1.6"/>` + T(110,40,"n&#8321; (air)",{s:12}) + T(290,40,"n&#8322; (glass)",{s:12});
-  o += OBJ(60,y,0.01) + DOT(60,y) + T(60,y+18,"O",{s:12,b:1}) + DOT(310,y) + T(310,y+18,"I",{s:12,b:1,c:BLU});
-  o += RAY(60,y,184,60) + RAY(184,60,310,y) + RAY(60,y,184,140) + RAY(184,140,310,y);
+  o += DOT(60,y) + T(60,y+18,"O",{s:12,b:1});
+  o += AR(60,y,184,60,0.3) + AR(184,60,310,y,1.2) + AR(60,y,184,140,2.2) + AR(184,140,310,y,3.1);
+  o += FD(DOT(310,y) + T(310,y+18,"I",{s:12,b:1,c:BLU}), 4.0);
   o += L(60,160,186,160,MUT,1) + T(123,174,"u",{s:12,i:1}) + L(186,170,310,170,MUT,1) + T(250,184,"v",{s:12,i:1});
   return o; })());
 const LENSCX = (x,y,h=70) => `<path d="M${x},${y-h} Q${x+16},${y} ${x},${y+h} Q${x-16},${y} ${x},${y-h} z" fill="#dbeaf7" stroke="${INK}" stroke-width="1.6"/>`;
 const LENSCC = (x,y,h=70) => `<path d="M${x-10},${y-h} L${x+10},${y-h} Q${x+1},${y} ${x+10},${y+h} L${x-10},${y+h} Q${x-1},${y} ${x-10},${y-h} z" fill="#dbeaf7" stroke="${INK}" stroke-width="1.6"/>`;
 const f7_lens = S(360, 210, (() => { const y=105; let o = AXIS(10,350,y) + LENSCX(180,y);
   o += PT(120,y,"F") + PT(240,y,"F") + PT(60,y,"2F") + PT(300,y,"2F");
-  o += OBJ(60,y,40) + OBJ(300,y,-40,BLU);
-  o += RAY(60,65,180,65) + RAY(180,65,300,145) + L(300,145,330,165,RED,1.6) + RAY(60,65,180,105) + RAY(180,105,300,145);
-  o += T(60,190,"object at 2F",{s:11}) + T(300,190,"image at 2F",{s:11,c:BLU}) + T(180,202,"real, inverted, same size",{s:11,c:MUT});
+  o += OBJ(60,y,40) + T(60,190,"object at 2F",{s:11});
+  o += AR(60,65,180,65,0.3) + AR(180,65,330,165,1.2);
+  o += AR(60,65,180,105,2.3) + AR(180,105,300,145,3.2);
+  o += FD(OBJ(300,y,-40,BLU) + T(300,190,"image at 2F",{s:11,c:BLU}) + T(180,202,"real, inverted, same size",{s:11,c:MUT}), 4.1);
   return o; })());
 const f7_lensc = S(360, 190, (() => { const y=105; let o = AXIS(10,350,y) + LENSCC(200,y);
-  o += PT(140,y,"F") + PT(260,y,"F") + OBJ(80,y,40) + OBJ(160,y,13.3,BLU,1);
-  o += RAY(80,65,200,65) + RAY(200,65,290,5) + DASH(200,65,140,105);
-  o += RAY(80,65,200,105) + RAY(200,105,320,145);
-  o += T(80,124,"object",{s:11}) + T(160,84,"image",{s:11,c:BLU}) + T(200,186,"virtual, upright, diminished",{s:11,c:MUT});
+  o += PT(140,y,"F") + PT(260,y,"F") + OBJ(80,y,40) + T(80,124,"object",{s:11});
+  o += AR(80,65,200,65,0.3) + AR(200,65,290,5,1.2) + FD(DASH(200,65,140,105),2.0);
+  o += AR(80,65,200,105,2.7) + AR(200,105,320,145,3.6);
+  o += FD(OBJ(160,y,13.3,BLU,1) + T(160,84,"image",{s:11,c:BLU}) + T(200,186,"virtual, upright, diminished",{s:11,c:MUT}), 4.5);
   return o; })());
 const f7_huy = S(380, 200, (() => { let o = "";
   o += L(40,20,40,180,BLU,2.4) + T(40,196,"wavefront",{s:11,c:BLU});
@@ -2842,8 +2857,8 @@ ${fx("R=2f||\\dfrac1f=\\dfrac1u+\\dfrac1v||M=\\dfrac{h_i}{h_o}=-\\dfrac{v}{u}", 
 <ol><li>A ray <b>parallel to the axis</b> reflects <b>through F</b> (concave), or as if it came from F (convex).</li>
 <li>A ray <b>through F</b> (or heading towards F, for convex) reflects <b>parallel to the axis</b>.</li>
 <li>A ray <b>through C</b> (or heading towards C) reflects straight back along itself.</li></ol>
-${fig(f7_concave, "Figure 7.1: Concave mirror with the object beyond C. The image is real, inverted and diminished, between F and C.")}
-${fig(f7_convex, "Figure 7.2: Convex mirror. The reflected rays spread out and only appear to come from behind the mirror, so the image is virtual. It is always upright and diminished.")}
+${figA(f7_concave, "Figure 7.1: Concave mirror with the object beyond C. The image is real, inverted and diminished, between F and C.")}
+${figA(f7_convex, "Figure 7.2: Convex mirror. The reflected rays spread out and only appear to come from behind the mirror, so the image is virtual. It is always upright and diminished.")}
 <h4>Sign convention (real object)</h4>
 <table class="cmp"><tr><th>Quantity</th><th>Positive (+)</th><th>Negative (&minus;)</th></tr>
 <tr><td>f and R</td><td>concave mirror</td><td>convex mirror</td></tr>
@@ -2855,7 +2870,7 @@ ${trap(`Forgetting to put a negative sign on f for a convex mirror.`)}`;
 
 C7[1].html = `
 <p>Light changes speed, and so bends, when it crosses a boundary between two materials. If the boundary is curved, like the surface of a glass ball or the front of your eye, it can form an image.</p>
-${fig(f7_refr, "Figure 7.3: Light from object O in air is refracted at a convex glass surface and forms an image I inside the glass.")}
+${figA(f7_refr, "Figure 7.3: Light from object O in air is refracted at a convex glass surface and forms an image I inside the glass.")}
 ${fx("\\dfrac{n_1}{u}+\\dfrac{n_2}{v}=\\dfrac{n_2-n_1}{R}", "n<sub>1</sub>/u + n<sub>2</sub>/v = (n<sub>2</sub> &minus; n<sub>1</sub>)/R")}
 <ul><li>n<sub>1</sub> is the refractive index of the medium the <b>object</b> is in. n<sub>2</sub> is the refractive index of the medium the light <b>enters</b>.</li>
 <li><b>R is positive</b> for a <b>convex</b> surface facing the object, and <b>negative</b> for a <b>concave</b> surface.</li>
@@ -2871,8 +2886,8 @@ ${fx("\\dfrac1f=\\dfrac1u+\\dfrac1v||M=\\dfrac{h_i}{h_o}=-\\dfrac{v}{u}", "1/f =
 <ol><li>A ray <b>parallel to the axis</b> refracts <b>through F</b> on the far side (convex), or as if from F on the near side (concave).</li>
 <li>A ray through the <b>optical centre</b> goes straight through, undeviated.</li>
 <li>A ray through F (or heading to F) leaves parallel to the axis.</li></ol>
-${fig(f7_lens, "Figure 7.4: Convex lens with the object at 2F. The image is at 2F on the other side: real, inverted and the same size.")}
-${fig(f7_lensc, "Figure 7.5: Concave lens. The rays spread out as if from a point on the object side, so the image is always virtual, upright and diminished.")}
+${figA(f7_lens, "Figure 7.4: Convex lens with the object at 2F. The image is at 2F on the other side: real, inverted and the same size.")}
+${figA(f7_lensc, "Figure 7.5: Concave lens. The rays spread out as if from a point on the object side, so the image is always virtual, upright and diminished.")}
 <p><b>Sign convention:</b> f is <b>positive</b> for a convex lens and <b>negative</b> for a concave lens. v is positive for a real image (on the far side) and negative for a virtual image (on the object side).</p>
 <h4>Lens maker's equation</h4>
 <p>The focal length depends on the shape of the lens and on the refractive indices of the lens and its surroundings:</p>
@@ -3798,8 +3813,12 @@ function renderTex(){
   });
 }
 window.renderTex = renderTex;
+/* animated figures: play when scrolled into view; Replay restarts */
+const animIO = ("IntersectionObserver" in window) ? new IntersectionObserver(es => es.forEach(e => { if(e.isIntersecting){ e.target.classList.add("play"); animIO.unobserve(e.target); } }), {threshold:0.45}) : null;
+function setupAnims(){ document.querySelectorAll("svg.anim:not([data-obs])").forEach(svg => { svg.setAttribute("data-obs","1"); if(animIO) animIO.observe(svg); else svg.classList.add("play"); }); }
+document.addEventListener("click", e => { const b = e.target.closest && e.target.closest(".replay"); if(!b) return; const svg = b.parentNode.querySelector("svg.anim"); if(!svg) return; svg.classList.remove("play"); void svg.getBoundingClientRect(); requestAnimationFrame(() => svg.classList.add("play")); });
 function syncHomeBtn(){ const b = document.getElementById("homebtn"); if(b) b.style.display = document.getElementById("f-name") ? "none" : ""; }
-try{ new MutationObserver(() => { renderTex(); syncHomeBtn(); }).observe(document.getElementById("app"), {childList:true, subtree:true}); }catch(e){}
+try{ new MutationObserver(() => { renderTex(); syncHomeBtn(); setupAnims(); }).observe(document.getElementById("app"), {childList:true, subtree:true}); }catch(e){}
 try{ document.getElementById("homebtn").onclick = () => { if(typeof flushQueue === "function") flushQueue(); renderHome(); window.scrollTo(0,0); }; }catch(e){}
 
 try{ document.getElementById("hcat").innerHTML = CAT.sit("head"); }catch(e){}
