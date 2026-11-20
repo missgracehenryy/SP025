@@ -2753,6 +2753,78 @@ function addDiag(chId, afterSub, q){
   D.splice(at, 0, q);
 }
 
+/* Chapter 7: extra weight on 7.1-7.3 and 7.6-7.9 (most examined) */
+addDiag(7, "7.1", { stem:"A make-up artist sits 20 cm in front of a spherical mirror. It forms an inverted image 60 cm from the mirror.", parts:[
+  { sub:"7.1", skill:"calc", type:"num", prompt:"Calculate the focal length of the mirror.", unit:"cm", ans:15,
+    wrong:[[30,"An inverted image is real, so v = +60 cm. 1/f = 1/20 + 1/60."],[40,"Add the reciprocals, not the distances."]],
+    exp:"1/f = 1/20 + 1/60 = 4/60, so f = +15 cm (concave)." },
+  { sub:"7.1", skill:"calc", type:"num", prompt:"How far from the mirror should she sit to see an upright image three times her actual size?", unit:"cm", ans:10,
+    wrong:[[20,"Upright means M = +3, so v = &minus;3u (virtual). You used an inverted image."],[5,"Check: 1/15 = 1/u &minus; 1/(3u) = 2/(3u), so u = 10 cm."]],
+    exp:"v = &minus;3u. 1/15 = 1/u &minus; 1/(3u) = 2/(3u), so u = 10 cm. She must be inside the focal length." },
+  { sub:"7.1", skill:"theory", type:"mcq", prompt:"Why must the object be between F and the mirror for this upright, magnified image?",
+    opts:[ {t:"Only then do the reflected rays diverge, so they appear to come from a virtual image behind the mirror", ok:true},
+           {t:"Beyond C the image is always upright", mis:"Beyond C a concave mirror gives a real, inverted, diminished image."},
+           {t:"At F the image is upright and three times larger", mis:"With the object at F the rays leave parallel, so the image is at infinity."} ],
+    exp:"For u &lt; f the reflected rays spread out, so the eye traces them back to an upright, magnified virtual image behind the mirror." } ]});
+
+addDiag(7, "7.1", { stem:"Ray diagrams are used to locate images in spherical mirrors.", parts:[
+  { sub:"7.1", skill:"theory", type:"mcq", prompt:"For a concave mirror, which rule for drawing rays is correct?",
+    opts:[ {t:"A ray parallel to the principal axis reflects through F", ok:true},
+           {t:"A ray through F reflects back through F", mis:"A ray through F reflects parallel to the axis."},
+           {t:"A ray through C reflects parallel to the axis", mis:"A ray through C hits the mirror along a normal, so it reflects straight back through C."} ],
+    exp:"Parallel &rarr; through F. Through F &rarr; parallel. Through C &rarr; back along itself." } ]});
+
+addDiag(7, "7.2", { stem:"One end of a glass rod (n = 1.60) is ground to a convex surface of radius 8.0 cm. The rod is in a liquid. An object in the liquid 12 cm from the surface forms a virtual image 20 cm from the surface.", parts:[
+  { sub:"7.2", skill:"calc", type:"num", prompt:"Calculate the refractive index of the liquid.", unit:"", ans:1.344,
+    wrong:[[0.576,"The image is virtual, so v = &minus;20 cm. A refractive index below 1 is a sign of a sign error."]],
+    exp:"n<sub>1</sub>/12 + 1.60/(&minus;20) = (1.60 &minus; n<sub>1</sub>)/8.0. n<sub>1</sub>/12 + n<sub>1</sub>/8 = 0.20 + 0.08 = 0.28. n<sub>1</sub>(0.2083) = 0.28, so n<sub>1</sub> = 1.34." },
+  { sub:"7.2", skill:"theory", type:"mcq", prompt:"In the refraction equation, which signs are correct here?",
+    opts:[ {t:"R positive (convex towards the object), v negative (virtual)", ok:true},
+           {t:"R negative, v positive", mis:"The surface bulges towards the object, so R &gt; 0. A virtual image has v &lt; 0."},
+           {t:"Both positive", mis:"A virtual image is on the object side, so v is negative."} ],
+    exp:"R &gt; 0 for a surface convex towards the object. v &lt; 0 for a virtual image." } ]});
+
+addDiag(7, "7.3", { stem:"A thin lens in air has both faces of radius 20 cm. An object 25 cm from the lens forms a real image 100 cm from the lens.", parts:[
+  { sub:"7.3", skill:"calc", type:"num", prompt:"Calculate the refractive index of the lens material.", unit:"", ans:1.5,
+    wrong:[[2.0,"Both faces bend the light: 1/R<sub>1</sub> &minus; 1/R<sub>2</sub> = 1/20 + 1/20 = 2/20."]],
+    exp:"1/f = 1/25 + 1/100, f = 20 cm. 1/20 = (n &minus; 1)(2/20), so n &minus; 1 = 0.5 and n = 1.5." } ]});
+
+addDiag(7, "7.3", { stem:"A convex meniscus lens (n = 1.50) has radii of curvature 20 cm and 40 cm, both curving the same way, as in a contact lens.", parts:[
+  { sub:"7.3", skill:"calc", type:"num", prompt:"Calculate its focal length in air.", unit:"cm", ans:80,
+    wrong:[[26.7,"For a meniscus lens both centres are on the same side, so R<sub>1</sub> and R<sub>2</sub> have the same sign: 1/20 &minus; 1/40."]],
+    exp:"R<sub>1</sub> = +20 cm, R<sub>2</sub> = +40 cm. 1/f = 0.50(1/20 &minus; 1/40) = 0.0125, f = 80 cm." } ]});
+
+addDiag(7, "7.3", { stem:"A lens forms an upright image one-third the size of an object placed 24 cm from it.", parts:[
+  { sub:"7.3", skill:"calc", type:"num", prompt:"Calculate the focal length. Include the sign.", unit:"cm", ans:-12,
+    wrong:[[6,"An upright, diminished image from a lens is virtual: v = &minus;8.0 cm."],[12,"Keep the sign. This is a diverging lens."]],
+    exp:"M = +1/3, so v = &minus;u/3 = &minus;8.0 cm. 1/f = 1/24 + 1/(&minus;8.0) = &minus;1/12, f = &minus;12 cm (diverging)." },
+  { sub:"7.3", skill:"theory", type:"mcq", prompt:"An object is placed between F and a convex lens. The image is",
+    opts:[ {t:"virtual, upright and magnified, on the same side as the object", ok:true},
+           {t:"real, inverted and magnified, on the far side", mis:"That happens for an object between F and 2F."},
+           {t:"real, inverted and diminished", mis:"That happens for an object beyond 2F."} ],
+    exp:"This is a magnifying glass: u &lt; f gives a negative v and M &gt; 1." } ]});
+
+addDiag(7, "7.8", { stem:"Light of wavelength 600 nm passes through a single slit 0.30 mm wide onto a screen 2.0 m away.", parts:[
+  { sub:"7.8", skill:"calc", type:"num", prompt:"Calculate the distance from the centre to the first bright fringe beside the central maximum.", unit:"m", ans:6.0e-3,
+    wrong:[[4.0e-3,"That is the first dark fringe. The first bright fringe (m = 1) is at (1 + &frac12;)&lambda;D/a."]],
+    exp:"&lambda;D/a = 4.0 mm. First bright: m = 1, y = 1.5 &times; 4.0 = 6.0 mm." },
+  { sub:"7.8", skill:"theory", type:"mcq", prompt:"The screen is moved twice as far away. The width of the central maximum",
+    opts:[ {t:"doubles", ok:true}, {t:"halves", mis:"w = 2&lambda;D/a is proportional to D."}, {t:"stays the same", mis:"Further away, the spreading light covers more of the screen: w &prop; D."} ],
+    exp:"w = 2&lambda;D/a &prop; D." } ]});
+
+addDiag(7, "7.9", { stem:"A grating with 7000 lines per cm is lit by red light. The second-order maximum is at 62&deg;.", parts:[
+  { sub:"7.9", skill:"calc", type:"num", prompt:"Calculate the wavelength.", unit:"m", ans:6.31e-7,
+    wrong:[[1.26e-6,"Second order: m = 2. Divide d sin &theta; by 2."],[6.31e-5,"7000 lines per cm = 7.0&times;10<sup>5</sup> lines per metre."]],
+    exp:"d = 1/(7.0&times;10<sup>5</sup>) = 1.43&times;10<sup>&minus;6</sup> m. &lambda; = d sin 62&deg;/2 = 6.31&times;10<sup>&minus;7</sup> m." },
+  { sub:"7.9", skill:"calc", type:"num", prompt:"Calculate the total number of bright fringes that can be seen.", unit:"", ans:5,
+    wrong:[[2,"That is m<sub>max</sub>. Total = 2m<sub>max</sub> + 1."],[3,"Count both sides and the central maximum."]],
+    exp:"d/&lambda; = 2.27, m<sub>max</sub> = 2. Total = 2(2) + 1 = 5." } ]});
+
+addDiag(7, "7.9", { stem:"White light including wavelengths from 360 nm to 750 nm falls on a grating. The first-order maximum for 1200 nm infrared light is at angle &theta;.", parts:[
+  { sub:"7.9", skill:"calc", type:"num", prompt:"Which visible wavelength has its third-order maximum at the same angle &theta;?", unit:"m", ans:4.0e-7,
+    wrong:[[3.6e-6,"Same angle means the same d sin &theta;: 1 &times; 1200 nm = 3 &times; &lambda;. Divide, do not multiply."],[6.0e-7,"That would be the second order (m = 2). The question asks for the third order."]],
+    exp:"d sin &theta; = m&lambda; is the same: 1 &times; 1200 = 3&lambda;, so &lambda; = 400 nm." } ]});
+
 /* Chapter 1 */
 addDiag(1, "1.1", { stem:"Three point charges are arranged as shown. Q<sub>3</sub> is 0.30 m from Q<sub>1</sub> and 0.37 m from Q<sub>2</sub>. The lines Q<sub>1</sub>Q<sub>3</sub> and Q<sub>2</sub>Q<sub>3</sub> make angles of 60&deg; and 45&deg; with the x-axis.", fig:FIG.ang3, parts:[
   { sub:"1.1", skill:"vector", type:"num", prompt:"Calculate the magnitude of the net electrostatic force on Q<sub>3</sub>.", unit:"N", ans:1.00,
@@ -4940,6 +5012,29 @@ addQ(7,"7.8",
 );
 addQ(7,"7.9",
   Qz("C2","For a grating, d/&lambda; = 4.6. How many bright fringes can be seen in total?","9",[["4","4 is the highest order on one side. Count both sides and the central maximum."],["5","Round down: m<sub>max</sub> = 4, not 5."],["11","m<sub>max</sub> = 4, so 2(4) + 1 = 9."]],"m<sub>max</sub> = 4 (round down). Total = 2m<sub>max</sub> + 1 = 9.")
+);
+
+/* More depth for the most-examined optics subtopics */
+addQ(7,"7.1",
+  Qz("C2","A concave mirror forms an image with M = &minus;2. The image is","real, inverted and magnified",[["virtual, upright and magnified","A negative M means inverted, and an inverted image from a mirror is real."],["real, inverted and diminished","|M| = 2 means the image is twice the size of the object."],["virtual, inverted and magnified","A mirror cannot form a virtual inverted image of a real object."]],"M &lt; 0: inverted (and real). |M| &gt; 1: magnified."),
+  Qz("C2","Which mirror always forms a virtual, upright, diminished image of a real object?","A convex mirror",[["A concave mirror","A concave mirror can give real or virtual images depending on u."],["A plane mirror","A plane mirror gives an image the same size, not diminished."],["A concave mirror with the object at C","At C the image is real, inverted and the same size."]],"That is why convex mirrors are used for car wing mirrors and shop security mirrors."),
+  Qz("C2","For a concave mirror, the object is moved from far away towards F. The real image","moves away from the mirror and gets larger",[["moves towards the mirror and gets smaller","As u decreases towards f, v increases."],["stays at F","Only a very distant object gives an image at F."],["becomes virtual","It stays real until the object passes inside F."]],"As u falls towards f, 1/v = 1/f &minus; 1/u gets smaller, so v grows, and |M| = v/u grows.")
+);
+addQ(7,"7.2",
+  Qz("C2","A fish in a round bowl is viewed from outside. In n<sub>1</sub>/u + n<sub>2</sub>/v = (n<sub>2</sub> &minus; n<sub>1</sub>)/R, n<sub>1</sub> is","the refractive index of water, where the fish is",[["the refractive index of air","n<sub>1</sub> is always the medium containing the object."],["the larger of the two indices","It is the object's medium, whichever is larger."],["1, always","Only when the object is in air."]],"n<sub>1</sub>: object side. n<sub>2</sub>: the side the light goes into."),
+  Qz("C2","Light from an object inside a glass sphere refracts out into the air. Seen from the object, the surface is","concave, so R is negative",[["convex, so R is positive","From inside, the surface curves away from the object."],["flat, so R is infinite","The surface of a sphere is curved."],["convex, so R is negative","Convex towards the object would be positive."]],"The centre of the sphere is on the object's side, so the surface is concave as seen by the light: R &lt; 0.")
+);
+addQ(7,"7.3",
+  Qz("C2","In the lens maker's equation for a biconvex lens, the signs of R<sub>1</sub> and R<sub>2</sub> are","R<sub>1</sub> positive, R<sub>2</sub> negative",[["both positive","The second surface is concave as seen by the light inside the lens."],["both negative","The first surface bulges towards the incoming light, so R<sub>1</sub> &gt; 0."],["R<sub>1</sub> negative, R<sub>2</sub> positive","That is for a biconcave lens."]],"So 1/R<sub>1</sub> &minus; 1/R<sub>2</sub> = 1/|R<sub>1</sub>| + 1/|R<sub>2</sub>|."),
+  Qz("C2","Two converging lenses are used together. The object distance for the second lens is","the separation of the lenses minus the image distance from the first lens",[["the image distance from the first lens","Measure from the first image to the second lens."],["the original object distance","The second lens sees the first lens's image as its object."],["the sum of the two focal lengths","Only for a telescope in normal adjustment."]],"u<sub>2</sub> = separation &minus; v<sub>1</sub>."),
+  Qz("C2","A converging glass lens (n = 1.5) is put into water (n = 1.33). Its focal length","increases",[["decreases","n<sub>lens</sub>/n<sub>medium</sub> &minus; 1 gets smaller in water, so 1/f falls and f rises."],["stays the same","f depends on n<sub>lens</sub>/n<sub>medium</sub>."],["becomes negative","Only if the liquid's n were greater than 1.5."]],"(1.5/1.33 &minus; 1) = 0.128 is smaller than (1.5 &minus; 1) = 0.5, so the lens bends light less.")
+);
+addQ(7,"7.8",
+  Qz("C2","In single-slit diffraction, the first bright fringe beside the central maximum is at","y = 1.5&lambda;D/a",[["y = &lambda;D/a","That is the first dark fringe."],["y = 0.5&lambda;D/a","The central maximum covers up to &lambda;D/a."],["y = 2&lambda;D/a","That is the second dark fringe."]],"Bright: (m + &frac12;)&lambda;D/a with m = 1.")
+);
+addQ(7,"7.9",
+  Qz("C2","The third-order maximum of wavelength &lambda; coincides with the second-order maximum of wavelength &lambda;'. Then","3&lambda; = 2&lambda;'",[["2&lambda; = 3&lambda;'","Pair each wavelength with its own order: m&lambda; = m'&lambda;'."],["&lambda; = &lambda;'","Different orders at the same angle need different wavelengths."],["3&lambda;' = 2&lambda;","Third order goes with &lambda;: 3&lambda;."]],"Same angle, same d: d sin &theta; = 3&lambda; = 2&lambda;'."),
+  Qz("C2","More lines per millimetre on a grating gives","maxima spread further apart, but fewer orders",[["maxima closer together and more orders","Smaller d means larger sin &theta; for each order."],["the same angles","sin &theta; = m&lambda;/d depends on d."],["more orders and wider spacing","d/&lambda; is smaller, so fewer orders fit."]],"Smaller d: each order at a larger angle, and m<sub>max</sub> = d/&lambda; is smaller.")
 );
 
 })();
