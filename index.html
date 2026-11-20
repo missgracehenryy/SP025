@@ -225,6 +225,8 @@ figure.tfig figcaption{font-size:13px;color:var(--muted);margin-top:6px;line-hei
 @media(max-width:420px){.top .sub{font-size:11.5px;line-height:1.2}.top .wrap{gap:8px}}
 .homebtn:hover{background:rgba(255,255,255,.26)}
 @media(max-width:420px){.homebtn{margin-right:46px;padding:5px 11px;font-size:12.5px}}
+.calc{margin:8px 0 10px 4px;padding:6px 0 6px 14px;border-left:3px solid var(--brand2);line-height:1.85;font-size:15.5px}
+.calc b{color:var(--brand)}
 </style>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
 <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js" onload="window.renderTex&&renderTex()"></script>
@@ -1773,9 +1775,7 @@ ${fx("F=\\dfrac{kq_1q_2}{r^2}||k=\\dfrac{1}{4\\pi\\varepsilon_0}=9.0\\times10^{9
 <li><b>Double the distance</b> and the force becomes one quarter (2<sup>2</sup> = 4). Triple it and the force becomes one ninth. This is an <b>inverse-square law</b>.</li>
 <li>The force acts <b>along the straight line</b> joining the two charges.</li></ul>
 <p><b>How to use it:</b> put in the <b>sizes</b> of the charges only (ignore their signs). Then decide the direction separately, using "like repel, unlike attract".</p>
-${ex("force between two charges", `<p>A +3.0 &mu;C charge and a &minus;2.0 &mu;C charge are 30 cm apart. Find the force between them.</p>
-<p>Convert first: 3.0 &mu;C = 3.0 &times; 10<sup>&minus;6</sup> C, 2.0 &mu;C = 2.0 &times; 10<sup>&minus;6</sup> C, 30 cm = 0.30 m.</p>
-<p>F = (9.0 &times; 10<sup>9</sup>)(3.0 &times; 10<sup>&minus;6</sup>)(2.0 &times; 10<sup>&minus;6</sup>) / (0.30)<sup>2</sup> = <b>0.60 N</b>, attractive (unlike charges).</p>`)}
+${ex("force between two charges", `<p>A +3.0 &mu;C charge and a &minus;2.0 &mu;C charge are 30 cm apart. Find the force between them.</p><p>Convert first: q<sub>1</sub> = 3.0 &times; 10<sup>&minus;6</sup> C, q<sub>2</sub> = 2.0 &times; 10<sup>&minus;6</sup> C, r = 0.30 m.</p><div class="calc"><div>F = kq<sub>1</sub>q<sub>2</sub>/r<sup>2</sup></div><div>F = (9.0 &times; 10<sup>9</sup>)(3.0 &times; 10<sup>&minus;6</sup>)(2.0 &times; 10<sup>&minus;6</sup>) / (0.30)<sup>2</sup></div><div><b>F = 0.60 N</b></div></div><p>The force is attractive, because the charges are unlike.</p>`)}
 <h4>More than two charges</h4>
 <p>When several charges act on one charge, work out each force on its own, as if the others were not there. Then add the forces as <b>vectors</b>. This is the <b>principle of superposition</b>.</p>
 ${fig(f_superpose, "Figure 1.2: q is repelled by q&#8321; and attracted by q&#8322;. The resultant force is the vector sum of F&#8321; and F&#8322;.")}
@@ -1806,9 +1806,7 @@ ${fig(f_radial, "Figure 1.3: Field lines of single point charges. Lines leave po
 ${fig(f_dipole, "Figure 1.4: A positive and a negative charge (unlike charges). Lines run from + to &#8722;, and the field between them is strong.")}
 ${fig(f_like, "Figure 1.5: Two positive charges (like charges). The lines push away from each other. At the neutral point midway between equal charges, E = 0.")}
 ${fig(f_plates, "Figure 1.6: Between two parallel plates the field lines are parallel and equally spaced, so the field is uniform.")}
-${ex("field of a point charge", `<p>Find the electric field 0.20 m from a +5.0 nC charge, and the force on an electron placed there.</p>
-<p>E = (9.0 &times; 10<sup>9</sup>)(5.0 &times; 10<sup>&minus;9</sup>) / (0.20)<sup>2</sup> = <b>1.1 &times; 10<sup>3</sup> N C<sup>&minus;1</sup></b>, pointing away from the charge.</p>
-<p>F = eE = (1.60 &times; 10<sup>&minus;19</sup>)(1125) = <b>1.8 &times; 10<sup>&minus;16</sup> N</b>, towards the charge (the electron is negative, so the force is opposite to E).</p>`)}
+${ex("field of a point charge", `<p>Find the electric field 0.20 m from a +5.0 nC charge, and the force on an electron placed there.</p><div class="calc"><div>E = kQ/r<sup>2</sup></div><div>E = (9.0 &times; 10<sup>9</sup>)(5.0 &times; 10<sup>&minus;9</sup>) / (0.20)<sup>2</sup></div><div><b>E = 1.1 &times; 10<sup>3</sup> N C<sup>&minus;1</sup></b></div></div><p>E points away from the positive charge.</p><div class="calc"><div>F = eE</div><div>F = (1.60 &times; 10<sup>&minus;19</sup>)(1125)</div><div><b>F = 1.8 &times; 10<sup>&minus;16</sup> N</b></div></div><p>The force points towards the charge, because the electron is negative.</p>`)}
 <h4>Field from several charges</h4>
 <p>Fields add as <b>vectors</b>, exactly like forces. Find E from each charge, draw its direction (away from +, towards &minus;), then add the components. Between two like charges there is a point where the fields cancel, called a <b>neutral point</b>.</p>
 ${trap(`Drawing E towards a positive charge. E always points <b>away</b> from a positive charge and <b>towards</b> a negative charge, whatever charge you later place in the field.`)}`;
@@ -1828,9 +1826,7 @@ ${fig(f_vr, "Figure 1.7: How potential changes with distance from a positive and
 <li>An electron, left alone, moves from <b>low to high</b> potential.</li></ul>
 <h4>Electric potential energy</h4>
 <p>The <b>electric potential energy</b> of a charge at a point is the work done in bringing that charge from infinity to the point: U = qV = kq<sub>1</sub>q<sub>2</sub>/r. A positive U (like charges) means work was needed to push them together. A negative U (unlike charges) means the charges are bound together.</p>
-${ex("potential and work", `<p>Find the potential 0.30 m from a +6.0 nC charge, and the work needed to bring a +2.0 &mu;C charge from infinity to that point.</p>
-<p>V = (9.0 &times; 10<sup>9</sup>)(6.0 &times; 10<sup>&minus;9</sup>) / 0.30 = <b>180 V</b>.</p>
-<p>W = qV = (2.0 &times; 10<sup>&minus;6</sup>)(180) = <b>3.6 &times; 10<sup>&minus;4</sup> J</b>.</p>`)}
+${ex("potential and work", `<p>Find the potential 0.30 m from a +6.0 nC charge, and the work needed to bring a +2.0 &mu;C charge from infinity to that point.</p><div class="calc"><div>V = kQ/r</div><div>V = (9.0 &times; 10<sup>9</sup>)(6.0 &times; 10<sup>&minus;9</sup>) / 0.30</div><div><b>V = 180 V</b></div></div><div class="calc"><div>W = qV</div><div>W = (2.0 &times; 10<sup>&minus;6</sup>)(180)</div><div><b>W = 3.6 &times; 10<sup>&minus;4</sup> J</b></div></div>`)}
 <h4>Several charges: add potentials as numbers</h4>
 <p>Potential is a scalar, so potentials from several charges are simply added, <b>with their signs</b>. There are no components.</p>
 <p>Example: +4.0 nC and &minus;4.0 nC are 0.20 m apart. At the midpoint, V = kQ/0.10 &minus; kQ/0.10 = <b>0</b>. But the field there is <b>not</b> zero: both fields point towards the negative charge and add up to 7.2 &times; 10<sup>3</sup> N C<sup>&minus;1</sup>. Zero potential does not mean zero field.</p>
@@ -1851,13 +1847,11 @@ ${fx("E=\\dfrac{V}{d}||F=qE||a=\\dfrac{qE}{m}", "E = V/d &nbsp;&nbsp; F = qE &nb
 <li>A bigger voltage, or a smaller gap, gives a stronger field.</li>
 <li>Because E is the same everywhere, the force on a charge is the same wherever it is between the plates.</li></ul>
 ${fig(f_charges_field, "Figure 1.9: In the field, a positive charge is pushed towards the negative plate, and an electron towards the positive plate. A charged oil drop can float when qE balances mg.")}
-${ex("field between plates", `<p>Two plates 4.0 mm apart are connected to 200 V. Find E.</p>
-<p>E = V/d = 200 / (4.0 &times; 10<sup>&minus;3</sup>) = <b>5.0 &times; 10<sup>4</sup> V m<sup>&minus;1</sup></b>.</p>`)}
+${ex("field between plates", `<p>Two plates 4.0 mm apart are connected to 200 V. Find E.</p><div class="calc"><div>E = V/d</div><div>E = 200 / (4.0 &times; 10<sup>&minus;3</sup>)</div><div><b>E = 5.0 &times; 10<sup>4</sup> V m<sup>&minus;1</sup></b></div></div>`)}
 <h4>Moving along the field</h4>
 <p>A charge released between the plates accelerates in a straight line with constant acceleration a = qE/m, just like an object falling freely. The work done by the field becomes kinetic energy: <b>qV = &frac12;mv<sup>2</sup></b>.</p>
 <p>A proton and an electron feel forces of the same size, because they have the same size of charge. But the electron is about 1800 times lighter, so its acceleration is about 1800 times bigger.</p>
-${ex("electron accelerated from rest", `<p>An electron is accelerated from rest through 100 V. Find its final speed.</p>
-<p>&frac12;mv<sup>2</sup> = eV, so v = &radic;(2eV/m) = &radic;(2 &times; 1.60 &times; 10<sup>&minus;19</sup> &times; 100 / 9.11 &times; 10<sup>&minus;31</sup>) = <b>5.9 &times; 10<sup>6</sup> m s<sup>&minus;1</sup></b>.</p>`)}
+${ex("electron accelerated from rest", `<p>An electron is accelerated from rest through 100 V. Find its final speed.</p><div class="calc"><div>&frac12;mv<sup>2</sup> = eV</div><div>v = &radic;(2eV/m)</div><div>v = &radic;[(2 &times; 1.60 &times; 10<sup>&minus;19</sup> &times; 100) / (9.11 &times; 10<sup>&minus;31</sup>)]</div><div><b>v = 5.9 &times; 10<sup>6</sup> m s<sup>&minus;1</sup></b></div></div>`)}
 <h4>Entering at right angles to the field</h4>
 ${fig(f_deflect, "Figure 1.10: An electron entering between the plates at right angles to the field follows a parabola, bending towards the positive plate.")}
 <p>This is the same as projectile motion. Horizontally there is no force, so the velocity u stays constant: x = ut. Vertically there is a constant force, so y = &frac12;at<sup>2</sup> with a = eE/m. Together these give a <b>parabola</b>. After leaving the plates, the electron travels in a straight line.</p>
@@ -1885,15 +1879,13 @@ ${fx("\\dfrac{1}{C_{\\text{eff}}}=\\dfrac{1}{C_1}+\\dfrac{1}{C_2}+\\dfrac{1}{C_3
 ${fig(f_parallel, "Figure 2.3: Capacitors in parallel. Each capacitor has the same voltage V, and the charges add up.")}
 <p>Each capacitor is connected straight across the battery, so <b>each has the same voltage V</b>. The total charge is Q = Q<sub>1</sub> + Q<sub>2</sub> + Q<sub>3</sub>, which gives:</p>
 ${fx("C_{\\text{eff}}=C_1+C_2+C_3", "C<sub>eff</sub> = C<sub>1</sub> + C<sub>2</sub> + C<sub>3</sub>")}
-${ex("series and parallel", `<p>A 2.0 &mu;F and a 3.0 &mu;F capacitor are connected to a 10 V supply.</p>
-<p><b>In series:</b> 1/C<sub>eff</sub> = 1/2.0 + 1/3.0, so C<sub>eff</sub> = 1.2 &mu;F. Q = C<sub>eff</sub>V = 12 &mu;C on each. V<sub>1</sub> = 12/2.0 = 6.0 V and V<sub>2</sub> = 12/3.0 = 4.0 V (they add to 10 V).</p>
-<p><b>In parallel:</b> C<sub>eff</sub> = 5.0 &mu;F. Each has 10 V, so Q<sub>1</sub> = 20 &mu;C and Q<sub>2</sub> = 30 &mu;C (total 50 &mu;C).</p>`)}
+${ex("series and parallel", `<p>A 2.0 &mu;F and a 3.0 &mu;F capacitor are connected to a 10 V supply.</p><p><b>In series:</b></p><div class="calc"><div>1/C<sub>eff</sub> = 1/2.0 + 1/3.0</div><div><b>C<sub>eff</sub> = 1.2 &mu;F</b></div></div><div class="calc"><div>Q = C<sub>eff</sub>V</div><div>Q = 1.2 &mu;F &times; 10 V</div><div><b>Q = 12 &mu;C on each capacitor</b></div></div><div class="calc"><div>V<sub>1</sub> = Q/C<sub>1</sub> = 12/2.0</div><div><b>V<sub>1</sub> = 6.0 V</b></div></div><div class="calc"><div>V<sub>2</sub> = Q/C<sub>2</sub> = 12/3.0</div><div><b>V<sub>2</sub> = 4.0 V</b></div></div><p>Check: 6.0 V + 4.0 V = 10 V.</p><p><b>In parallel:</b> each capacitor has 10 V across it.</p><div class="calc"><div>C<sub>eff</sub> = 2.0 + 3.0</div><div><b>C<sub>eff</sub> = 5.0 &mu;F</b></div></div><div class="calc"><div>Q<sub>1</sub> = C<sub>1</sub>V = 2.0 &times; 10</div><div><b>Q<sub>1</sub> = 20 &mu;C</b></div></div><div class="calc"><div>Q<sub>2</sub> = C<sub>2</sub>V = 3.0 &times; 10</div><div><b>Q<sub>2</sub> = 30 &mu;C</b></div></div>`)}
 ${trap(`Using the resistor rules. For capacitors it is the other way round: the <b>reciprocal</b> formula is for <b>series</b>, and simple adding is for <b>parallel</b>.`)}
 <h4>Energy stored</h4>
 <p>As the capacitor charges, each extra bit of charge has to be pushed onto a plate against the growing voltage, so work is done. That work is stored as electric potential energy. On a graph of Q against V, the energy is the <b>area under the line</b>.</p>
 ${fig(f_qv, "Figure 2.4: Q against V is a straight line through the origin with gradient C. The shaded area is the energy stored.")}
 ${fx("U=\\tfrac12QV=\\tfrac12CV^2=\\dfrac{Q^2}{2C}", "U = &frac12;QV = &frac12;CV<sup>2</sup> = Q<sup>2</sup>/2C")}
-${ex("energy stored", `<p>A 470 &mu;F capacitor is charged to 12 V. U = &frac12;CV<sup>2</sup> = &frac12;(470 &times; 10<sup>&minus;6</sup>)(12)<sup>2</sup> = <b>3.4 &times; 10<sup>&minus;2</sup> J</b>.</p>`)}`;
+${ex("energy stored", `<p>A 470 &mu;F capacitor is charged to 12 V. Find the energy stored.</p><div class="calc"><div>U = &frac12;CV<sup>2</sup></div><div>U = &frac12;(470 &times; 10<sup>&minus;6</sup>)(12)<sup>2</sup></div><div><b>U = 3.4 &times; 10<sup>&minus;2</sup> J</b></div></div>`)}`;
 
 C2[1].html = `
 <p>A capacitor connected through a resistor does not charge instantly. The resistor limits the current, so the charge builds up gradually. Discharging is gradual in the same way.</p>
@@ -1913,9 +1905,7 @@ ${fx("\\tau=RC||\\text{charging: } Q=Q_0\\left(1-e^{-t/RC}\\right)||\\text{disch
 <li><b>Charging:</b> &tau; is the time for the charge (or V<sub>C</sub>) to reach <b>63%</b> of its final value, because 1 &minus; e<sup>&minus;1</sup> = 0.63.</li>
 <li><b>Discharging:</b> &tau; is the time for the charge to fall to <b>37%</b> of its starting value, because e<sup>&minus;1</sup> = 0.37.</li>
 <li>A bigger R or a bigger C gives a bigger &tau;, so charging and discharging are slower. After about 5&tau;, the process is practically complete.</li></ul>
-${ex("charging a capacitor", `<p>A 47 &mu;F capacitor charges through a 100 k&Omega; resistor from a 9.0 V battery.</p>
-<p>&tau; = RC = (100 &times; 10<sup>3</sup>)(47 &times; 10<sup>&minus;6</sup>) = <b>4.7 s</b>.</p>
-<p>The starting current is I<sub>0</sub> = 9.0 / (100 &times; 10<sup>3</sup>) = 9.0 &times; 10<sup>&minus;5</sup> A. After one time constant, V<sub>C</sub> = 9.0(1 &minus; e<sup>&minus;1</sup>) = <b>5.7 V</b> and I = 0.37 &times; I<sub>0</sub> = <b>3.3 &times; 10<sup>&minus;5</sup> A</b>.</p>`)}
+${ex("charging a capacitor", `<p>A 47 &mu;F capacitor charges through a 100 k&Omega; resistor from a 9.0 V battery.</p><div class="calc"><div>&tau; = RC</div><div>&tau; = (100 &times; 10<sup>3</sup>)(47 &times; 10<sup>&minus;6</sup>)</div><div><b>&tau; = 4.7 s</b></div></div><div class="calc"><div>I<sub>0</sub> = V<sub>0</sub>/R</div><div>I<sub>0</sub> = 9.0 / (100 &times; 10<sup>3</sup>)</div><div><b>I<sub>0</sub> = 9.0 &times; 10<sup>&minus;5</sup> A</b></div></div><p>After one time constant (t = &tau;):</p><div class="calc"><div>V<sub>C</sub> = V<sub>0</sub>(1 &minus; e<sup>&minus;t/RC</sup>)</div><div>V<sub>C</sub> = 9.0(1 &minus; e<sup>&minus;1</sup>)</div><div><b>V<sub>C</sub> = 5.7 V</b></div></div><div class="calc"><div>I = I<sub>0</sub>e<sup>&minus;t/RC</sup></div><div>I = (9.0 &times; 10<sup>&minus;5</sup>)e<sup>&minus;1</sup></div><div><b>I = 3.3 &times; 10<sup>&minus;5</sup> A</b></div></div>`)}
 ${trap(`Forgetting to convert k&Omega; and &mu;F before working out RC, or leaving t in minutes. Use ohms, farads and seconds.`)}`;
 
 C2[2].html = `
@@ -1939,9 +1929,7 @@ ${fx("\\varepsilon_r=\\dfrac{\\varepsilon}{\\varepsilon_0}=\\dfrac{C}{C_0}=\\dfr
 <ul><li>It increases the capacitance.</li>
 <li>It allows a higher working voltage before a spark jumps between the plates.</li>
 <li>It holds the plates apart, so they can be very close without touching.</li></ul>
-${ex("adding a dielectric", `<p>Air-filled plates have A = 0.010 m<sup>2</sup> and d = 1.0 mm.</p>
-<p>C<sub>0</sub> = (8.85 &times; 10<sup>&minus;12</sup>)(0.010) / (1.0 &times; 10<sup>&minus;3</sup>) = <b>8.9 &times; 10<sup>&minus;11</sup> F</b> (89 pF).</p>
-<p>With a dielectric of &epsilon;<sub>r</sub> = 4.0: C = 4.0 &times; C<sub>0</sub> = <b>3.5 &times; 10<sup>&minus;10</sup> F</b>. If it had first been charged to 100 V and then disconnected, inserting the dielectric would drop the voltage to 100/4.0 = <b>25 V</b>.</p>`)}
+${ex("adding a dielectric", `<p>Air-filled plates have A = 0.010 m<sup>2</sup> and d = 1.0 mm.</p><div class="calc"><div>C<sub>0</sub> = &epsilon;<sub>0</sub>A/d</div><div>C<sub>0</sub> = (8.85 &times; 10<sup>&minus;12</sup>)(0.010) / (1.0 &times; 10<sup>&minus;3</sup>)</div><div><b>C<sub>0</sub> = 8.9 &times; 10<sup>&minus;11</sup> F (89 pF)</b></div></div><p>With a dielectric of &epsilon;<sub>r</sub> = 4.0:</p><div class="calc"><div>C = &epsilon;<sub>r</sub>C<sub>0</sub></div><div>C = 4.0 &times; 8.9 &times; 10<sup>&minus;11</sup></div><div><b>C = 3.5 &times; 10<sup>&minus;10</sup> F</b></div></div><p>If it had first been charged to 100 V and then disconnected, Q stays the same, so:</p><div class="calc"><div>V = V<sub>0</sub>/&epsilon;<sub>r</sub></div><div>V = 100/4.0</div><div><b>V = 25 V</b></div></div>`)}
 ${trap(`Assuming the charge always stays the same. It only stays the same when the capacitor is <b>disconnected</b>. Read the question carefully.`)}`;
 
 })();
@@ -2048,9 +2036,7 @@ ${fx("I=\\dfrac{dQ}{dt}||Q=ne", "I = dQ/dt &nbsp;&nbsp; Q = ne")}
 <li>Current is measured with an <b>ammeter connected in series</b>.</li>
 <li>A current flows only while there is a potential difference, just as water flows in a pipe only when one end is higher than the other.</li></ul>
 ${fig(f3_dir, "Figure 3.2: Conventional current flows from the positive terminal round to the negative terminal. Electrons actually flow the opposite way.")}
-${ex("charge and number of electrons", `<p>A current of 0.80 A flows for 5.0 minutes. How much charge passes, and how many electrons is that?</p>
-<p>Q = It = 0.80 &times; (5.0 &times; 60) = <b>240 C</b>.</p>
-<p>n = Q/e = 240 / (1.60 &times; 10<sup>&minus;19</sup>) = <b>1.5 &times; 10<sup>21</sup> electrons</b>.</p>`)}
+${ex("charge and number of electrons", `<p>A current of 0.80 A flows for 5.0 minutes. How much charge passes, and how many electrons is that?</p><div class="calc"><div>Q = It</div><div>Q = 0.80 &times; (5.0 &times; 60)</div><div><b>Q = 240 C</b></div></div><div class="calc"><div>n = Q/e</div><div>n = 240 / (1.60 &times; 10<sup>&minus;19</sup>)</div><div><b>n = 1.5 &times; 10<sup>21</sup> electrons</b></div></div>`)}
 ${trap(`Forgetting to change minutes into seconds. The ampere is coulombs per <b>second</b>.`)}`;
 
 C3[1].html = `
@@ -2069,8 +2055,7 @@ ${fx("R=\\dfrac{\\rho l}{A}||\\rho=\\dfrac{RA}{l}", "R = &rho;l/A &nbsp;&nbsp; &
 <li><b>Thicker wire, less resistance</b> (R &prop; 1/A): there are more paths side by side for the electrons.</li>
 <li>The material matters through its <b>resistivity &rho;</b>.</li></ul>
 <p><b>Resistivity</b> is the resistance of a sample of the material with unit length and unit cross-sectional area. Its unit is the <b>ohm metre (&Omega; m)</b>. Resistivity depends only on the <b>material and its temperature</b>, not on the shape of the wire. Good conductors such as copper (1.7 &times; 10<sup>&minus;8</sup> &Omega; m) have very small resistivities. Insulators such as glass (10<sup>10</sup> to 10<sup>14</sup> &Omega; m) have very large ones.</p>
-${ex("resistivity from measurements", `<p>A wire 1.2 m long with cross-sectional area 2.0 &times; 10<sup>&minus;7</sup> m<sup>2</sup> carries 0.50 A when 0.60 V is across it. Find the resistivity.</p>
-<p>R = V/I = 0.60/0.50 = 1.2 &Omega;. Then &rho; = RA/l = (1.2)(2.0 &times; 10<sup>&minus;7</sup>)/1.2 = <b>2.0 &times; 10<sup>&minus;7</sup> &Omega; m</b>.</p>`)}
+${ex("resistivity from measurements", `<p>A wire 1.2 m long with cross-sectional area 2.0 &times; 10<sup>&minus;7</sup> m<sup>2</sup> carries 0.50 A when 0.60 V is across it. Find the resistivity.</p><div class="calc"><div>R = V/I</div><div>R = 0.60/0.50</div><div><b>R = 1.2 &Omega;</b></div></div><div class="calc"><div>&rho; = RA/l</div><div>&rho; = (1.2)(2.0 &times; 10<sup>&minus;7</sup>) / 1.2</div><div><b>&rho; = 2.0 &times; 10<sup>&minus;7</sup> &Omega; m</b></div></div>`)}
 ${trap(`Mixing up resistance and resistivity. Cutting a wire in half halves its <b>resistance</b>, but its <b>resistivity</b> stays the same, because it is still the same material. Also convert mm<sup>2</sup> to m<sup>2</sup>: 1 mm<sup>2</sup> = 1.0 &times; 10<sup>&minus;6</sup> m<sup>2</sup>.`)}`;
 
 C3[2].html = `
@@ -2085,10 +2070,8 @@ ${fx("\\rho=\\rho_0\\left[1+\\alpha\\left(T-T_0\\right)\\right]||R=R_0\\left[1+\
 <ul><li>R<sub>0</sub> (or &rho;<sub>0</sub>) is the value at the reference temperature T<sub>0</sub>, usually 20 &deg;C.</li>
 <li>&alpha; is the <b>temperature coefficient of resistivity</b>: the fractional increase in resistivity for each degree rise in temperature. Its unit is &deg;C<sup>&minus;1</sup>.</li>
 <li>For metals, &alpha; is positive. That is why R increases with T.</li></ul>
-${ex("hot copper wire", `<p>A copper coil has a resistance of 5.0 &Omega; at 20 &deg;C. For copper, &alpha; = 3.9 &times; 10<sup>&minus;3</sup> &deg;C<sup>&minus;1</sup>. Find its resistance at 80 &deg;C.</p>
-<p>R = 5.0[1 + (3.9 &times; 10<sup>&minus;3</sup>)(80 &minus; 20)] = 5.0 &times; 1.234 = <b>6.2 &Omega;</b>.</p>`)}
-${ex("finding a temperature", `<p>A tungsten filament has a resistance of 15 &Omega; at 20 &deg;C and 190 &Omega; when lit. Taking &alpha; = 4.5 &times; 10<sup>&minus;3</sup> &deg;C<sup>&minus;1</sup>, find its working temperature.</p>
-<p>190 = 15[1 + 4.5 &times; 10<sup>&minus;3</sup>(T &minus; 20)], so T &minus; 20 = (190/15 &minus; 1)/(4.5 &times; 10<sup>&minus;3</sup>) = 2593, and T = <b>2.6 &times; 10<sup>3</sup> &deg;C</b>.</p>`)}
+${ex("hot copper wire", `<p>A copper coil has a resistance of 5.0 &Omega; at 20 &deg;C. For copper, &alpha; = 3.9 &times; 10<sup>&minus;3</sup> &deg;C<sup>&minus;1</sup>. Find its resistance at 80 &deg;C.</p><div class="calc"><div>R = R<sub>0</sub>[1 + &alpha;(T &minus; T<sub>0</sub>)]</div><div>R = 5.0[1 + (3.9 &times; 10<sup>&minus;3</sup>)(80 &minus; 20)]</div><div>R = 5.0 &times; 1.234</div><div><b>R = 6.2 &Omega;</b></div></div>`)}
+${ex("finding a temperature", `<p>A tungsten filament has a resistance of 15 &Omega; at 20 &deg;C and 190 &Omega; when lit. Taking &alpha; = 4.5 &times; 10<sup>&minus;3</sup> &deg;C<sup>&minus;1</sup>, find its working temperature.</p><div class="calc"><div>190 = 15[1 + (4.5 &times; 10<sup>&minus;3</sup>)(T &minus; 20)]</div><div>190/15 = 1 + (4.5 &times; 10<sup>&minus;3</sup>)(T &minus; 20)</div><div>T &minus; 20 = (12.67 &minus; 1) / (4.5 &times; 10<sup>&minus;3</sup>)</div><div>T &minus; 20 = 2593</div><div><b>T = 2.6 &times; 10<sup>3</sup> &deg;C</b></div></div>`)}
 ${trap(`Using T instead of the temperature <b>change</b> (T &minus; T<sub>0</sub>) inside the bracket.`)}`;
 
 C3[3].html = `
@@ -2110,8 +2093,7 @@ ${fig(f3_vt, "Figure 3.7: As the current increases, the terminal p.d. falls. The
 <li>The temperature of the cell.</li>
 <li>The distance between the electrodes, and their size.</li>
 <li>The age of the cell: as a battery is used up and its electrolyte dries out, r increases.</li></ul>
-${ex("terminal voltage", `<p>A 9.0 V battery with internal resistance 0.50 &Omega; is connected to a 4.0 &Omega; resistor.</p>
-<p>I = &epsilon;/(R + r) = 9.0/4.5 = <b>2.0 A</b>. Lost volts = Ir = 2.0 &times; 0.50 = 1.0 V, so V = 9.0 &minus; 1.0 = <b>8.0 V</b>.</p>`)}
+${ex("terminal voltage", `<p>A 9.0 V battery with internal resistance 0.50 &Omega; is connected to a 4.0 &Omega; resistor.</p><div class="calc"><div>I = &epsilon;/(R + r)</div><div>I = 9.0/(4.0 + 0.50)</div><div><b>I = 2.0 A</b></div></div><div class="calc"><div>V = &epsilon; &minus; Ir</div><div>V = 9.0 &minus; (2.0 &times; 0.50)</div><div><b>V = 8.0 V</b></div></div><p>The lost volts are Ir = 1.0 V.</p>`)}
 ${trap(`Calling the voltmeter reading across a working battery its emf. That reading is the terminal p.d. It equals the emf only when no current flows.`)}`;
 
 C3[4].html = `
@@ -2130,9 +2112,7 @@ ${fx("\\dfrac{1}{R_{\\text{eff}}}=\\dfrac{1}{R_1}+\\dfrac{1}{R_2}+\\dfrac{1}{R_3
 <tr><td>Same for every resistor</td><td>current I</td><td>voltage V</td></tr>
 <tr><td>Shared between resistors</td><td>voltage: V = V<sub>1</sub> + V<sub>2</sub> + ...</td><td>current: I = I<sub>1</sub> + I<sub>2</sub> + ...</td></tr>
 <tr><td>R<sub>eff</sub></td><td>bigger than the largest</td><td>smaller than the smallest</td></tr></table>
-${ex("a mixed circuit", `<p>A 6.0 &Omega; and a 3.0 &Omega; resistor are in parallel, and this pair is in series with a 4.0 &Omega; resistor, across a 12 V supply.</p>
-<p>Parallel pair: 1/R = 1/6.0 + 1/3.0 = 1/2.0, so R = 2.0 &Omega;. Total: R<sub>eff</sub> = 2.0 + 4.0 = <b>6.0 &Omega;</b>.</p>
-<p>Supply current I = 12/6.0 = 2.0 A. Voltage across the pair = 2.0 &times; 2.0 = 4.0 V, so the 6.0 &Omega; carries 4.0/6.0 = <b>0.67 A</b> and the 3.0 &Omega; carries 4.0/3.0 = <b>1.3 A</b> (they add to 2.0 A).</p>`)}
+${ex("a mixed circuit", `<p>A 6.0 &Omega; and a 3.0 &Omega; resistor are in parallel, and this pair is in series with a 4.0 &Omega; resistor, across a 12 V supply.</p><p>Parallel pair:</p><div class="calc"><div>1/R<sub>p</sub> = 1/6.0 + 1/3.0</div><div><b>R<sub>p</sub> = 2.0 &Omega;</b></div></div><p>Whole circuit:</p><div class="calc"><div>R<sub>eff</sub> = 2.0 + 4.0</div><div><b>R<sub>eff</sub> = 6.0 &Omega;</b></div></div><div class="calc"><div>I = V/R<sub>eff</sub></div><div>I = 12/6.0</div><div><b>I = 2.0 A</b></div></div><div class="calc"><div>V<sub>p</sub> = IR<sub>p</sub></div><div>V<sub>p</sub> = 2.0 &times; 2.0</div><div><b>V<sub>p</sub> = 4.0 V</b></div></div><div class="calc"><div>I<sub>6</sub> = 4.0/6.0</div><div><b>I<sub>6</sub> = 0.67 A</b></div></div><div class="calc"><div>I<sub>3</sub> = 4.0/3.0</div><div><b>I<sub>3</sub> = 1.3 A</b></div></div><p>Check: 0.67 A + 1.3 A = 2.0 A.</p>`)}
 ${trap(`Forgetting the last step in the parallel formula. 1/R<sub>eff</sub> = 0.5 means R<sub>eff</sub> = 2 &Omega;, not 0.5 &Omega;. Turn the answer upside down.`)}`;
 
 C3[5].html = `
@@ -2157,11 +2137,7 @@ ${fx("\\Sigma I_{\\text{in}}=\\Sigma I_{\\text{out}}||\\Sigma\\varepsilon=\\Sigm
 <li>Solve the equations simultaneously (EQN mode on your calculator).</li>
 <li>A <b>negative</b> answer means that current flows the opposite way to what you assumed. The size is still correct.</li></ol>
 ${fig(f3_loop2, "Figure 3.11: A two-loop circuit. The currents I&#8321;, I&#8322; and I&#8323; are the directions we assume before solving.")}
-${ex("two loops", `<p>Solve the circuit in Figure 3.11.</p>
-<p>Junction (top): I<sub>3</sub> = I<sub>1</sub> + I<sub>2</sub>.</p>
-<p>Loop 1 (left): 12 = 2I<sub>1</sub> + 6I<sub>3</sub>. Loop 2 (right): 6 = 4I<sub>2</sub> + 6I<sub>3</sub>.</p>
-<p>Solving: I<sub>1</sub> = <b>1.91 A</b>, I<sub>2</sub> = <b>&minus;0.545 A</b>, I<sub>3</sub> = <b>1.36 A</b>. I<sub>2</sub> is negative, so 0.545 A actually flows <b>down</b> through the 6 V battery: the 12 V battery is charging it.</p>
-<p>Check loop 1: 2(1.91) + 6(1.36) = 12.0 V. Correct.</p>`)}
+${ex("two loops", `<p>Solve the circuit in Figure 3.11.</p><p>Junction rule (top junction):</p><div class="calc"><div><b>I<sub>3</sub> = I<sub>1</sub> + I<sub>2</sub></b></div></div><p>Loop rule:</p><div class="calc"><div>Loop 1: 12 = 2I<sub>1</sub> + 6I<sub>3</sub></div><div><b>Loop 2: 6 = 4I<sub>2</sub> + 6I<sub>3</sub></b></div></div><p>Solving the three equations together:</p><div class="calc"><div>I<sub>1</sub> = 1.91 A</div><div>I<sub>2</sub> = &minus;0.545 A</div><div><b>I<sub>3</sub> = 1.36 A</b></div></div><p>I<sub>2</sub> is negative, so 0.545 A actually flows <b>down</b> through the 6 V battery: the 12 V battery is charging it.</p><p>Check with loop 1:</p><div class="calc"><div>2I<sub>1</sub> + 6I<sub>3</sub> = 2(1.91) + 6(1.36)</div><div><b>2I<sub>1</sub> + 6I<sub>3</sub> = 12.0 V (correct)</b></div></div>`)}
 ${trap(`Getting the sign of an emf wrong. Decide the sign by the way <b>you</b> cross the battery, not by the way the current flows.`)}`;
 
 C3[6].html = `
@@ -2176,10 +2152,7 @@ ${fx("P=\\dfrac{W}{t}=IV||P=I^2R=\\dfrac{V^2}{R}", "P = W/t = IV = I<sup>2</sup>
 <ul><li>Unit: watt (W), where 1 W = 1 J s<sup>&minus;1</sup>.</li>
 <li>Use P = I<sup>2</sup>R when you know the current (for example, resistors in series). Use P = V<sup>2</sup>/R when you know the voltage (for example, resistors in parallel).</li>
 <li>Inside a battery, power &epsilon;I is produced from chemical energy. I<sup>2</sup>r of it is wasted as heat in the internal resistance, and the rest, VI, goes to the external circuit.</li></ul>
-${ex("energy in a circuit", `<p>A 12 V battery with internal resistance 1.0 &Omega; is connected to a 5.0 &Omega; resistor for 10 minutes.</p>
-<p>I = 12/(5.0 + 1.0) = 2.0 A.</p>
-<p>Power produced by the battery: &epsilon;I = 12 &times; 2.0 = <b>24 W</b>. Heat in the battery: I<sup>2</sup>r = <b>4.0 W</b>. Power to the resistor: I<sup>2</sup>R = <b>20 W</b>.</p>
-<p>Heat produced in the resistor in 10 minutes: W = 20 &times; 600 = <b>1.2 &times; 10<sup>4</sup> J</b>.</p>`)}
+${ex("energy in a circuit", `<p>A 12 V battery with internal resistance 1.0 &Omega; is connected to a 5.0 &Omega; resistor for 10 minutes.</p><div class="calc"><div>I = &epsilon;/(R + r)</div><div>I = 12/(5.0 + 1.0)</div><div><b>I = 2.0 A</b></div></div><div class="calc"><div>P<sub>battery</sub> = &epsilon;I</div><div>P<sub>battery</sub> = 12 &times; 2.0</div><div><b>P<sub>battery</sub> = 24 W</b></div></div><div class="calc"><div>P<sub>lost</sub> = I<sup>2</sup>r</div><div>P<sub>lost</sub> = (2.0)<sup>2</sup> &times; 1.0</div><div><b>P<sub>lost</sub> = 4.0 W</b></div></div><div class="calc"><div>P<sub>R</sub> = I<sup>2</sup>R</div><div>P<sub>R</sub> = (2.0)<sup>2</sup> &times; 5.0</div><div><b>P<sub>R</sub> = 20 W</b></div></div><div class="calc"><div>W = Pt</div><div>W = 20 &times; (10 &times; 60)</div><div><b>W = 1.2 &times; 10<sup>4</sup> J</b></div></div>`)}
 ${trap(`Using the battery's emf in P = V<sup>2</sup>/R for the external resistor. Use the voltage actually across that resistor.`)}`;
 
 C3[7].html = `
@@ -2190,9 +2163,7 @@ ${fig(f3_divider, "Figure 3.12: A potential divider. The output voltage is taken
 ${fx("V_1=\\left(\\dfrac{R_1}{R_1+R_2}\\right)V||V_2=\\left(\\dfrac{R_2}{R_1+R_2}\\right)V", "V<sub>1</sub> = [R<sub>1</sub>/(R<sub>1</sub> + R<sub>2</sub>)]V &nbsp;&nbsp; V<sub>2</sub> = [R<sub>2</sub>/(R<sub>1</sub> + R<sub>2</sub>)]V")}
 <p>With three resistors, the same idea gives V<sub>1</sub> = [R<sub>1</sub>/(R<sub>1</sub> + R<sub>2</sub> + R<sub>3</sub>)]V. Put simply: <b>ratio of voltages = ratio of resistances</b>.</p>
 <p>A uniform resistance wire also works as a divider, because R &prop; l. Tapping it at a point gives V<sub>1</sub>/V = l<sub>1</sub>/(l<sub>1</sub> + l<sub>2</sub>).</p>
-${ex("output voltage, and the effect of a load", `<p>R<sub>1</sub> = 1.0 k&Omega; and R<sub>2</sub> = 3.0 k&Omega; are connected across 12 V. The output is taken across R<sub>2</sub>.</p>
-<p>V<sub>out</sub> = [3.0/(1.0 + 3.0)] &times; 12 = <b>9.0 V</b>.</p>
-<p>Now a 3.0 k&Omega; load (for example, a voltmeter) is connected across the output. It is in parallel with R<sub>2</sub>, giving 1.5 k&Omega;. The new output is [1.5/(1.0 + 1.5)] &times; 12 = <b>7.2 V</b>. Connecting a load always <b>lowers</b> the output voltage.</p>`)}
+${ex("output voltage, and the effect of a load", `<p>R<sub>1</sub> = 1.0 k&Omega; and R<sub>2</sub> = 3.0 k&Omega; are connected across 12 V. The output is taken across R<sub>2</sub>.</p><div class="calc"><div>V<sub>out</sub> = [R<sub>2</sub>/(R<sub>1</sub> + R<sub>2</sub>)]V</div><div>V<sub>out</sub> = [3.0/(1.0 + 3.0)] &times; 12</div><div><b>V<sub>out</sub> = 9.0 V</b></div></div><p>Now a 3.0 k&Omega; load is connected across the output. It is in parallel with R<sub>2</sub>:</p><div class="calc"><div>1/R<sub>p</sub> = 1/3.0 + 1/3.0</div><div><b>R<sub>p</sub> = 1.5 k&Omega;</b></div></div><div class="calc"><div>V<sub>out</sub> = [1.5/(1.0 + 1.5)] &times; 12</div><div><b>V<sub>out</sub> = 7.2 V</b></div></div><p>Connecting a load always <b>lowers</b> the output voltage.</p>`)}
 ${trap(`Putting the wrong resistor on top of the fraction. The resistor you want the voltage across goes on top.`)}`;
 
 C3[8].html = `
@@ -2210,9 +2181,7 @@ ${fx("V\\propto l||V=kl||\\dfrac{\\varepsilon_1}{\\varepsilon_2}=\\dfrac{l_1}{l_
 <ul><li><b>Measuring an unknown emf:</b> find k from the driver circuit, then &epsilon; = kl.</li>
 <li><b>Comparing two emfs:</b> find the balance length for each cell. Since k is the same, &epsilon;<sub>1</sub>/&epsilon;<sub>2</sub> = l<sub>1</sub>/l<sub>2</sub>.</li>
 <li><b>Measuring internal resistance:</b> find the balance length l<sub>0</sub> for the cell alone (its emf), then l with a known resistor R connected across the cell (its terminal p.d.). Then r = R(l<sub>0</sub> &minus; l)/l.</li></ul>
-${ex("balance length", `<p>A 2.0 V driver cell (negligible internal resistance) is connected across a 100 cm wire of resistance 4.0 &Omega;. A cell of emf 1.2 V is tested.</p>
-<p>The full 2.0 V is across the 1.00 m wire, so k = 2.0 V m<sup>&minus;1</sup>. Balance length l = 1.2/2.0 = 0.60 m = <b>60 cm</b>.</p>
-<p>If a 1.0 &Omega; resistor is added in series with the driver cell, the current is 2.0/(4.0 + 1.0) = 0.40 A, so the p.d. across the wire is 0.40 &times; 4.0 = 1.6 V and k = 1.6 V m<sup>&minus;1</sup>. The new balance length is 1.2/1.6 = 0.75 m = <b>75 cm</b>.</p>`)}
+${ex("balance length", `<p>A 2.0 V driver cell (negligible internal resistance) is connected across a 100 cm wire of resistance 4.0 &Omega;. A cell of emf 1.2 V is tested.</p><p>The full 2.0 V is across the 1.00 m wire:</p><div class="calc"><div>k = V/l</div><div>k = 2.0/1.00</div><div><b>k = 2.0 V m<sup>&minus;1</sup></b></div></div><div class="calc"><div>l = &epsilon;/k</div><div>l = 1.2/2.0</div><div><b>l = 0.60 m (60 cm)</b></div></div><p>A 1.0 &Omega; resistor is now added in series with the driver cell:</p><div class="calc"><div>I = 2.0/(4.0 + 1.0)</div><div><b>I = 0.40 A</b></div></div><div class="calc"><div>V<sub>wire</sub> = IR<sub>wire</sub></div><div>V<sub>wire</sub> = 0.40 &times; 4.0</div><div><b>V<sub>wire</sub> = 1.6 V</b></div></div><div class="calc"><div>k = 1.6/1.00</div><div><b>k = 1.6 V m<sup>&minus;1</sup></b></div></div><div class="calc"><div>l = 1.2/1.6</div><div><b>l = 0.75 m (75 cm)</b></div></div>`)}
 ${trap(`Forgetting that adding resistance to the <b>driver</b> circuit changes k. Less current along the wire means a smaller potential drop per metre, so the balance length gets longer.`)}`;
 
 })();
@@ -2352,10 +2321,7 @@ ${fx("\\text{centre: } B=\\mu_0nI||\\text{end: } B=\\tfrac12\\mu_0nI||n=\\dfrac{
 <p>n is the number of turns <b>per unit length</b>. At each end, the field is half its value at the centre. To find which end is N: grip the solenoid with your right hand with your fingers along the current, and your thumb points to the <b>N</b> end.</p>
 <h4>Resultant field from two wires</h4>
 <p>B is a vector. When two wires are present, find B from each wire at the point, decide each direction with the grip rule, and add them as vectors.</p>
-${ex("two parallel wires", `<p>Wire X carries 20 A and wire Y carries 10 A, in the same direction. They are 10 cm apart. Find B at the midpoint.</p>
-<p>B<sub>X</sub> = (4&pi; &times; 10<sup>&minus;7</sup>)(20)/(2&pi; &times; 0.050) = 8.0 &times; 10<sup>&minus;5</sup> T. B<sub>Y</sub> = 4.0 &times; 10<sup>&minus;5</sup> T.</p>
-<p>Between two wires with currents in the <b>same</b> direction, the two fields point in <b>opposite</b> directions, so B = 8.0 &minus; 4.0 = <b>4.0 &times; 10<sup>&minus;5</sup> T</b>, in the direction of X's field. If the currents were opposite, the fields would add: B = <b>1.2 &times; 10<sup>&minus;4</sup> T</b>.</p>
-<p>The neutral point (B = 0) is where 20/x = 10/(0.10 &minus; x), so x = <b>6.7 cm</b> from X, closer to the smaller current.</p>`)}
+${ex("two parallel wires", `<p>Wire X carries 20 A and wire Y carries 10 A, in the same direction. They are 10 cm apart. Find B at the midpoint.</p><div class="calc"><div>B<sub>X</sub> = &mu;<sub>0</sub>I<sub>X</sub>/2&pi;r</div><div>B<sub>X</sub> = (4&pi; &times; 10<sup>&minus;7</sup>)(20) / (2&pi; &times; 0.050)</div><div><b>B<sub>X</sub> = 8.0 &times; 10<sup>&minus;5</sup> T</b></div></div><div class="calc"><div>B<sub>Y</sub> = &mu;<sub>0</sub>I<sub>Y</sub>/2&pi;r</div><div>B<sub>Y</sub> = (4&pi; &times; 10<sup>&minus;7</sup>)(10) / (2&pi; &times; 0.050)</div><div><b>B<sub>Y</sub> = 4.0 &times; 10<sup>&minus;5</sup> T</b></div></div><p>Between two wires with currents in the <b>same</b> direction, the fields point in <b>opposite</b> directions:</p><div class="calc"><div>B = (8.0 &minus; 4.0) &times; 10<sup>&minus;5</sup></div><div><b>B = 4.0 &times; 10<sup>&minus;5</sup> T, in the direction of X&#39;s field</b></div></div><p>If the currents were opposite, the fields would add: B = 1.2 &times; 10<sup>&minus;4</sup> T.</p><p>Neutral point, a distance x from X:</p><div class="calc"><div>20/x = 10/(0.10 &minus; x)</div><div>20(0.10 &minus; x) = 10x</div><div><b>x = 0.067 m (6.7 cm from X)</b></div></div>`)}
 ${trap(`Using the diameter instead of the radius in B = &mu;<sub>0</sub>NI/2R, or using N instead of n = N/l for a solenoid.`)}`;
 
 C4[2].html = `
@@ -2372,10 +2338,7 @@ ${fig(f4_circle, "Figure 4.9: The magnetic force is always perpendicular to the 
 <p>Because F is always at right angles to v, it never speeds the charge up or slows it down. It only changes the direction. A charge entering a uniform field at right angles therefore moves in a <b>circle</b>, with the magnetic force providing the centripetal force:</p>
 ${fx("qvB=\\dfrac{mv^2}{r}||r=\\dfrac{mv}{qB}||T=\\dfrac{2\\pi r}{v}=\\dfrac{2\\pi m}{qB}", "qvB = mv<sup>2</sup>/r &nbsp;&nbsp; r = mv/qB &nbsp;&nbsp; T = 2&pi;m/qB")}
 <p>A faster or heavier particle moves in a bigger circle. The period does not depend on the speed.</p>
-${ex("a proton in a magnetic field", `<p>A proton moves at 2.0 &times; 10<sup>6</sup> m s<sup>&minus;1</sup> at right angles to a 0.50 T field. (m = 1.67 &times; 10<sup>&minus;27</sup> kg)</p>
-<p>F = qvB = (1.60 &times; 10<sup>&minus;19</sup>)(2.0 &times; 10<sup>6</sup>)(0.50) = <b>1.6 &times; 10<sup>&minus;13</sup> N</b>.</p>
-<p>r = mv/qB = (1.67 &times; 10<sup>&minus;27</sup>)(2.0 &times; 10<sup>6</sup>)/[(1.60 &times; 10<sup>&minus;19</sup>)(0.50)] = <b>4.2 &times; 10<sup>&minus;2</sup> m</b>.</p>
-<p>T = 2&pi;m/qB = <b>1.3 &times; 10<sup>&minus;7</sup> s</b>.</p>`)}
+${ex("a proton in a magnetic field", `<p>A proton moves at 2.0 &times; 10<sup>6</sup> m s<sup>&minus;1</sup> at right angles to a 0.50 T field. (m = 1.67 &times; 10<sup>&minus;27</sup> kg)</p><div class="calc"><div>F = qvB</div><div>F = (1.60 &times; 10<sup>&minus;19</sup>)(2.0 &times; 10<sup>6</sup>)(0.50)</div><div><b>F = 1.6 &times; 10<sup>&minus;13</sup> N</b></div></div><div class="calc"><div>r = mv/qB</div><div>r = (1.67 &times; 10<sup>&minus;27</sup>)(2.0 &times; 10<sup>6</sup>) / [(1.60 &times; 10<sup>&minus;19</sup>)(0.50)]</div><div><b>r = 4.2 &times; 10<sup>&minus;2</sup> m</b></div></div><div class="calc"><div>T = 2&pi;m/qB</div><div>T = 2&pi;(1.67 &times; 10<sup>&minus;27</sup>) / [(1.60 &times; 10<sup>&minus;19</sup>)(0.50)]</div><div><b>T = 1.3 &times; 10<sup>&minus;7</sup> s</b></div></div>`)}
 ${trap(`Forgetting to reverse the direction for an electron. The palm rule gives the force on a positive charge.`)}`;
 
 C4[3].html = `
@@ -2387,9 +2350,7 @@ ${fx("\\vec F=I\\vec l\\times\\vec B||F=IlB\\sin\\theta", "F = Il &times; B &nbs
 <li>The force is perpendicular to both the wire and B.</li></ul>
 <h4>Direction of the force</h4>
 <p>Use the right-hand palm rule (fingers along B, thumb along I, palm pushes towards F), or <b>Fleming's left-hand rule</b>: <b>F</b>irst finger = <b>F</b>ield, se<b>C</b>ond finger = <b>C</b>urrent, thu<b>M</b>b = <b>M</b>otion (force).</p>
-${ex("force on a wire", `<p>A 0.20 m length of wire carrying 5.0 A lies in a 0.30 T field.</p>
-<p>At 90&deg; to the field: F = IlB = (5.0)(0.20)(0.30) = <b>0.30 N</b>.</p>
-<p>At 30&deg; to the field: F = IlB sin 30&deg; = <b>0.15 N</b>.</p>`)}
+${ex("force on a wire", `<p>A 0.20 m length of wire carrying 5.0 A lies in a 0.30 T field.</p><p>At 90&deg; to the field:</p><div class="calc"><div>F = IlB</div><div>F = (5.0)(0.20)(0.30)</div><div><b>F = 0.30 N</b></div></div><p>At 30&deg; to the field:</p><div class="calc"><div>F = IlB sin &theta;</div><div>F = (5.0)(0.20)(0.30) sin 30&deg;</div><div><b>F = 0.15 N</b></div></div>`)}
 ${trap(`Using the whole length of the wire when only part of it is inside the field. Only the length l <b>in</b> the field feels the force.`)}`;
 
 C4[4].html = `
@@ -2404,8 +2365,7 @@ ${fx("\\dfrac{F}{l}=\\dfrac{\\mu_0I_1I_2}{2\\pi d}", "F/l = &mu;<sub>0</sub>I<su
 <ul><li>Currents in the <b>same</b> direction: the wires <b>attract</b>.</li>
 <li>Currents in <b>opposite</b> directions: the wires <b>repel</b>.</li>
 <li>The force on each wire is the same size, even if the currents are different.</li></ul>
-${ex("force per unit length", `<p>Two long parallel wires 0.10 m apart carry 5.0 A and 8.0 A in the same direction.</p>
-<p>F/l = (4&pi; &times; 10<sup>&minus;7</sup>)(5.0)(8.0)/(2&pi; &times; 0.10) = <b>8.0 &times; 10<sup>&minus;5</sup> N m<sup>&minus;1</sup></b>, attractive.</p>`)}
+${ex("force per unit length", `<p>Two long parallel wires 0.10 m apart carry 5.0 A and 8.0 A in the same direction.</p><div class="calc"><div>F/l = &mu;<sub>0</sub>I<sub>1</sub>I<sub>2</sub>/2&pi;d</div><div>F/l = (4&pi; &times; 10<sup>&minus;7</sup>)(5.0)(8.0) / (2&pi; &times; 0.10)</div><div><b>F/l = 8.0 &times; 10<sup>&minus;5</sup> N m<sup>&minus;1</sup> (attractive)</b></div></div>`)}
 ${trap(`Thinking that "like currents" repel, the way like charges and like poles do. For currents it is the opposite: same direction attracts.`)}`;
 
 C4[5].html = `
@@ -2420,8 +2380,7 @@ ${fx("qE=qvB||v=\\dfrac{E}{B}", "qE = qvB &nbsp;&nbsp; v = E/B")}
 <h4>Measuring q/m: the mass spectrometer</h4>
 <p>The selected particles then enter a region with a magnetic field only. They move in a semicircle of radius r = mv/qB. Using v = E/B:</p>
 ${fx("\\dfrac{q}{m}=\\dfrac{v}{rB}=\\dfrac{E}{rB^2}", "q/m = v/rB = E/rB<sup>2</sup>")}
-${ex("velocity selector", `<p>E = 3.0 &times; 10<sup>4</sup> V m<sup>&minus;1</sup> and B = 0.15 T. v = E/B = <b>2.0 &times; 10<sup>5</sup> m s<sup>&minus;1</sup></b>.</p>
-<p>In the same B, the ions move in a circle of radius 1.4 cm. q/m = v/(rB) = 2.0 &times; 10<sup>5</sup>/(0.014 &times; 0.15) = <b>9.5 &times; 10<sup>7</sup> C kg<sup>&minus;1</sup></b>, which matches a proton.</p>`)}
+${ex("velocity selector", `<p>E = 3.0 &times; 10<sup>4</sup> V m<sup>&minus;1</sup> and B = 0.15 T.</p><div class="calc"><div>v = E/B</div><div>v = (3.0 &times; 10<sup>4</sup>) / 0.15</div><div><b>v = 2.0 &times; 10<sup>5</sup> m s<sup>&minus;1</sup></b></div></div><p>In the same B, the ions move in a circle of radius 1.4 cm.</p><div class="calc"><div>q/m = v/rB</div><div>q/m = (2.0 &times; 10<sup>5</sup>) / (0.014 &times; 0.15)</div><div><b>q/m = 9.5 &times; 10<sup>7</sup> C kg<sup>&minus;1</sup></b></div></div><p>This matches a proton.</p>`)}
 ${trap(`Thinking the selector picks particles by mass or charge. It picks by <b>speed</b> only, since q cancels in qE = qvB.`)}`;
 
 })();
@@ -2524,9 +2483,7 @@ ${fx("\\phi=\\vec B\\cdot\\vec A=BA\\cos\\theta||\\text{flux linkage } \\Phi=N\\
 <li>Flux is a <b>scalar</b>. Unit: the weber, Wb = T m<sup>2</sup>.</li></ul>
 <h4>Flux linkage</h4>
 <p>A coil of N turns has the same flux &phi; through each turn, so the total, the <b>flux linkage</b>, is &Phi; = N&phi;.</p>
-${ex("flux and flux linkage", `<p>A square coil of side 4.0 cm with 200 turns is in a 0.50 T field. The field makes 60&deg; with the normal to the coil.</p>
-<p>A = (0.040)<sup>2</sup> = 1.6 &times; 10<sup>&minus;3</sup> m<sup>2</sup>. &phi; = BA cos 60&deg; = (0.50)(1.6 &times; 10<sup>&minus;3</sup>)(0.50) = <b>4.0 &times; 10<sup>&minus;4</sup> Wb</b>.</p>
-<p>&Phi; = N&phi; = 200 &times; 4.0 &times; 10<sup>&minus;4</sup> = <b>8.0 &times; 10<sup>&minus;2</sup> Wb</b>.</p>`)}
+${ex("flux and flux linkage", `<p>A square coil of side 4.0 cm with 200 turns is in a 0.50 T field. The field makes 60&deg; with the normal to the coil.</p><div class="calc"><div>A = (0.040)<sup>2</sup></div><div><b>A = 1.6 &times; 10<sup>&minus;3</sup> m<sup>2</sup></b></div></div><div class="calc"><div>&phi; = BA cos &theta;</div><div>&phi; = (0.50)(1.6 &times; 10<sup>&minus;3</sup>) cos 60&deg;</div><div><b>&phi; = 4.0 &times; 10<sup>&minus;4</sup> Wb</b></div></div><div class="calc"><div>&Phi; = N&phi;</div><div>&Phi; = 200 &times; 4.0 &times; 10<sup>&minus;4</sup></div><div><b>&Phi; = 8.0 &times; 10<sup>&minus;2</sup> Wb</b></div></div>`)}
 ${trap(`Measuring &theta; from the surface. If a question says the field makes 30&deg; <b>with the surface</b>, the angle with the normal is 60&deg;.`)}`;
 
 C5[1].html = `
@@ -2559,9 +2516,7 @@ ${fig(f5_rot, "Figure 5.5: A coil rotating at constant &#969; in a uniform field
 <p>The angle is &theta; = &omega;t, so &phi; = BA cos &omega;t. Differentiating:</p>
 ${fx("\\varepsilon=-N\\dfrac{d}{dt}\\left(BA\\cos\\omega t\\right)=NAB\\omega\\sin\\omega t||\\varepsilon_{\\max}=NAB\\omega", "&epsilon; = NAB&omega; sin &omega;t &nbsp;&nbsp; &epsilon;<sub>max</sub> = NAB&omega;")}
 <p>This is how a generator produces alternating current, which you will meet in Chapter 6.</p>
-${ex("three kinds of induced emf", `<p><b>Changing B:</b> a 100-turn coil of area 5.0 &times; 10<sup>&minus;3</sup> m<sup>2</sup> is perpendicular to a field that falls from 0.40 T to 0.10 T in 0.050 s. |&epsilon;| = NA(&Delta;B/&Delta;t) = 100 &times; 5.0 &times; 10<sup>&minus;3</sup> &times; 0.30/0.050 = <b>3.0 V</b>.</p>
-<p><b>Moving rod:</b> a 0.50 m rod moves at 4.0 m s<sup>&minus;1</sup> at right angles to a 0.80 T field. &epsilon; = Blv = <b>1.6 V</b>. With a 2.0 &Omega; resistor in the circuit, I = <b>0.80 A</b>.</p>
-<p><b>Rotating coil:</b> 50 turns, area 0.010 m<sup>2</sup>, B = 0.20 T, 50 revolutions per second. &omega; = 2&pi; &times; 50 = 314 rad s<sup>&minus;1</sup>, so &epsilon;<sub>max</sub> = NAB&omega; = <b>31 V</b>.</p>`)}
+${ex("three kinds of induced emf", `<p><b>Changing B:</b> a 100-turn coil of area 5.0 &times; 10<sup>&minus;3</sup> m<sup>2</sup> is perpendicular to a field that falls from 0.40 T to 0.10 T in 0.050 s.</p><div class="calc"><div>|&epsilon;| = NA(&Delta;B/&Delta;t)</div><div>|&epsilon;| = 100 &times; (5.0 &times; 10<sup>&minus;3</sup>) &times; (0.30/0.050)</div><div><b>|&epsilon;| = 3.0 V</b></div></div><p><b>Moving rod:</b> a 0.50 m rod moves at 4.0 m s<sup>&minus;1</sup> at right angles to a 0.80 T field, in a circuit with a 2.0 &Omega; resistor.</p><div class="calc"><div>&epsilon; = Blv</div><div>&epsilon; = (0.80)(0.50)(4.0)</div><div><b>&epsilon; = 1.6 V</b></div></div><div class="calc"><div>I = &epsilon;/R</div><div>I = 1.6/2.0</div><div><b>I = 0.80 A</b></div></div><p><b>Rotating coil:</b> 50 turns, area 0.010 m<sup>2</sup>, B = 0.20 T, 50 revolutions per second.</p><div class="calc"><div>&omega; = 2&pi;f</div><div>&omega; = 2&pi; &times; 50</div><div><b>&omega; = 314 rad s<sup>&minus;1</sup></b></div></div><div class="calc"><div>&epsilon;<sub>max</sub> = NAB&omega;</div><div>&epsilon;<sub>max</sub> = (50)(0.010)(0.20)(314)</div><div><b>&epsilon;<sub>max</sub> = 31 V</b></div></div>`)}
 ${trap(`Using revolutions per second as &omega;. Convert: &omega; = 2&pi;f, in rad s<sup>&minus;1</sup>.`)}`;
 
 C5[2].html = `
@@ -2576,8 +2531,7 @@ ${fx("\\varepsilon=-L\\dfrac{dI}{dt}||L=\\dfrac{N\\phi}{I}", "&epsilon; = &minus
 <h4>Inductance of a solenoid and a coil</h4>
 ${fx("L_{\\text{solenoid}}=\\dfrac{\\mu_0N^2A}{l}||L_{\\text{coil}}=\\dfrac{\\mu_0N^2A}{2r}", "L<sub>solenoid</sub> = &mu;<sub>0</sub>N<sup>2</sup>A/l &nbsp;&nbsp; L<sub>coil</sub> = &mu;<sub>0</sub>N<sup>2</sup>A/2r")}
 <p>L depends only on the shape and size of the coil: number of turns, area and length. It does not depend on the current. Notice the N<sup>2</sup>: doubling the turns makes L four times bigger.</p>
-${ex("self-inductance", `<p>A back emf of 6.0 V appears when the current changes at 40 A s<sup>&minus;1</sup>. L = &epsilon;/(dI/dt) = 6.0/40 = <b>0.15 H</b>.</p>
-<p>A solenoid has 500 turns, length 0.25 m and cross-sectional area 2.0 &times; 10<sup>&minus;4</sup> m<sup>2</sup>. L = (4&pi; &times; 10<sup>&minus;7</sup>)(500)<sup>2</sup>(2.0 &times; 10<sup>&minus;4</sup>)/0.25 = <b>2.5 &times; 10<sup>&minus;4</sup> H</b>.</p>`)}
+${ex("self-inductance", `<p>A back emf of 6.0 V appears when the current changes at 40 A s<sup>&minus;1</sup>.</p><div class="calc"><div>L = &epsilon;/(dI/dt)</div><div>L = 6.0/40</div><div><b>L = 0.15 H</b></div></div><p>A solenoid has 500 turns, length 0.25 m and cross-sectional area 2.0 &times; 10<sup>&minus;4</sup> m<sup>2</sup>.</p><div class="calc"><div>L = &mu;<sub>0</sub>N<sup>2</sup>A/l</div><div>L = (4&pi; &times; 10<sup>&minus;7</sup>)(500)<sup>2</sup>(2.0 &times; 10<sup>&minus;4</sup>) / 0.25</div><div><b>L = 2.5 &times; 10<sup>&minus;4</sup> H</b></div></div>`)}
 ${trap(`Using N instead of N<sup>2</sup> in the formula for L.`)}`;
 
 C5[3].html = `
@@ -2589,8 +2543,7 @@ ${fx("U=\\tfrac12LI^2", "U = &frac12;LI<sup>2</sup>")}
 <tr><td>Formula</td><td>U = &frac12;CV<sup>2</sup></td><td>U = &frac12;LI<sup>2</sup></td></tr>
 <tr><td>Opposes changes in</td><td>voltage</td><td>current</td></tr></table>
 <p>When the current is switched off, the stored energy is released. That is why switching off a large inductor can cause a spark at the switch.</p>
-${ex("energy in an inductor", `<p>A 40 mH coil with resistance 0.50 &Omega; is connected to a 6.0 V supply. The final current is I = V/R = 6.0/0.50 = 12 A.</p>
-<p>U = &frac12;LI<sup>2</sup> = &frac12;(40 &times; 10<sup>&minus;3</sup>)(12)<sup>2</sup> = <b>2.9 J</b>.</p>`)}
+${ex("energy in an inductor", `<p>A 40 mH coil with resistance 0.50 &Omega; is connected to a 6.0 V supply.</p><div class="calc"><div>I = V/R</div><div>I = 6.0/0.50</div><div><b>I = 12 A</b></div></div><div class="calc"><div>U = &frac12;LI<sup>2</sup></div><div>U = &frac12;(40 &times; 10<sup>&minus;3</sup>)(12)<sup>2</sup></div><div><b>U = 2.9 J</b></div></div>`)}
 ${trap(`Forgetting to convert mH to H (1 mH = 10<sup>&minus;3</sup> H), or forgetting to square the current.`)}`;
 
 C5[4].html = `
@@ -2601,8 +2554,7 @@ ${fx("\\varepsilon_2=-M\\dfrac{dI_1}{dt}||M=\\dfrac{N_2\\phi_2}{I_1}||M=\\dfrac{
 <li>It works both ways: a changing current in coil 2 induces an emf in coil 1, with the <b>same</b> M.</li>
 <li>For two coaxial solenoids, A is the cross-sectional area of the inner solenoid and l is the length of the solenoids.</li>
 <li>Only a <b>changing</b> current induces an emf. A steady current in coil 1 gives nothing in coil 2. This is why transformers need alternating current.</li></ul>
-${ex("mutual inductance", `<p>The current in coil 1 rises steadily from 0 to 4.0 A in 0.020 s. M = 0.050 H. |&epsilon;<sub>2</sub>| = M(&Delta;I<sub>1</sub>/&Delta;t) = 0.050 &times; 4.0/0.020 = <b>10 V</b>.</p>
-<p>Two coaxial solenoids: N<sub>1</sub> = 800, N<sub>2</sub> = 200, A = 1.0 &times; 10<sup>&minus;3</sup> m<sup>2</sup>, l = 0.40 m. M = (4&pi; &times; 10<sup>&minus;7</sup>)(800)(200)(1.0 &times; 10<sup>&minus;3</sup>)/0.40 = <b>5.0 &times; 10<sup>&minus;4</sup> H</b>.</p>`)}
+${ex("mutual inductance", `<p>The current in coil 1 rises steadily from 0 to 4.0 A in 0.020 s. M = 0.050 H.</p><div class="calc"><div>|&epsilon;<sub>2</sub>| = M(&Delta;I<sub>1</sub>/&Delta;t)</div><div>|&epsilon;<sub>2</sub>| = 0.050 &times; (4.0/0.020)</div><div><b>|&epsilon;<sub>2</sub>| = 10 V</b></div></div><p>Two coaxial solenoids: N<sub>1</sub> = 800, N<sub>2</sub> = 200, A = 1.0 &times; 10<sup>&minus;3</sup> m<sup>2</sup>, l = 0.40 m.</p><div class="calc"><div>M = &mu;<sub>0</sub>N<sub>1</sub>N<sub>2</sub>A/l</div><div>M = (4&pi; &times; 10<sup>&minus;7</sup>)(800)(200)(1.0 &times; 10<sup>&minus;3</sup>) / 0.40</div><div><b>M = 5.0 &times; 10<sup>&minus;4</sup> H</b></div></div>`)}
 ${trap(`Mixing up self- and mutual induction. <b>Self</b>: the changing current is in the <b>same</b> coil. <b>Mutual</b>: the changing current is in <b>another</b> coil.`)}`;
 
 })();
@@ -2690,8 +2642,7 @@ ${fx("V=V_0\\sin\\omega t||I=I_0\\sin\\omega t||\\omega=2\\pi f=\\dfrac{2\\pi}{T
 <li>&omega;t is called the <b>phase</b>. In your calculator, use <b>radian</b> mode.</li>
 <li>The sign of I tells you the direction at that instant: positive one way round the circuit, negative the other way.</li>
 <li>f is the frequency (number of cycles per second, Hz), and T = 1/f is the period.</li></ul>
-${ex("reading an AC equation", `<p>A supply is V = 325 sin(100&pi;t). Then V<sub>0</sub> = <b>325 V</b>, &omega; = 100&pi; rad s<sup>&minus;1</sup>, f = &omega;/2&pi; = <b>50 Hz</b>, T = 1/f = <b>0.020 s</b>.</p>
-<p>At t = 2.5 ms: V = 325 sin(100&pi; &times; 0.0025) = 325 sin(&pi;/4) = <b>230 V</b>.</p>`)}
+${ex("reading an AC equation", `<p>A supply is V = 325 sin(100&pi;t). Comparing with V = V<sub>0</sub> sin &omega;t:</p><div class="calc"><div><b>V<sub>0</sub> = 325 V</b></div></div><div class="calc"><div><b>&omega; = 100&pi; rad s<sup>&minus;1</sup></b></div></div><div class="calc"><div>f = &omega;/2&pi;</div><div>f = 100&pi;/2&pi;</div><div><b>f = 50 Hz</b></div></div><div class="calc"><div>T = 1/f</div><div>T = 1/50</div><div><b>T = 0.020 s</b></div></div><p>At t = 2.5 ms (calculator in radians):</p><div class="calc"><div>V = 325 sin(100&pi; &times; 0.0025)</div><div>V = 325 sin(&pi;/4)</div><div><b>V = 230 V</b></div></div>`)}
 ${trap(`Calculating sin &omega;t with the calculator in degree mode. &omega;t is in radians.`)}`;
 
 C6[1].html = `
@@ -2703,9 +2654,7 @@ ${fx("I_{\\text{rms}}=\\dfrac{I_0}{\\sqrt2}||V_{\\text{rms}}=\\dfrac{V_0}{\\sqrt
 <ul><li>The name describes the steps: take the <b>square</b> of the current, find the <b>mean</b>, then take the square <b>root</b>.</li>
 <li>Rms values are also called <b>effective</b> values. A lamp on 240 V rms AC is exactly as bright as on 240 V DC.</li>
 <li>Mains ratings (such as 240 V) and AC meter readings are <b>rms</b> values. The peak is &radic;2 times bigger: 240 V rms has a peak of about 340 V.</li></ul>
-${ex("rms values", `<p>V = 340 sin &omega;t is connected across a 100 &Omega; resistor.</p>
-<p>V<sub>rms</sub> = 340/&radic;2 = <b>240 V</b>. I<sub>0</sub> = 340/100 = 3.4 A, so I<sub>rms</sub> = 3.4/&radic;2 = <b>2.4 A</b>.</p>
-<p>Average power: P = I<sub>rms</sub><sup>2</sup>R = (2.40)<sup>2</sup> &times; 100 = <b>5.8 &times; 10<sup>2</sup> W</b>.</p>`)}
+${ex("rms values", `<p>V = 340 sin &omega;t is connected across a 100 &Omega; resistor.</p><div class="calc"><div>V<sub>rms</sub> = V<sub>0</sub>/&radic;2</div><div>V<sub>rms</sub> = 340/&radic;2</div><div><b>V<sub>rms</sub> = 240 V</b></div></div><div class="calc"><div>I<sub>0</sub> = V<sub>0</sub>/R</div><div>I<sub>0</sub> = 340/100</div><div><b>I<sub>0</sub> = 3.4 A</b></div></div><div class="calc"><div>I<sub>rms</sub> = I<sub>0</sub>/&radic;2</div><div>I<sub>rms</sub> = 3.4/&radic;2</div><div><b>I<sub>rms</sub> = 2.4 A</b></div></div><div class="calc"><div>P = I<sub>rms</sub><sup>2</sup>R</div><div>P = (2.40)<sup>2</sup> &times; 100</div><div><b>P = 5.8 &times; 10<sup>2</sup> W</b></div></div>`)}
 ${trap(`Using peak values in P = I<sup>2</sup>R for average power. Average power uses rms values.`)}`;
 
 C6[2].html = `
@@ -2737,11 +2686,7 @@ ${fig(f6_freq, "Figure 6.8: R does not depend on f. X<sub>C</sub> falls and X<su
 <p>At one particular frequency, X<sub>L</sub> = X<sub>C</sub>. They cancel, so Z = R, which is the <b>minimum</b> impedance. The current is then at its <b>maximum</b>, and V and I are in phase. This is <b>resonance</b>, and it happens at the <b>resonant frequency</b>:</p>
 ${fx("X_L=X_C\\ \\Rightarrow\\ f_0=\\dfrac{1}{2\\pi\\sqrt{LC}}", "f<sub>0</sub> = 1/(2&pi;&radic;LC)")}
 <p>A radio is tuned by changing C until f<sub>0</sub> matches the station's frequency, so that station gives the biggest current.</p>
-${ex("a series RLC circuit", `<p>R = 100 &Omega;, L = 0.50 H and C = 10 &mu;F are in series with a 240 V, 50 Hz supply.</p>
-<p>X<sub>L</sub> = 2&pi;(50)(0.50) = 157 &Omega;. X<sub>C</sub> = 1/[2&pi;(50)(10 &times; 10<sup>&minus;6</sup>)] = 318 &Omega;.</p>
-<p>Z = &radic;[100<sup>2</sup> + (157 &minus; 318)<sup>2</sup>] = <b>190 &Omega;</b>. I = V/Z = 240/190 = <b>1.27 A</b>.</p>
-<p>tan &phi; = (157 &minus; 318)/100, so &phi; = <b>&minus;58&deg;</b>. It is negative because X<sub>C</sub> &gt; X<sub>L</sub>: the circuit is capacitive and the current leads.</p>
-<p>Resonant frequency: f<sub>0</sub> = 1/[2&pi;&radic;(0.50 &times; 10 &times; 10<sup>&minus;6</sup>)] = <b>71 Hz</b>.</p>`)}
+${ex("a series RLC circuit", `<p>R = 100 &Omega;, L = 0.50 H and C = 10 &mu;F are in series with a 240 V, 50 Hz supply.</p><div class="calc"><div>X<sub>L</sub> = 2&pi;fL</div><div>X<sub>L</sub> = 2&pi;(50)(0.50)</div><div><b>X<sub>L</sub> = 157 &Omega;</b></div></div><div class="calc"><div>X<sub>C</sub> = 1/2&pi;fC</div><div>X<sub>C</sub> = 1/[2&pi;(50)(10 &times; 10<sup>&minus;6</sup>)]</div><div><b>X<sub>C</sub> = 318 &Omega;</b></div></div><div class="calc"><div>Z = &radic;[R<sup>2</sup> + (X<sub>L</sub> &minus; X<sub>C</sub>)<sup>2</sup>]</div><div>Z = &radic;[100<sup>2</sup> + (157 &minus; 318)<sup>2</sup>]</div><div><b>Z = 190 &Omega;</b></div></div><div class="calc"><div>I = V/Z</div><div>I = 240/190</div><div><b>I = 1.27 A</b></div></div><div class="calc"><div>tan &phi; = (X<sub>L</sub> &minus; X<sub>C</sub>)/R</div><div>tan &phi; = (157 &minus; 318)/100</div><div><b>&phi; = &minus;58&deg;</b></div></div><p>&phi; is negative because X<sub>C</sub> &gt; X<sub>L</sub>: the circuit is capacitive and the current leads.</p><div class="calc"><div>f<sub>0</sub> = 1/(2&pi;&radic;LC)</div><div>f<sub>0</sub> = 1/[2&pi;&radic;(0.50 &times; 10 &times; 10<sup>&minus;6</sup>)]</div><div><b>f<sub>0</sub> = 71 Hz</b></div></div>`)}
 ${trap(`Adding V<sub>R</sub>, V<sub>L</sub> and V<sub>C</sub> as ordinary numbers. They are out of phase, so add them as phasors.`)}`;
 
 C6[3].html = `
@@ -2760,9 +2705,7 @@ ${fx("\\cos\\phi=\\dfrac{P_{\\text{av}}}{I_{\\text{rms}}V_{\\text{rms}}}=\\dfrac
 <li><b>Pure resistor:</b> &phi; = 0, power factor = 1. All the apparent power is used.</li>
 <li><b>Pure capacitor or inductor:</b> &phi; = &pi;/2, power factor = 0. No power is used.</li>
 <li><b>At resonance:</b> Z = R, so the power factor is 1.</li></ul>
-${ex("power in an RLC circuit", `<p>For the circuit in 6.3 (R = 100 &Omega;, Z = 190 &Omega;, I = 1.27 A, V = 240 V):</p>
-<p>Power factor: cos &phi; = R/Z = 100/190 = <b>0.53</b>.</p>
-<p>P<sub>av</sub> = I<sub>rms</sub>V<sub>rms</sub> cos &phi; = 1.27 &times; 240 &times; 0.53 = <b>1.6 &times; 10<sup>2</sup> W</b>. Check: I<sup>2</sup>R = (1.27)<sup>2</sup> &times; 100 = 1.6 &times; 10<sup>2</sup> W.</p>`)}
+${ex("power in an RLC circuit", `<p>For the circuit in 6.3 (R = 100 &Omega;, Z = 190 &Omega;, I = 1.27 A, V = 240 V):</p><div class="calc"><div>cos &phi; = R/Z</div><div>cos &phi; = 100/190</div><div><b>cos &phi; = 0.53</b></div></div><div class="calc"><div>P<sub>av</sub> = I<sub>rms</sub>V<sub>rms</sub> cos &phi;</div><div>P<sub>av</sub> = 1.27 &times; 240 &times; 0.53</div><div><b>P<sub>av</sub> = 1.6 &times; 10<sup>2</sup> W</b></div></div><div class="calc"><div>Check: P<sub>av</sub> = I<sup>2</sup>R</div><div>P<sub>av</sub> = (1.27)<sup>2</sup> &times; 100</div><div><b>P<sub>av</sub> = 1.6 &times; 10<sup>2</sup> W</b></div></div>`)}
 ${trap(`Thinking a capacitor or inductor "uses" power. They store energy and give it back, so their average power is zero. Only R dissipates energy.`)}`;
 
 })();
@@ -2900,8 +2843,7 @@ ${fig(f7_convex, "Figure 7.2: Convex mirror. The reflected rays spread out and o
 <tr><td>v</td><td>real image (in front of the mirror)</td><td>virtual image (behind the mirror)</td></tr>
 <tr><td>M</td><td>upright image</td><td>inverted image</td></tr></table>
 <p>The size of |M| tells you whether the image is magnified (|M| &gt; 1) or diminished (|M| &lt; 1).</p>
-${ex("mirror equation", `<p><b>Concave mirror,</b> f = 10 cm, object at u = 30 cm: 1/v = 1/10 &minus; 1/30, so v = <b>+15 cm</b> (real). M = &minus;15/30 = <b>&minus;0.5</b>: inverted and half the size.</p>
-<p><b>Convex mirror,</b> f = &minus;20 cm, object at u = 30 cm: 1/v = &minus;1/20 &minus; 1/30, so v = <b>&minus;12 cm</b> (virtual, behind the mirror). M = &minus;(&minus;12)/30 = <b>+0.4</b>: upright and diminished.</p>`)}
+${ex("mirror equation", `<p><b>Concave mirror:</b> f = 10 cm, object at u = 30 cm.</p><div class="calc"><div>1/v = 1/f &minus; 1/u</div><div>1/v = 1/10 &minus; 1/30</div><div><b>v = +15 cm (real)</b></div></div><div class="calc"><div>M = &minus;v/u</div><div>M = &minus;15/30</div><div><b>M = &minus;0.5 (inverted, half the size)</b></div></div><p><b>Convex mirror:</b> f = &minus;20 cm, object at u = 30 cm.</p><div class="calc"><div>1/v = 1/f &minus; 1/u</div><div>1/v = &minus;1/20 &minus; 1/30</div><div><b>v = &minus;12 cm (virtual, behind the mirror)</b></div></div><div class="calc"><div>M = &minus;v/u</div><div>M = &minus;(&minus;12)/30</div><div><b>M = +0.4 (upright, diminished)</b></div></div>`)}
 ${trap(`Forgetting to put a negative sign on f for a convex mirror.`)}`;
 
 C7[1].html = `
@@ -2912,8 +2854,7 @@ ${fx("\\dfrac{n_1}{u}+\\dfrac{n_2}{v}=\\dfrac{n_2-n_1}{R}", "n<sub>1</sub>/u + n
 <li><b>R is positive</b> for a <b>convex</b> surface facing the object, and <b>negative</b> for a <b>concave</b> surface.</li>
 <li><b>v positive:</b> real image, in the second medium. <b>v negative:</b> virtual image, on the same side as the object.</li>
 <li>Refractive index n = c/v is a ratio of speeds, so it has no unit.</li></ul>
-${ex("refraction at a curved surface", `<p>An object in air is 30 cm from a convex glass surface (n = 1.5, R = +10 cm).</p>
-<p>1.0/30 + 1.5/v = (1.5 &minus; 1.0)/10, so 1.5/v = 0.050 &minus; 0.033 = 0.017, and v = <b>+90 cm</b>. The image is real, 90 cm inside the glass.</p>`)}
+${ex("refraction at a curved surface", `<p>An object in air is 30 cm from a convex glass surface (n = 1.5, R = +10 cm).</p><div class="calc"><div>n<sub>1</sub>/u + n<sub>2</sub>/v = (n<sub>2</sub> &minus; n<sub>1</sub>)/R</div><div>1.0/30 + 1.5/v = (1.5 &minus; 1.0)/10</div><div>1.5/v = 0.050 &minus; 0.033</div><div><b>v = +90 cm</b></div></div><p>The image is real, 90 cm inside the glass.</p>`)}
 ${trap(`Swapping n<sub>1</sub> and n<sub>2</sub>. n<sub>1</sub> always goes with u (the object side).`)}`;
 
 C7[2].html = `
@@ -2933,9 +2874,7 @@ ${fx("\\dfrac1f=\\left(\\dfrac{n_{\\text{material}}}{n_{\\text{medium}}}-1\\righ
 <p>If the lens is put in water, n<sub>material</sub>/n<sub>medium</sub> gets closer to 1, so the lens bends light less and its <b>focal length increases</b>.</p>
 <h4>Two lenses</h4>
 <p>Find the image formed by the first lens. That image becomes the <b>object</b> for the second lens. The total magnification is M = M<sub>1</sub> &times; M<sub>2</sub>.</p>
-${ex("lens calculations", `<p><b>Single lens:</b> a convex lens with f = 15 cm, object at 20 cm. 1/v = 1/15 &minus; 1/20, so v = <b>+60 cm</b> (real). M = &minus;60/20 = <b>&minus;3</b>.</p>
-<p><b>Lens maker:</b> biconvex glass lens (n = 1.5), R<sub>1</sub> = +20 cm, R<sub>2</sub> = &minus;20 cm. In air: 1/f = 0.5(1/20 + 1/20), so f = <b>20 cm</b>. In water (n = 1.33): 1/f = (1.5/1.33 &minus; 1)(0.10), so f = <b>78 cm</b>.</p>
-<p><b>Two lenses:</b> f<sub>1</sub> = 10 cm and f<sub>2</sub> = 20 cm, 40 cm apart, object 15 cm in front of lens 1. Lens 1: v<sub>1</sub> = 30 cm. This is 10 cm in front of lens 2, so u<sub>2</sub> = 10 cm and v<sub>2</sub> = &minus;20 cm (virtual). M = (&minus;30/15)(&minus;(&minus;20)/10) = <b>&minus;4</b>.</p>`)}
+${ex("lens calculations", `<p><b>Single lens:</b> a convex lens with f = 15 cm, object at 20 cm.</p><div class="calc"><div>1/v = 1/f &minus; 1/u</div><div>1/v = 1/15 &minus; 1/20</div><div><b>v = +60 cm (real)</b></div></div><div class="calc"><div>M = &minus;v/u</div><div>M = &minus;60/20</div><div><b>M = &minus;3</b></div></div><p><b>Lens maker:</b> biconvex glass lens (n = 1.5), R<sub>1</sub> = +20 cm, R<sub>2</sub> = &minus;20 cm.</p><p>In air:</p><div class="calc"><div>1/f = (1.5/1.0 &minus; 1)(1/20 &minus; 1/(&minus;20))</div><div>1/f = 0.5 &times; 0.10</div><div><b>f = 20 cm</b></div></div><p>In water (n = 1.33):</p><div class="calc"><div>1/f = (1.5/1.33 &minus; 1)(0.10)</div><div>1/f = 0.128 &times; 0.10</div><div><b>f = 78 cm</b></div></div><p><b>Two lenses:</b> f<sub>1</sub> = 10 cm and f<sub>2</sub> = 20 cm, 40 cm apart, object 15 cm in front of lens 1.</p><div class="calc"><div>1/v<sub>1</sub> = 1/10 &minus; 1/15</div><div><b>v<sub>1</sub> = 30 cm</b></div></div><div class="calc"><div>u<sub>2</sub> = 40 &minus; 30</div><div><b>u<sub>2</sub> = 10 cm</b></div></div><div class="calc"><div>1/v<sub>2</sub> = 1/20 &minus; 1/10</div><div><b>v<sub>2</sub> = &minus;20 cm (virtual)</b></div></div><div class="calc"><div>M = M<sub>1</sub> &times; M<sub>2</sub></div><div>M = (&minus;30/15) &times; (&minus;(&minus;20)/10)</div><div><b>M = &minus;4</b></div></div>`)}
 ${trap(`In a two-lens problem, using the distance from the first lens as u for the second lens. Measure u<sub>2</sub> from the <b>second</b> lens.`)}`;
 
 C7[3].html = `
@@ -2981,8 +2920,7 @@ ${fx("\\text{bright: } y_m=\\dfrac{m\\lambda D}{d}||\\text{dark: } y_m=\\dfrac{\
 <tr><td>Screen further away (larger D)</td><td>increases</td></tr>
 <tr><td>Slits closer together (smaller d)</td><td>increases</td></tr>
 <tr><td>White light instead of one colour</td><td>central fringe white, others coloured</td></tr></table>
-${ex("fringe separation", `<p>Light of wavelength 600 nm passes through slits 0.30 mm apart onto a screen 1.5 m away.</p>
-<p>&Delta;y = &lambda;D/d = (600 &times; 10<sup>&minus;9</sup>)(1.5)/(0.30 &times; 10<sup>&minus;3</sup>) = <b>3.0 &times; 10<sup>&minus;3</sup> m</b> (3.0 mm).</p>`)}
+${ex("fringe separation", `<p>Light of wavelength 600 nm passes through slits 0.30 mm apart onto a screen 1.5 m away.</p><div class="calc"><div>&Delta;y = &lambda;D/d</div><div>&Delta;y = (600 &times; 10<sup>&minus;9</sup>)(1.5) / (0.30 &times; 10<sup>&minus;3</sup>)</div><div><b>&Delta;y = 3.0 &times; 10<sup>&minus;3</sup> m (3.0 mm)</b></div></div>`)}
 ${trap(`Mixing up d (the slit separation, usually in mm) and D (the screen distance, usually in m). Convert both to metres.`)}`;
 
 C7[6].html = `
@@ -3000,8 +2938,7 @@ ${fig(f7_film, "Figure 7.9: Ray 1 reflects from the top surface. Ray 2 enters th
 <h4>Applications</h4>
 <ul><li><b>Anti-reflective coatings</b> on spectacles, camera lenses and solar panels: the thickness is chosen so that reflected light interferes <b>destructively</b>. Less light is reflected, so more is transmitted.</li>
 <li><b>Reflective coatings</b>, such as heat-reflecting tinted glass: the thickness is chosen so that reflected light interferes <b>constructively</b>.</li></ul>
-${ex("coating thickness", `<p>A MgF<sub>2</sub> coating (n = 1.38) on glass (n = 1.5) should cancel reflected light of 550 nm. Both reflections are off a higher index, so there is no relative phase change. For the thinnest coating, 2nt = &frac12;&lambda;:</p>
-<p>t = &lambda;/(4n) = 550/(4 &times; 1.38) = <b>99.6 nm</b> (about 100 nm).</p>`)}
+${ex("coating thickness", `<p>A MgF<sub>2</sub> coating (n = 1.38) on glass (n = 1.5) should cancel reflected light of 550 nm. Both reflections are off a higher index, so there is no relative phase change. For the thinnest coating, 2nt = &frac12;&lambda;:</p><div class="calc"><div>t = &lambda;/4n</div><div>t = 550 / (4 &times; 1.38)</div><div><b>t = 99.6 nm (about 100 nm)</b></div></div>`)}
 ${trap(`Forgetting to check the phase changes first. Decide which row of the table to use before writing any equation.`)}`;
 
 C7[7].html = `
@@ -3013,8 +2950,7 @@ ${fx("\\text{dark: } y_m=\\dfrac{m\\lambda D}{a}||\\text{bright: } y_m=\\dfrac{\
 <ul><li>The central maximum is the <b>widest</b> and <b>brightest</b>, about <b>twice</b> as wide as the others.</li>
 <li>A <b>narrower slit</b> (smaller a) gives a <b>wider</b> pattern. The light spreads out more.</li>
 <li>A <b>longer wavelength</b> also gives a wider pattern.</li></ul>
-${ex("single slit", `<p>Light of 500 nm passes through a slit 0.10 mm wide onto a screen 2.0 m away.</p>
-<p>First dark fringe: y<sub>1</sub> = &lambda;D/a = (500 &times; 10<sup>&minus;9</sup>)(2.0)/(0.10 &times; 10<sup>&minus;3</sup>) = 0.010 m. The central maximum is 2 &times; 0.010 = <b>2.0 cm</b> wide.</p>`)}
+${ex("single slit", `<p>Light of 500 nm passes through a slit 0.10 mm wide onto a screen 2.0 m away.</p><div class="calc"><div>y<sub>1</sub> = &lambda;D/a</div><div>y<sub>1</sub> = (500 &times; 10<sup>&minus;9</sup>)(2.0) / (0.10 &times; 10<sup>&minus;3</sup>)</div><div><b>y<sub>1</sub> = 0.010 m</b></div></div><div class="calc"><div>width = 2y<sub>1</sub></div><div>width = 2 &times; 0.010</div><div><b>width = 0.020 m (2.0 cm)</b></div></div>`)}
 ${trap(`Using the double-slit idea that m&lambda; gives a bright fringe. For a single slit, m&lambda;D/a gives the <b>dark</b> fringes.`)}`;
 
 C7[8].html = `
@@ -3026,9 +2962,7 @@ ${fx("d\\sin\\theta=m\\lambda||d=\\dfrac1N", "d sin &theta; = m&lambda; &nbsp;&n
 <li>Since sin &theta; cannot exceed 1, the highest order you can see is the largest whole number m &le; d/&lambda;.</li>
 <li>More lines per mm (smaller d) spreads the maxima further apart, but gives fewer orders.</li>
 <li>Different wavelengths come out at different angles, so a grating splits white light into a spectrum. A CD shows this effect.</li></ul>
-${ex("diffraction grating", `<p>A grating has 500 lines per mm, and light of 600 nm is used.</p>
-<p>d = 1/(500 &times; 10<sup>3</sup>) = 2.0 &times; 10<sup>&minus;6</sup> m. First order: sin &theta; = &lambda;/d = 0.30, so &theta; = <b>17.5&deg;</b>.</p>
-<p>Highest order: d/&lambda; = 3.3, so the highest order is <b>m = 3</b>.</p>`)}
+${ex("diffraction grating", `<p>A grating has 500 lines per mm, and light of 600 nm is used.</p><div class="calc"><div>d = 1/N</div><div>d = 1/(500 &times; 10<sup>3</sup>)</div><div><b>d = 2.0 &times; 10<sup>&minus;6</sup> m</b></div></div><div class="calc"><div>sin &theta;<sub>1</sub> = &lambda;/d</div><div>sin &theta;<sub>1</sub> = (600 &times; 10<sup>&minus;9</sup>) / (2.0 &times; 10<sup>&minus;6</sup>)</div><div>sin &theta;<sub>1</sub> = 0.30</div><div><b>&theta;<sub>1</sub> = 17.5&deg;</b></div></div><div class="calc"><div>m<sub>max</sub> &le; d/&lambda;</div><div>m<sub>max</sub> &le; (2.0 &times; 10<sup>&minus;6</sup>) / (600 &times; 10<sup>&minus;9</sup>) = 3.3</div><div><b>m<sub>max</sub> = 3</b></div></div>`)}
 ${trap(`Rounding the highest order up. If d/&lambda; = 3.3, the third order exists but the fourth does not.`)}`;
 
 })();
@@ -3104,8 +3038,7 @@ ${fig(f8_dual, "Figure 8.1: Light shows wave behaviour in interference and diffr
 <p>In 1924, Louis de Broglie suggested that the same relation works the other way round: if waves can behave as particles, then <b>particles such as electrons can behave as waves</b>. Every moving particle has a wavelength, called its <b>de Broglie wavelength</b>:</p>
 ${fx("\\lambda=\\dfrac{h}{p}=\\dfrac{h}{mv}||h=6.63\\times10^{-34}\\ \\text{J s}", "&lambda; = h/p = h/mv")}
 <p>&lambda; is the wave property and p is the particle property. A larger momentum gives a <b>shorter</b> wavelength.</p>
-${ex("everyday object versus electron", `<p>A 0.16 kg cricket ball at 30 m s<sup>&minus;1</sup>: &lambda; = 6.63 &times; 10<sup>&minus;34</sup>/(0.16 &times; 30) = <b>1.4 &times; 10<sup>&minus;34</sup> m</b>. That is far too small to ever detect, so we never see a cricket ball diffract.</p>
-<p>An electron at 1.0 &times; 10<sup>7</sup> m s<sup>&minus;1</sup>: &lambda; = 6.63 &times; 10<sup>&minus;34</sup>/(9.11 &times; 10<sup>&minus;31</sup> &times; 1.0 &times; 10<sup>7</sup>) = <b>7.3 &times; 10<sup>&minus;11</sup> m</b>, which is about the spacing of atoms in a crystal. So electrons <b>can</b> be diffracted by crystals.</p>`)}
+${ex("everyday object versus electron", `<p>A 0.16 kg cricket ball at 30 m s<sup>&minus;1</sup>:</p><div class="calc"><div>&lambda; = h/mv</div><div>&lambda; = (6.63 &times; 10<sup>&minus;34</sup>) / (0.16 &times; 30)</div><div><b>&lambda; = 1.4 &times; 10<sup>&minus;34</sup> m</b></div></div><p>That is far too small ever to detect, so we never see a cricket ball diffract.</p><p>An electron at 1.0 &times; 10<sup>7</sup> m s<sup>&minus;1</sup>:</p><div class="calc"><div>&lambda; = h/mv</div><div>&lambda; = (6.63 &times; 10<sup>&minus;34</sup>) / (9.11 &times; 10<sup>&minus;31</sup> &times; 1.0 &times; 10<sup>7</sup>)</div><div><b>&lambda; = 7.3 &times; 10<sup>&minus;11</sup> m</b></div></div><p>That is about the spacing of atoms in a crystal, so electrons <b>can</b> be diffracted by crystals.</p>`)}
 ${trap(`Using the photon formula E = hc/&lambda; for an electron. For particles with mass, use &lambda; = h/mv.`)}`;
 
 C8[1].html = `
@@ -3129,9 +3062,7 @@ ${fig(f8_lambda, "Figure 8.3: The de Broglie wavelength of an electron decreases
 <tr><td>Can separate points about</td><td>a few hundred nm apart</td><td>less than 1 nm apart</td></tr>
 <tr><td>Resolving power adjusted by</td><td>changing the lenses</td><td>changing the accelerating voltage</td></tr></table>
 <p><b>Advantages of an electron microscope:</b> a much higher resolving power and magnification, because the electron wavelength is much shorter than the wavelength of light. A transmission electron microscope (TEM) sends electrons through a very thin specimen. A scanning electron microscope (SEM) scans the beam across the surface.</p>
-${ex("electron wavelength", `<p>An electron is accelerated from rest through 2000 V.</p>
-<p>&lambda; = h/&radic;(2meV) = 6.63 &times; 10<sup>&minus;34</sup>/&radic;(2 &times; 9.11 &times; 10<sup>&minus;31</sup> &times; 1.60 &times; 10<sup>&minus;19</sup> &times; 2000) = <b>2.7 &times; 10<sup>&minus;11</sup> m</b>.</p>
-<p>An electron and a proton with the same kinetic energy: &lambda; &prop; 1/&radic;m, so &lambda;<sub>e</sub>/&lambda;<sub>p</sub> = &radic;(m<sub>p</sub>/m<sub>e</sub>) = &radic;(1.67 &times; 10<sup>&minus;27</sup>/9.11 &times; 10<sup>&minus;31</sup>) = <b>43</b>. The electron's wavelength is 43 times longer.</p>`)}
+${ex("electron wavelength", `<p>An electron is accelerated from rest through 2000 V.</p><div class="calc"><div>&lambda; = h/&radic;(2meV)</div><div>&lambda; = (6.63 &times; 10<sup>&minus;34</sup>) / &radic;(2 &times; 9.11 &times; 10<sup>&minus;31</sup> &times; 1.60 &times; 10<sup>&minus;19</sup> &times; 2000)</div><div><b>&lambda; = 2.7 &times; 10<sup>&minus;11</sup> m</b></div></div><p>An electron and a proton with the same kinetic energy: &lambda; &prop; 1/&radic;m, so:</p><div class="calc"><div>&lambda;<sub>e</sub>/&lambda;<sub>p</sub> = &radic;(m<sub>p</sub>/m<sub>e</sub>)</div><div>&lambda;<sub>e</sub>/&lambda;<sub>p</sub> = &radic;[(1.67 &times; 10<sup>&minus;27</sup>) / (9.11 &times; 10<sup>&minus;31</sup>)]</div><div><b>&lambda;<sub>e</sub>/&lambda;<sub>p</sub> = 43</b></div></div><p>The electron's wavelength is 43 times longer.</p>`)}
 ${trap(`Saying a higher voltage gives a longer wavelength. Higher V means more momentum, so a <b>shorter</b> wavelength and better resolution.`)}`;
 
 })();
@@ -3268,9 +3199,7 @@ ${fig(f9_be, "Figure 9.2: Binding energy per nucleon against nucleon number. The
 <li>Nuclei near the peak (A around 50 to 60) are the most stable.</li>
 <li><b>Fusion:</b> very light nuclei can join to form a nucleus higher up the curve, releasing energy (as in the Sun).</li>
 <li><b>Fission:</b> very heavy nuclei, such as uranium-235, can split into two medium nuclei higher up the curve, releasing energy (as in nuclear power stations).</li></ul>
-${ex("helium-4", `<p>m<sub>p</sub> = 1.007276 u, m<sub>n</sub> = 1.008665 u, m(<sup>4</sup><sub>2</sub>He nucleus) = 4.001506 u.</p>
-<p>&Delta;m = 2(1.007276) + 2(1.008665) &minus; 4.001506 = <b>0.030376 u</b>.</p>
-<p>E<sub>B</sub> = 0.030376 &times; 931.5 = <b>28.3 MeV</b>. Per nucleon: 28.3/4 = <b>7.07 MeV</b>.</p>`)}
+${ex("helium-4", `<p>m<sub>p</sub> = 1.007276 u, m<sub>n</sub> = 1.008665 u, m(<sup>4</sup><sub>2</sub>He nucleus) = 4.001506 u.</p><div class="calc"><div>&Delta;m = Zm<sub>p</sub> + (A &minus; Z)m<sub>n</sub> &minus; m<sub>nucleus</sub></div><div>&Delta;m = 2(1.007276) + 2(1.008665) &minus; 4.001506</div><div><b>&Delta;m = 0.030376 u</b></div></div><div class="calc"><div>E<sub>B</sub> = &Delta;m &times; 931.5</div><div>E<sub>B</sub> = 0.030376 &times; 931.5</div><div><b>E<sub>B</sub> = 28.3 MeV</b></div></div><div class="calc"><div>E<sub>B</sub>/A = 28.3/4</div><div><b>E<sub>B</sub>/A = 7.07 MeV per nucleon</b></div></div>`)}
 ${trap(`Using the mass of the whole atom (including electrons) with the masses of bare protons, or forgetting to multiply by 931.5 when the mass is in u.`)}`;
 
 C9[1].html = `
@@ -3294,9 +3223,7 @@ ${fig(f9_decay, "Figure 9.4: Exponential decay. In every half-life, the number o
 <p>The <b>half-life T<sub>&frac12;</sub></b> is the time taken for the number of undecayed nuclei (or the activity) to fall to <b>half</b> its initial value. Putting N = N<sub>0</sub>/2 into the decay law gives:</p>
 ${fx("T_{1/2}=\\dfrac{\\ln2}{\\lambda}=\\dfrac{0.693}{\\lambda}", "T<sub>&frac12;</sub> = ln 2/&lambda; = 0.693/&lambda;")}
 <p>The half-life is constant for a given nuclide: it does not depend on how many nuclei are left. A longer half-life means a smaller decay constant and a slower decay. In every half-life the number of undecayed nuclei halves: N<sub>0</sub> &rarr; N<sub>0</sub>/2 &rarr; N<sub>0</sub>/4 &rarr; N<sub>0</sub>/8.</p>
-${ex("iodine-131", `<p>Iodine-131 has a half-life of 8.0 days. A sample contains 2.0 &times; 10<sup>20</sup> nuclei.</p>
-<p>&lambda; = ln 2/(8.0 &times; 24 &times; 3600) = <b>1.0 &times; 10<sup>&minus;6</sup> s<sup>&minus;1</sup></b>. Activity: A = &lambda;N = <b>2.0 &times; 10<sup>14</sup> Bq</b>.</p>
-<p>After 24 days: A = A<sub>0</sub>e<sup>&minus;&lambda;t</sup> = (2.0 &times; 10<sup>14</sup>)e<sup>&minus;(1.0 &times; 10<sup>&minus;6</sup>)(24 &times; 24 &times; 3600)</sup> = <b>2.5 &times; 10<sup>13</sup> Bq</b>. (24 days is three half-lives, so the activity has halved three times: 2.0 &rarr; 1.0 &rarr; 0.5 &rarr; 0.25 &times; 10<sup>14</sup> Bq.)</p>`)}
+${ex("iodine-131", `<p>Iodine-131 has a half-life of 8.0 days. A sample contains 2.0 &times; 10<sup>20</sup> nuclei.</p><div class="calc"><div>&lambda; = ln 2/T<sub>&frac12;</sub></div><div>&lambda; = 0.693 / (8.0 &times; 24 &times; 3600)</div><div><b>&lambda; = 1.0 &times; 10<sup>&minus;6</sup> s<sup>&minus;1</sup></b></div></div><div class="calc"><div>A = &lambda;N</div><div>A = (1.0 &times; 10<sup>&minus;6</sup>)(2.0 &times; 10<sup>20</sup>)</div><div><b>A = 2.0 &times; 10<sup>14</sup> Bq</b></div></div><p>After 24 days:</p><div class="calc"><div>A = A<sub>0</sub>e<sup>&minus;&lambda;t</sup></div><div>A = (2.0 &times; 10<sup>14</sup>) e<sup>&minus;(1.0 &times; 10<sup>&minus;6</sup>)(24 &times; 24 &times; 3600)</sup></div><div><b>A = 2.5 &times; 10<sup>13</sup> Bq</b></div></div><p>Check: 24 days is three half-lives, so the activity has halved three times: 2.0 &rarr; 1.0 &rarr; 0.5 &rarr; 0.25 &times; 10<sup>14</sup> Bq.</p>`)}
 ${trap(`Using the half-life in days with &lambda; in s<sup>&minus;1</sup>. Keep the time units the same throughout.`)}`;
 
 C9[2].html = `
@@ -3327,8 +3254,7 @@ ${fig(f9_tracks, "Figure 9.7: Tracks in a detector with a magnetic field. Opposi
 <li>In a magnetic field, positive and negative particles curve in <b>opposite</b> directions. The amount of curvature gives the momentum: a straighter track means more momentum. As particles lose energy, they spiral inwards.</li></ul>
 <h4>Why such high energies?</h4>
 <p>A nucleus is about 10<sup>&minus;15</sup> to 10<sup>&minus;14</sup> m across (r = r<sub>0</sub>A<sup>1/3</sup>, with r<sub>0</sub> about 1.2 &times; 10<sup>&minus;15</sup> m). To see detail this small, the probing particles need a de Broglie wavelength &lambda; = h/p about this size or smaller. A short wavelength needs a <b>large momentum</b>, which means a <b>very high energy</b>.</p>
-${ex("energy needed to probe a nucleon", `<p>For &lambda; = 1.0 &times; 10<sup>&minus;15</sup> m: p = h/&lambda; = 6.63 &times; 10<sup>&minus;34</sup>/1.0 &times; 10<sup>&minus;15</sup> = 6.6 &times; 10<sup>&minus;19</sup> kg m s<sup>&minus;1</sup>.</p>
-<p>This is an enormous momentum for a particle. A proton would need over a thousand million electron-volts (GeV) of energy to reach it, which only large accelerators can provide.</p>`)}
+${ex("energy needed to probe a nucleon", `<p>To probe a nucleon, we need &lambda; = 1.0 &times; 10<sup>&minus;15</sup> m.</p><div class="calc"><div>p = h/&lambda;</div><div>p = (6.63 &times; 10<sup>&minus;34</sup>) / (1.0 &times; 10<sup>&minus;15</sup>)</div><div><b>p = 6.6 &times; 10<sup>&minus;19</sup> kg m s<sup>&minus;1</sup></b></div></div><p>This is an enormous momentum for a particle. A proton would need over a thousand million electron-volts (GeV) of energy to reach it, which only large accelerators can provide.</p>`)}
 ${trap(`Saying the magnetic field speeds the particle up. The magnetic force is perpendicular to the motion, so it only changes the direction. The electric field does the accelerating.`)}`;
 
 C9[3].html = `
