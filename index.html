@@ -1,0 +1,1110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SP025 Physics Self-Diagnosis</title>
+<style>
+:root{--bg:#f5f4ef;--card:#fff;--ink:#1b2232;--muted:#5b6476;--line:#e2dfd6;--brand:#173f63;--brand2:#2a6aa3;--ok:#1d7448;--okbg:#e5f3eb;--mid:#9a6200;--midbg:#fcf1db;--bad:#ad2a20;--badbg:#fbe8e5}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{font-family:system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;background:var(--bg);color:var(--ink);line-height:1.55;font-size:16px}
+.top{background:var(--brand);color:#fff}
+.top .wrap{display:flex;align-items:baseline;gap:12px;padding:14px 16px}
+.brand{font-weight:700;letter-spacing:.3px;font-size:18px}
+.top .sub{opacity:.8;font-size:14px}
+.wrap{max-width:760px;margin:0 auto;padding:16px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px;margin:14px 0}
+h1{font-size:24px;line-height:1.25;margin:0 0 8px}
+h2{font-size:20px;margin:0 0 8px}
+h3{font-size:17px;margin:18px 0 6px}
+.sec{font-size:15px;text-transform:uppercase;letter-spacing:.8px;color:var(--muted);margin:26px 0 8px}
+.muted{color:var(--muted)}
+.small{font-size:14px}
+label{display:block;font-size:14px;font-weight:600;color:var(--muted)}
+input{display:block;width:100%;margin-top:4px;padding:11px 12px;border:1px solid var(--line);border-radius:10px;font:inherit;color:var(--ink);background:#fcfcfa}
+input:focus{outline:2px solid var(--brand2);border-color:transparent}
+.grid3{display:grid;grid-template-columns:2fr 1.2fr 1fr;gap:12px;margin-top:14px}
+@media(max-width:600px){.grid3{grid-template-columns:1fr}}
+.err{color:var(--bad);font-size:14px;min-height:1em;margin:8px 0 0}
+.chapters{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px}
+.chap{display:grid;grid-template-columns:auto 1fr;grid-template-rows:auto auto;column-gap:12px;text-align:left;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px;font:inherit;color:inherit;cursor:pointer}
+.chap:hover:not(:disabled){border-color:var(--brand2);box-shadow:0 2px 0 var(--brand2)}
+.chap .num{grid-row:1/3;width:36px;height:36px;border-radius:50%;background:var(--brand);color:#fff;display:grid;place-items:center;font-weight:700}
+.chap .ct{font-weight:650}
+.chap .cs{font-size:13px;color:var(--muted)}
+.chap.locked{opacity:.55;cursor:not-allowed}
+.chap.locked .num{background:#9aa3b2}
+.qhead{display:flex;justify-content:space-between;gap:10px;font-size:14px;color:var(--muted);margin-top:6px}
+.bar{height:6px;background:var(--line);border-radius:6px;overflow:hidden;margin-top:8px}
+.bar i{display:block;height:100%;background:var(--brand2)}
+.qtext{font-size:17px;margin-bottom:14px}
+.opts{display:grid;gap:8px}
+.opt{display:flex;gap:12px;align-items:flex-start;text-align:left;padding:12px 14px;border:1px solid var(--line);border-radius:10px;background:#fcfcfa;font:inherit;color:inherit;cursor:pointer}
+.opt:hover:not(:disabled){border-color:var(--brand2)}
+.opt .L{flex:none;width:26px;height:26px;border-radius:50%;border:1px solid var(--line);display:grid;place-items:center;font-weight:700;font-size:13px;background:#fff}
+.opt.sel{border-color:var(--brand2);background:#eaf2fa}
+.opt.sel .L{background:var(--brand2);color:#fff;border-color:var(--brand2)}
+.opt.right{border-color:var(--ok);background:var(--okbg)}
+.opt.right .L{background:var(--ok);color:#fff;border-color:var(--ok)}
+.opt.wrong{border-color:var(--bad);background:var(--badbg)}
+.opt.wrong .L{background:var(--bad);color:#fff;border-color:var(--bad)}
+.opt:disabled{cursor:default}
+.conf{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-top:16px;padding-top:14px;border-top:1px dashed var(--line)}
+.conf span{font-size:14px;font-weight:600;color:var(--muted);margin-right:4px}
+.pill{border:1px solid var(--line);background:#fff;border-radius:999px;padding:7px 14px;font:inherit;font-size:14px;cursor:pointer;color:inherit}
+.pill.sel{background:var(--brand);border-color:var(--brand);color:#fff}
+.nav{display:flex;justify-content:space-between;gap:10px;margin-top:18px}
+.btn{background:var(--brand);color:#fff;border:0;border-radius:10px;padding:12px 18px;font:inherit;font-weight:650;cursor:pointer}
+.btn:hover:not(:disabled){background:var(--brand2)}
+.btn:disabled{opacity:.4;cursor:not-allowed}
+.btn.ghost{background:transparent;color:var(--brand);border:1px solid var(--line)}
+.btn.ghost:hover:not(:disabled){background:#fff;border-color:var(--brand2)}
+.score{display:flex;align-items:center;gap:18px}
+.ring{flex:none;width:86px;height:86px;border-radius:50%;display:grid;place-items:center;font-weight:800;font-size:22px}
+.save{font-size:13px;margin-top:10px;padding:8px 10px;border-radius:8px;background:#f0efe9;color:var(--muted)}
+.save.ok{background:var(--okbg);color:var(--ok)}
+.save.bad{background:var(--badbg);color:var(--bad)}
+.subrow{padding:12px 0;border-top:1px solid var(--line)}
+.subrow:first-child{border-top:0}
+.subline{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.subname{font-weight:620}
+.subname small{color:var(--muted);font-weight:500;margin-right:6px}
+.chip{flex:none;font-size:12px;font-weight:700;padding:3px 10px;border-radius:999px;text-transform:uppercase;letter-spacing:.5px}
+.chip.Mastered{background:var(--okbg);color:var(--ok)}
+.chip.Developing{background:var(--midbg);color:var(--mid)}
+.chip.Weak{background:var(--badbg);color:var(--bad)}
+.mbar{height:8px;background:var(--line);border-radius:8px;overflow:hidden;margin:8px 0 4px}
+.mbar i{display:block;height:100%}
+.hint{font-size:13.5px;color:var(--muted)}
+ul.mis{margin:6px 0 0;padding-left:20px}
+ul.mis li{margin:6px 0}
+.flag{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--bad);margin-right:6px}
+details{border-top:1px solid var(--line);padding:10px 0}
+details:first-of-type{border-top:0}
+summary{cursor:pointer;font-weight:600}
+.rev{font-size:14.5px;margin-top:8px}
+.rev .q{margin-bottom:6px}
+.fb{margin-top:12px;padding:12px 14px;border-radius:10px;font-size:15px}
+.fb.good{background:var(--okbg)}
+.fb.bad{background:var(--badbg)}
+.note .tag{display:inline-block;font-size:12px;font-weight:700;color:#fff;background:var(--brand2);padding:2px 8px;border-radius:6px;margin-bottom:6px}
+.note h4{margin:14px 0 4px;font-size:14px;text-transform:uppercase;letter-spacing:.6px;color:var(--brand)}
+.note p,.note ul{margin:4px 0}
+.note ul{padding-left:20px}
+.formula{font-family:"Cambria Math",Cambria,Georgia,serif;font-size:18px;background:#f3f6fa;border-left:3px solid var(--brand2);padding:8px 12px;margin:8px 0;border-radius:4px}
+.trap{background:var(--midbg);border-radius:8px;padding:10px 12px;margin-top:10px}
+.ex{background:#f3f6fa;border-radius:8px;padding:10px 12px;margin-top:10px}
+.preview{font-size:13px;background:#fff7e0;border:1px solid #f0dca6;color:#7a5a00;padding:8px 12px;border-radius:8px;margin-top:10px}
+.part{padding:14px 0;border-top:1px dashed var(--line)}
+.part:first-of-type{border-top:0;padding-top:4px}
+.plabel{font-weight:700;color:var(--brand);margin-right:6px}
+.numrow{display:flex;align-items:center;gap:10px;margin-top:8px;flex-wrap:wrap}
+.numrow input{width:200px;display:inline-block;margin:0}
+.numrow .unit{font-weight:600;color:var(--muted)}
+.numrow input.right{border-color:var(--ok);background:var(--okbg)}
+.numrow input.wrong{border-color:var(--bad);background:var(--badbg)}
+.tip{font-size:13px;color:var(--muted);margin-top:4px}
+.fig{display:block;margin:6px auto 14px;max-width:100%;height:auto}
+.skill{display:inline-block;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;padding:2px 8px;border-radius:6px;background:#eef2f7;color:var(--brand);margin-left:6px;vertical-align:2px}
+.btn.sm{padding:9px 14px;font-size:14px}
+.chap{cursor:default}
+.chap .acts{grid-column:2;display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.chap .acts .btn{display:flex;flex-direction:column;align-items:flex-start;text-align:left;line-height:1.25}
+.chap .acts .btn small{font-weight:500;font-size:12px;opacity:.8}
+.chapters{grid-template-columns:repeat(auto-fill,minmax(300px,1fr))}
+</style>
+</head>
+<body>
+<header class="top"><div class="wrap"><div class="brand">Fizik SP025</div><div class="sub">Weekly self-diagnosis</div></div></header>
+<main class="wrap" id="app"></main>
+
+<script>
+/* =====================================================================
+   FIGURES (simple SVG drawings used in questions)
+   ===================================================================== */
+function chg(x, y, sign, label, lx, ly){
+  const c = sign === "+" ? "#c0392b" : "#2a6aa3";
+  return `<circle cx="${x}" cy="${y}" r="13" fill="${c}"/><text x="${x}" y="${y+5}" text-anchor="middle" font-size="17" font-weight="700" fill="#fff">${sign==="+"?"+":"&#8722;"}</text>`
+    + (label ? `<text x="${x+(lx||0)}" y="${y+(ly==null?-20:ly)}" text-anchor="middle" font-size="13" fill="#1b2232">${label}</text>` : "");
+}
+function svg(w, h, body){ return `<svg class="fig" viewBox="0 0 ${w} ${h}" width="${w}" xmlns="http://www.w3.org/2000/svg" font-family="system-ui,sans-serif">${body}</svg>`; }
+function dim(x1, x2, y, t){ return `<line x1="${x1}" y1="${y}" x2="${x2}" y2="${y}" stroke="#5b6476" stroke-width="1"/><line x1="${x1}" y1="${y-5}" x2="${x1}" y2="${y+5}" stroke="#5b6476"/><line x1="${x2}" y1="${y-5}" x2="${x2}" y2="${y+5}" stroke="#5b6476"/><text x="${(x1+x2)/2}" y="${y+16}" text-anchor="middle" font-size="12" fill="#5b6476">${t}</text>`; }
+
+const FIG = {
+  line3: svg(360, 90, `<line x1="30" y1="40" x2="330" y2="40" stroke="#c9c5b9" stroke-dasharray="4 4"/>
+    ${chg(50,40,"+","A: +12 &#956;C")}${chg(230,40,"&#8722;","B: &#8722;2.0 &#956;C")}${chg(330-20,40,"+","C: +3.0 &#956;C")}
+    ${dim(50,230,68,"0.30 m")}${dim(230,310,68,"0.20 m")}`),
+  yaxis: svg(320, 220, `<line x1="60" y1="20" x2="60" y2="200" stroke="#9aa3b2"/><line x1="30" y1="110" x2="300" y2="110" stroke="#9aa3b2"/>
+    <text x="292" y="128" font-size="12" fill="#5b6476">x</text><text x="68" y="24" font-size="12" fill="#5b6476">y</text>
+    <line x1="60" y1="40" x2="240" y2="110" stroke="#c9c5b9" stroke-dasharray="4 4"/><line x1="60" y1="180" x2="240" y2="110" stroke="#c9c5b9" stroke-dasharray="4 4"/>
+    ${chg(60,40,"+","q&#8321; = +3.0 &#956;C",0,-18)}${chg(60,180,"+","q&#8322; = +3.0 &#956;C",0,32)}${chg(240,110,"+","Q = +5.0 &#956;C",0,-20)}
+    <text x="20" y="44" font-size="12" fill="#5b6476">0.30</text><text x="14" y="184" font-size="12" fill="#5b6476">&#8722;0.30</text><text x="225" y="136" font-size="12" fill="#5b6476">0.40</text>`),
+  yaxis2: svg(320, 220, `<line x1="60" y1="20" x2="60" y2="200" stroke="#9aa3b2"/><line x1="30" y1="110" x2="300" y2="110" stroke="#9aa3b2"/>
+    <text x="292" y="128" font-size="12" fill="#5b6476">x</text><text x="68" y="24" font-size="12" fill="#5b6476">y</text>
+    <line x1="60" y1="40" x2="240" y2="110" stroke="#c9c5b9" stroke-dasharray="4 4"/><line x1="60" y1="180" x2="240" y2="110" stroke="#c9c5b9" stroke-dasharray="4 4"/>
+    ${chg(60,40,"+","+2.0 &#956;C",0,-18)}${chg(60,180,"+","+2.0 &#956;C",0,32)}<circle cx="240" cy="110" r="4" fill="#1b2232"/><text x="240" y="96" text-anchor="middle" font-size="13">P</text>
+    <text x="20" y="44" font-size="12" fill="#5b6476">0.30</text><text x="14" y="184" font-size="12" fill="#5b6476">&#8722;0.30</text><text x="225" y="136" font-size="12" fill="#5b6476">0.40</text>`),
+  triangle: svg(320, 210, `<line x1="70" y1="40" x2="70" y2="170" stroke="#c9c5b9" stroke-dasharray="4 4"/><line x1="70" y1="170" x2="250" y2="170" stroke="#c9c5b9" stroke-dasharray="4 4"/><line x1="70" y1="40" x2="250" y2="170" stroke="#c9c5b9" stroke-dasharray="4 4"/>
+    <rect x="70" y="158" width="12" height="12" fill="none" stroke="#9aa3b2"/>
+    ${chg(70,40,"+","q&#8321; = +4.0 &#956;C",0,-18)}${chg(250,170,"&#8722;","q&#8322; = &#8722;6.0 &#956;C",0,32)}
+    <circle cx="70" cy="170" r="4" fill="#1b2232"/><text x="52" y="190" font-size="13">P</text>
+    <text x="30" y="110" font-size="12" fill="#5b6476">0.30 m</text><text x="140" y="192" font-size="12" fill="#5b6476">0.40 m</text><text x="168" y="98" font-size="12" fill="#5b6476">0.50 m</text>`),
+  equi: svg(320, 210, `<line x1="160" y1="40" x2="70" y2="170" stroke="#c9c5b9" stroke-dasharray="4 4"/><line x1="160" y1="40" x2="250" y2="170" stroke="#c9c5b9" stroke-dasharray="4 4"/><line x1="70" y1="170" x2="250" y2="170" stroke="#c9c5b9" stroke-dasharray="4 4"/>
+    ${chg(160,40,"+","C: +2.0 &#956;C",0,-18)}${chg(70,170,"+","A: +2.0 &#956;C",0,32)}${chg(250,170,"+","B: +2.0 &#956;C",0,32)}
+    <text x="160" y="192" text-anchor="middle" font-size="12" fill="#5b6476">all sides 0.20 m</text>`),
+  line3b: svg(360, 90, `<line x1="30" y1="40" x2="330" y2="40" stroke="#c9c5b9" stroke-dasharray="4 4"/>
+    ${chg(50,40,"+","+2.0 &#956;C")}${chg(130,40,"&#8722;","&#8722;3.0 &#956;C")}${chg(290,40,"+","+4.0 &#956;C")}
+    ${dim(50,130,68,"0.10 m")}${dim(130,290,68,"0.20 m")}`),
+  plates: svg(340, 170, `<rect x="40" y="25" width="250" height="8" fill="#c0392b"/><rect x="40" y="135" width="250" height="8" fill="#2a6aa3"/>
+    <text x="300" y="34" font-size="14" font-weight="700" fill="#c0392b">+</text><text x="300" y="144" font-size="14" font-weight="700" fill="#2a6aa3">&#8722;</text>
+    <circle cx="20" cy="84" r="6" fill="#2a6aa3"/><line x1="28" y1="84" x2="60" y2="84" stroke="#1b2232" stroke-width="1.5" marker-end="url(#ar)"/>
+    <text x="20" y="72" text-anchor="middle" font-size="12">e&#8315;</text><text x="44" y="104" font-size="12" fill="#5b6476">u = 4.0&#215;10&#8310; m s&#8315;&#185;</text>
+    ${dim(40,290,162,"l = 8.0 cm")}<text x="200" y="88" font-size="12" fill="#5b6476">E = 250 N C&#8315;&#185;</text>
+    <defs><marker id="ar" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="#1b2232"/></marker></defs>`)
+};
+
+
+function cap(x, y, label){ return `<rect x="${x-7}" y="${y-16}" width="14" height="32" fill="#fff"/><line x1="${x-5}" y1="${y-15}" x2="${x-5}" y2="${y+15}" stroke="#1b2232" stroke-width="2.5"/><line x1="${x+5}" y1="${y-15}" x2="${x+5}" y2="${y+15}" stroke="#1b2232" stroke-width="2.5"/>` + (label?`<text x="${x}" y="${y-21}" text-anchor="middle" font-size="12" fill="#1b2232">${label}</text>`:""); }
+function bat(x, y, label){ return `<rect x="${x-7}" y="${y-16}" width="14" height="32" fill="#fff"/><line x1="${x-5}" y1="${y-15}" x2="${x-5}" y2="${y+15}" stroke="#1b2232" stroke-width="1.8"/><line x1="${x+5}" y1="${y-8}" x2="${x+5}" y2="${y+8}" stroke="#1b2232" stroke-width="4"/><text x="${x}" y="${y+32}" text-anchor="middle" font-size="12" fill="#1b2232">${label}</text>`; }
+function w(x1,y1,x2,y2){ return `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="#1b2232" stroke-width="1.5"/>`; }
+FIG.c2 = svg(340, 215, w(70,45,270,45)+w(70,110,270,110)+w(70,45,70,175)+w(270,45,270,175)+w(70,175,270,175)
+  + cap(135,45,"C&#8321; = 4.0 &#956;F")+cap(205,45,"C&#8322; = 6.0 &#956;F")+cap(170,110,"C&#8323; = 5.0 &#956;F")+bat(170,175,"12 V"));
+FIG.c3 = svg(340, 215, w(30,45,310,45)+w(170,110,290,110)+w(170,45,170,110)+w(290,45,290,110)+w(30,45,30,175)+w(310,45,310,175)+w(30,175,310,175)
+  + cap(95,45,"3.0 &#956;F")+cap(230,45,"2.0 &#956;F")+cap(230,110,"4.0 &#956;F")+bat(170,175,"&#949;"));
+FIG.c4 = svg(340, 140, w(20,45,320,45)+w(70,110,190,110)+w(70,45,70,110)+w(190,45,190,110)
+  + cap(130,45,"12 &#956;F")+cap(130,110,"12 &#956;F")+cap(255,45,"12 &#956;F")
+  + `<circle cx="20" cy="45" r="4" fill="#1b2232"/><circle cx="320" cy="45" r="4" fill="#1b2232"/><text x="20" y="70" text-anchor="middle" font-size="13" font-weight="700">A</text><text x="320" y="70" text-anchor="middle" font-size="13" font-weight="700">B</text>`);
+
+/* =====================================================================
+   QUESTION BANK
+   A question has a stem, an optional figure and one or more parts.
+   Each part is tagged with a subtopic (sub) and a skill:
+     "calc"   = calculation, "vector" = resolving / adding vectors,
+     "theory" = concept needed to solve problems.
+   Part types:
+     num: student types a number. ans = correct value (SI, with sign),
+          unit shown next to the box, wrong = typical wrong values
+          [value, what that mistake means]. Answers within 5% count.
+     mcq: opts with exactly one ok:true; wrong options can have mis.
+   ===================================================================== */
+const CHAPTERS = [
+{
+  id: 1, title: "Electrostatics", open: true,
+  subtopics: [
+    { id:"1.1", name:"Coulomb's law",
+      note:`<p>Two point charges exert equal and opposite forces along the line joining them. Like charges repel, unlike charges attract.</p>
+      <div class="formula">F = k q<sub>1</sub>q<sub>2</sub> / r<sup>2</sup> &nbsp;&nbsp; k = 9.0 &times; 10<sup>9</sup> N m<sup>2</sup> C<sup>&minus;2</sup></div>
+      <h4>Problem-solving steps</h4>
+      <ul><li>Convert first: &mu;C &times;10<sup>&minus;6</sup>, nC &times;10<sup>&minus;9</sup>, cm &times;10<sup>&minus;2</sup>.</li>
+      <li>Put <b>magnitudes only</b> into the formula. Get each force's direction from the diagram (attract or repel), not from the sign of your answer.</li>
+      <li>On a straight line: choose a positive direction, give each force a sign, then add.</li>
+      <li>In 2D: resolve each force into x and y components, add the components, then F = &radic;(F<sub>x</sub><sup>2</sup> + F<sub>y</sub><sup>2</sup>) and &theta; = tan<sup>&minus;1</sup>(F<sub>y</sub>/F<sub>x</sub>).</li>
+      <li>Zero net force: set kq<sub>1</sub>q/x<sup>2</sup> = kq<sub>2</sub>q/(d &minus; x)<sup>2</sup>. The third charge cancels out. For like charges the point lies between them, nearer the smaller charge. For unlike charges it lies outside, beyond the smaller charge.</li></ul>
+      <div class="ex"><b>Worked example.</b> +4 &mu;C at x = 0 and +9 &mu;C at x = 0.50 m. Zero force where 4/x<sup>2</sup> = 9/(0.50 &minus; x)<sup>2</sup>. Square-root both sides: 2/x = 3/(0.50 &minus; x), so x = 0.20 m from the +4 &mu;C charge.</div>` },
+    { id:"1.2", name:"Electric field",
+      note:`<p>Electric field strength is the force per unit positive test charge. It is a vector.</p>
+      <div class="formula">E = F / q<sub>0</sub> &nbsp;&nbsp; E = kQ / r<sup>2</sup> &nbsp;&nbsp; F = qE</div>
+      <h4>Problem-solving steps</h4>
+      <ul><li>Find the magnitude of each E using |Q| only.</li>
+      <li>Draw each E at the point: <b>away</b> from a positive charge, <b>toward</b> a negative charge.</li>
+      <li>Add as vectors (same steps as forces). Opposite charges: at the midpoint the fields point the same way and <b>add</b>. Equal like charges: at the midpoint they cancel.</li>
+      <li>Force on a charge placed there: F = qE. A negative charge is pushed opposite to E.</li></ul>
+      <div class="ex"><b>Worked example.</b> +4.0 &mu;C is 0.30 m above P and &minus;6.0 &mu;C is 0.40 m to the right of P. E<sub>1</sub> = 4.0&times;10<sup>5</sup> N C<sup>&minus;1</sup> (downward, away from q<sub>1</sub>). E<sub>2</sub> = 3.375&times;10<sup>5</sup> N C<sup>&minus;1</sup> (rightward, toward q<sub>2</sub>). E = &radic;(E<sub>1</sub><sup>2</sup> + E<sub>2</sub><sup>2</sup>) = 5.23&times;10<sup>5</sup> N C<sup>&minus;1</sup>.</div>` },
+    { id:"1.3", name:"Electric potential, potential energy and equipotentials",
+      note:`<p>Potential is a <b>scalar</b>. Keep the sign of every charge and simply add. There are no components.</p>
+      <div class="formula">V = kQ / r &nbsp;&nbsp; U = kq<sub>1</sub>q<sub>2</sub> / r = qV &nbsp;&nbsp; &Delta;U = q&Delta;V &nbsp;&nbsp; W<sub>ext</sub> = q(V<sub>final</sub> &minus; V<sub>initial</sub>)</div>
+      <h4>Problem-solving steps</h4>
+      <ul><li>V uses r, not r<sup>2</sup>. Put the sign of Q in.</li>
+      <li>Potential energy of a system: add kq<sub>i</sub>q<sub>j</sub>/r<sub>ij</sub> for <b>every pair</b>, once each. Three charges give three pairs.</li>
+      <li>&Delta;U = q&Delta;V with signs. A negative charge moving to a higher potential <b>loses</b> potential energy.</li>
+      <li>Equipotentials: no work along them. E is perpendicular to them, pointing toward lower V. Uniform field: E = &Delta;V / d.</li></ul>
+      <div class="ex"><b>Worked example.</b> &minus;2 &mu;C crosses a potential rise of +200 V. &Delta;U = q&Delta;V = (&minus;2&times;10<sup>&minus;6</sup>)(+200) = &minus;4.0&times;10<sup>&minus;4</sup> J. Its potential energy decreases.</div>` },
+    { id:"1.4", name:"Charge in a uniform electric field",
+      note:`<p>Between parallel plates E is uniform, so F and a are constant. Use the kinematics equations from Semester 1.</p>
+      <div class="formula">E = V / d &nbsp;&nbsp; a = qE / m &nbsp;&nbsp; W = qV &nbsp;&nbsp; equilibrium: qE = mg</div>
+      <h4>Problem-solving steps</h4>
+      <ul><li>Convert d to metres and mass to kg (25 g = 0.025 kg). An alpha particle has q = +2e.</li>
+      <li>From rest across the gap: s = &frac12;at<sup>2</sup>, v<sup>2</sup> = 2as, or qV = &frac12;mv<sup>2</sup>.</li>
+      <li>Entering at right angles: treat it like a projectile. Horizontal velocity is constant, so t = l / u. Vertical motion starts from rest: y = &frac12;at<sup>2</sup>.</li></ul>
+      <div class="ex"><b>Worked example.</b> An electron enters at u = 3.0&times;10<sup>6</sup> m s<sup>&minus;1</sup> into E = 200 N C<sup>&minus;1</sup>, with plates 0.10 m long. a = eE/m = 3.51&times;10<sup>13</sup> m s<sup>&minus;2</sup>, t = 0.10/3.0&times;10<sup>6</sup> = 3.33&times;10<sup>&minus;8</sup> s, y = &frac12;at<sup>2</sup> = 1.95&times;10<sup>&minus;2</sup> m.</div>` }
+  ],
+
+  diagnostic: [
+    { stem:"Three point charges lie on a straight line as shown.", fig:FIG.line3, parts:[
+      { sub:"1.1", skill:"vector", type:"num", prompt:"Calculate the magnitude of the net electrostatic force on the charge at B.", unit:"N", ans:1.05,
+        wrong:[[3.75,"You added the two force magnitudes. A attracts B to the left and C attracts B to the right, so they partly cancel."],[0.45,"You divided by r instead of r<sup>2</sup>."]],
+        exp:"F<sub>AB</sub> = (9.0&times;10<sup>9</sup>)(12&times;10<sup>&minus;6</sup>)(2.0&times;10<sup>&minus;6</sup>)/(0.30)<sup>2</sup> = 2.40 N toward A. F<sub>CB</sub> = (9.0&times;10<sup>9</sup>)(3.0&times;10<sup>&minus;6</sup>)(2.0&times;10<sup>&minus;6</sup>)/(0.20)<sup>2</sup> = 1.35 N toward C. Net = 2.40 &minus; 1.35 = 1.05 N." },
+      { sub:"1.1", skill:"vector", type:"mcq", prompt:"What is the direction of this net force?",
+        opts:[ {t:"Toward A (to the left)", ok:true},
+               {t:"Toward C (to the right)", mis:"The force from A (2.40 N) is bigger than the force from C (1.35 N), so the net force is toward A."},
+               {t:"Away from both A and C", mis:"B is negative and both A and C are positive, so B is attracted toward each of them. These attractions are in opposite directions."} ],
+        exp:"Both forces are attractions, pulling in opposite directions. The larger one, from A, wins." } ]},
+
+    { stem:"A +4.0 &mu;C charge is at x = 0 and a +9.0 &mu;C charge is at x = 0.50 m. A third charge q is placed between them.", parts:[
+      { sub:"1.1", skill:"calc", type:"num", prompt:"Calculate the distance of q from the +4.0 &mu;C charge if the net force on q is zero.", unit:"m", ans:0.20,
+        wrong:[[0.30,"0.30 m is the distance from the +9.0 &mu;C charge. Read the question again for which charge to measure from."],[0.154,"You used 1/r instead of 1/r<sup>2</sup> when setting the two forces equal."]],
+        exp:"k(4)q/x<sup>2</sup> = k(9)q/(0.50 &minus; x)<sup>2</sup>. Square-rooting gives 2/x = 3/(0.50 &minus; x), so 1.00 &minus; 2x = 3x and x = 0.20 m." },
+      { sub:"1.1", skill:"theory", type:"mcq", prompt:"Does the answer depend on the sign or size of q?",
+        opts:[ {t:"No. q appears on both sides of the equation and cancels.", ok:true},
+               {t:"Yes. A negative q would move the zero-force point outside the two charges.", mis:"Changing the sign of q reverses both forces together, so they still balance at the same point."},
+               {t:"Yes. A bigger q needs to be further from both charges.", mis:"q multiplies both forces equally, so it cancels out of F<sub>1</sub> = F<sub>2</sub>."} ],
+        exp:"In kq<sub>1</sub>q/x<sup>2</sup> = kq<sub>2</sub>q/(d &minus; x)<sup>2</sup>, both k and q cancel. Only q<sub>1</sub>, q<sub>2</sub> and d matter." } ]},
+
+    { stem:"Two charges q<sub>1</sub> = q<sub>2</sub> = +3.0 &mu;C are at (0, 0.30 m) and (0, &minus;0.30 m). A charge Q = +5.0 &mu;C is at (0.40 m, 0).", fig:FIG.yaxis, parts:[
+      { sub:"1.1", skill:"vector", type:"num", prompt:"Calculate the magnitude of the total electric force on Q.", unit:"N", ans:0.864,
+        wrong:[[1.08,"You added the two force magnitudes. The y-components cancel, so only the x-components add."],[0.648,"You used sin &theta; for the x-component. Here cos &theta; = 0.40/0.50 = 0.8 gives the x-component."],[0,"The forces do not cancel completely. Only their y-components cancel. Their x-components both point in the +x direction."],[0.54,"That is the force from one charge only."]],
+        exp:"r = &radic;(0.30<sup>2</sup> + 0.40<sup>2</sup>) = 0.50 m. Each F = (9.0&times;10<sup>9</sup>)(3.0&times;10<sup>&minus;6</sup>)(5.0&times;10<sup>&minus;6</sup>)/(0.50)<sup>2</sup> = 0.54 N. x-components: 0.54 &times; 0.8 = 0.432 N each. y-components cancel. Total = 0.864 N along +x." } ]},
+
+    { stem:"Two charges of +3.0 &times; 10<sup>&minus;7</sup> C and &minus;3.0 &times; 10<sup>&minus;7</sup> C are 20 cm apart.", parts:[
+      { sub:"1.2", skill:"calc", type:"num", prompt:"Calculate the electric field strength at the midpoint between them.", unit:"N C<sup>&minus;1</sup>", ans:5.4e5,
+        wrong:[[0,"The fields do not cancel. At the midpoint of opposite charges, both fields point toward the negative charge, so they add."],[2.7e5,"That is the field from one charge only. Both fields point the same way, so add them."],[1.35e5,"You used r = 0.20 m. The midpoint is 0.10 m from each charge."]],
+        exp:"Each E = (9.0&times;10<sup>9</sup>)(3.0&times;10<sup>&minus;7</sup>)/(0.10)<sup>2</sup> = 2.7&times;10<sup>5</sup> N C<sup>&minus;1</sup>, and both point toward the negative charge. E = 5.4&times;10<sup>5</sup> N C<sup>&minus;1</sup>." },
+      { sub:"1.2", skill:"calc", type:"num", prompt:"Calculate the magnitude of the force on an electron placed at that point.", unit:"N", ans:8.64e-14,
+        wrong:[[4.32e-14,"You used the field from one charge only."]],
+        exp:"F = eE = (1.60&times;10<sup>&minus;19</sup>)(5.4&times;10<sup>5</sup>) = 8.64&times;10<sup>&minus;14</sup> N, directed toward the positive charge." } ]},
+
+    { stem:"A charge q<sub>1</sub> = +4.0 &mu;C is 0.30 m from point P and q<sub>2</sub> = &minus;6.0 &mu;C is 0.40 m from P, as shown.", fig:FIG.triangle, parts:[
+      { sub:"1.2", skill:"vector", type:"num", prompt:"Calculate the magnitude of the resultant electric field at P.", unit:"N C<sup>&minus;1</sup>", ans:5.23e5,
+        wrong:[[7.375e5,"You added the magnitudes. The two fields are at right angles, so use Pythagoras."],[6.25e4,"You subtracted the magnitudes. The fields are perpendicular, not opposite."]],
+        exp:"E<sub>1</sub> = (9.0&times;10<sup>9</sup>)(4.0&times;10<sup>&minus;6</sup>)/(0.30)<sup>2</sup> = 4.0&times;10<sup>5</sup> N C<sup>&minus;1</sup> (away from q<sub>1</sub>, downward). E<sub>2</sub> = (9.0&times;10<sup>9</sup>)(6.0&times;10<sup>&minus;6</sup>)/(0.40)<sup>2</sup> = 3.375&times;10<sup>5</sup> N C<sup>&minus;1</sup> (toward q<sub>2</sub>, to the right). E = &radic;(E<sub>1</sub><sup>2</sup> + E<sub>2</sub><sup>2</sup>) = 5.23&times;10<sup>5</sup> N C<sup>&minus;1</sup>." },
+      { sub:"1.2", skill:"theory", type:"mcq", prompt:"Before adding the two fields at P, which step is essential?",
+        opts:[ {t:"Draw the direction of each field at P and resolve them into components", ok:true},
+               {t:"Substitute the signs of the charges into kQ/r<sup>2</sup> and add the two numbers", mis:"Signs in kQ/r<sup>2</sup> do not give a direction in 2D. Use magnitudes and decide each direction from the diagram."},
+               {t:"Add the two charges first, then use E = k(q<sub>1</sub> + q<sub>2</sub>)/r<sup>2</sup>", mis:"Each charge is at a different distance and direction. Fields from separate charges must be found separately and then added as vectors."} ],
+        exp:"E is a vector. Magnitudes come from kQ/r<sup>2</sup> with |Q|, and directions come from the diagram (away from +, toward &minus;)." } ]},
+
+    { stem:"A point P is 0.10 m from a +5.0 &mu;C charge and 0.050 m from a &minus;2.0 &mu;C charge.", parts:[
+      { sub:"1.3", skill:"calc", type:"num", prompt:"Calculate the electric potential at P.", unit:"V", ans:9.0e4,
+        wrong:[[8.1e5,"You ignored the sign of the &minus;2.0 &mu;C charge. Potential carries the sign of the charge."],[-2.7e6,"You used r<sup>2</sup>. Potential uses 1/r."]],
+        exp:"V = k(5.0&times;10<sup>&minus;6</sup>)/0.10 + k(&minus;2.0&times;10<sup>&minus;6</sup>)/0.050 = 4.5&times;10<sup>5</sup> &minus; 3.6&times;10<sup>5</sup> = 9.0&times;10<sup>4</sup> V." },
+      { sub:"1.3", skill:"theory", type:"mcq", prompt:"Why did you not need any angles or components here?",
+        opts:[ {t:"Potential is a scalar, so contributions are added algebraically with their signs", ok:true},
+               {t:"Because the two charges happen to lie on a straight line with P", mis:"Even if P were off the line, potential would still be added as plain numbers. It has no direction."},
+               {t:"Because potential always acts along the line joining the charges", mis:"Potential has no direction at all. That description fits force or field, which are vectors."} ],
+        exp:"V is a scalar: V<sub>total</sub> = &Sigma;kQ<sub>i</sub>/r<sub>i</sub>, with signs, whatever the geometry." } ]},
+
+    { stem:"A point charge q = &minus;3.0 &mu;C moves from X to Y in an electric field, crossing a potential rise of 150 V.", parts:[
+      { sub:"1.3", skill:"calc", type:"num", prompt:"Calculate the change in its electric potential energy, &Delta;U. Include the sign.", unit:"J", ans:-4.5e-4,
+        wrong:[[4.5e-4,"You dropped the negative sign of q. A negative charge moving to a higher potential loses potential energy."]],
+        exp:"&Delta;U = q&Delta;V = (&minus;3.0&times;10<sup>&minus;6</sup>)(+150) = &minus;4.5&times;10<sup>&minus;4</sup> J. The potential energy decreases." } ]},
+
+    { stem:"Three point charges lie on a straight line as shown.", fig:FIG.line3b, parts:[
+      { sub:"1.3", skill:"calc", type:"num", prompt:"Calculate the total electric potential energy of the system.", unit:"J", ans:-0.84,
+        wrong:[[1.32,"You used magnitudes only. Keep the signs: each pair with unlike charges contributes negative energy."],[-1.08,"You missed a pair. Three charges have three pairs, including the two end charges 0.30 m apart."],[-0.30,"You missed a pair. Count every pair once: 1&ndash;2, 1&ndash;3 and 2&ndash;3."]],
+        exp:"U = k[(2)(&minus;3)/0.10 + (2)(4)/0.30 + (&minus;3)(4)/0.20] &times; 10<sup>&minus;12</sup> = 9.0&times;10<sup>9</sup> &times; (&minus;6.0 + 2.67 &minus; 6.0)&times;10<sup>&minus;11</sup> = &minus;0.84 J." } ]},
+
+    { stem:"An alpha particle (m = 6.64 &times; 10<sup>&minus;27</sup> kg, q = +2e) is released from rest at the positive plate of two parallel plates 3.0 cm apart, with a potential difference of 120 V.", parts:[
+      { sub:"1.4", skill:"calc", type:"num", prompt:"Calculate the acceleration of the alpha particle.", unit:"m s<sup>&minus;2</sup>", ans:1.93e11,
+        wrong:[[9.64e10,"You used q = e. An alpha particle has charge +2e."]],
+        exp:"E = V/d = 120/0.030 = 4.0&times;10<sup>3</sup> V m<sup>&minus;1</sup>. a = qE/m = (3.2&times;10<sup>&minus;19</sup>)(4.0&times;10<sup>3</sup>)/(6.64&times;10<sup>&minus;27</sup>) = 1.93&times;10<sup>11</sup> m s<sup>&minus;2</sup>." },
+      { sub:"1.4", skill:"calc", type:"num", prompt:"Calculate the time taken to reach the negative plate.", unit:"s", ans:5.58e-7,
+        wrong:[[3.94e-7,"You used s = at<sup>2</sup>. Starting from rest, s = &frac12;at<sup>2</sup>."],[7.89e-7,"This follows from using q = e in the acceleration."]],
+        exp:"s = &frac12;at<sup>2</sup>, so t = &radic;(2s/a) = &radic;(2 &times; 0.030 / 1.93&times;10<sup>11</sup>) = 5.58&times;10<sup>&minus;7</sup> s." } ]},
+
+    { stem:"An electron enters the uniform field between two plates at right angles to the field, as shown. Ignore gravity.", fig:FIG.plates, parts:[
+      { sub:"1.4", skill:"calc", type:"num", prompt:"Calculate the vertical deflection of the electron as it leaves the plates.", unit:"m", ans:8.78e-3,
+        wrong:[[1.76e-2,"You used y = at<sup>2</sup>. Vertical motion starts from rest, so y = &frac12;at<sup>2</sup>."]],
+        exp:"a = eE/m = (1.60&times;10<sup>&minus;19</sup>)(250)/(9.11&times;10<sup>&minus;31</sup>) = 4.39&times;10<sup>13</sup> m s<sup>&minus;2</sup>. t = l/u = 0.080/4.0&times;10<sup>6</sup> = 2.0&times;10<sup>&minus;8</sup> s. y = &frac12;at<sup>2</sup> = 8.78&times;10<sup>&minus;3</sup> m." },
+      { sub:"1.4", skill:"theory", type:"mcq", prompt:"Why can you use t = l / u for the time between the plates?",
+        opts:[ {t:"The force is vertical, so the horizontal velocity stays constant", ok:true},
+               {t:"The electron's speed stays constant in an electric field", mis:"The speed increases because the vertical velocity grows. Only the horizontal component is constant."},
+               {t:"The acceleration is small enough to ignore over a short distance", mis:"The acceleration is huge (about 10<sup>13</sup> m s<sup>&minus;2</sup>). It simply acts perpendicular to u."} ],
+        exp:"Like a projectile: no horizontal force means constant horizontal velocity. The vertical motion is handled separately with a = eE/m." } ]},
+
+    { stem:"A small ball of mass 20 g carries a charge of +25 &mu;C. It is held stationary between two horizontal charged plates.", parts:[
+      { sub:"1.4", skill:"calc", type:"num", prompt:"Calculate the magnitude of the electric field between the plates.", unit:"N C<sup>&minus;1</sup>", ans:7848,
+        wrong:[[7.848e6,"You used the mass in grams. Convert 20 g to 0.020 kg."]],
+        exp:"In equilibrium, qE = mg, so E = mg/q = (0.020)(9.81)/(25&times;10<sup>&minus;6</sup>) = 7.85&times;10<sup>3</sup> N C<sup>&minus;1</sup>." } ]}
+  ],
+
+  practice: [
+    { stem:"Charges of &minus;4.0 &mu;C and +6.0 &mu;C are 12 cm apart.", parts:[
+      { sub:"1.1", skill:"calc", type:"num", prompt:"Calculate the magnitude of the force between them.", unit:"N", ans:15,
+        wrong:[[1.8,"You divided by r instead of r<sup>2</sup>."],[1.5e5,"Convert 12 cm to 0.12 m."]],
+        exp:"F = (9.0&times;10<sup>9</sup>)(4.0&times;10<sup>&minus;6</sup>)(6.0&times;10<sup>&minus;6</sup>)/(0.12)<sup>2</sup> = 15 N, attractive." } ]},
+    { stem:"Three charges of +2.0 &mu;C sit at the corners of an equilateral triangle of side 0.20 m.", fig:FIG.equi, parts:[
+      { sub:"1.1", skill:"vector", type:"num", prompt:"Calculate the magnitude of the net force on the charge at C.", unit:"N", ans:1.56,
+        wrong:[[1.8,"You added the magnitudes. The forces are 60&deg; apart, so add their components."],[0.9,"That is one force, or you used sin 30&deg; instead of cos 30&deg; for the vertical components."]],
+        exp:"Each F = (9.0&times;10<sup>9</sup>)(2.0&times;10<sup>&minus;6</sup>)<sup>2</sup>/(0.20)<sup>2</sup> = 0.90 N. Horizontal components cancel. Vertical: 2 &times; 0.90 cos 30&deg; = 1.56 N, pointing away from AB." },
+      { sub:"1.1", skill:"theory", type:"mcq", prompt:"For two <b>unlike</b> charges, where can a third charge feel zero net force?",
+        opts:[ {t:"Outside the pair, beyond the smaller charge", ok:true},
+               {t:"Between the two charges", mis:"Between unlike charges both forces point the same way, so they can never cancel."},
+               {t:"Outside the pair, beyond the larger charge", mis:"Beyond the larger charge, the larger charge is also nearer, so its force always wins."} ],
+        exp:"Outside the pair the forces are opposite. To balance, the point must be closer to the smaller charge." } ]},
+    { stem:"Point P is 0.10 m from q<sub>1</sub> = &minus;2.0 &mu;C and 0.30 m from q<sub>2</sub> = &minus;5.0 &mu;C. Both charges are on the same side of P, on one straight line.", parts:[
+      { sub:"1.2", skill:"calc", type:"num", prompt:"Calculate the magnitude of the electric field at P.", unit:"N C<sup>&minus;1</sup>", ans:2.3e6,
+        wrong:[[1.3e6,"You subtracted. Both fields point toward their negative charges, which are on the same side, so the fields add."]],
+        exp:"E<sub>1</sub> = (9.0&times;10<sup>9</sup>)(2.0&times;10<sup>&minus;6</sup>)/(0.10)<sup>2</sup> = 1.8&times;10<sup>6</sup>. E<sub>2</sub> = (9.0&times;10<sup>9</sup>)(5.0&times;10<sup>&minus;6</sup>)/(0.30)<sup>2</sup> = 5.0&times;10<sup>5</sup>. Same direction: E = 2.3&times;10<sup>6</sup> N C<sup>&minus;1</sup>." } ]},
+    { stem:"Two +2.0 &mu;C charges are at (0, 0.30 m) and (0, &minus;0.30 m).", fig:FIG.yaxis2, parts:[
+      { sub:"1.2", skill:"vector", type:"num", prompt:"Calculate the magnitude of the electric field at P (0.40 m, 0).", unit:"N C<sup>&minus;1</sup>", ans:1.152e5,
+        wrong:[[1.44e5,"You added the magnitudes. Only the x-components add; the y-components cancel."],[0,"Only the y-components cancel. The x-components both point in +x."],[8.64e4,"You used sin &theta; (0.6) for the x-component instead of cos &theta; (0.8)."]],
+        exp:"Each E = (9.0&times;10<sup>9</sup>)(2.0&times;10<sup>&minus;6</sup>)/(0.50)<sup>2</sup> = 7.2&times;10<sup>4</sup> N C<sup>&minus;1</sup>. x-components 0.8 &times; 7.2&times;10<sup>4</sup> each, so E = 1.15&times;10<sup>5</sup> N C<sup>&minus;1</sup> along +x." },
+      { sub:"1.2", skill:"theory", type:"mcq", prompt:"An electron is placed at P. Which way is the force on it?",
+        opts:[ {t:"Along &minus;x, opposite to the field", ok:true}, {t:"Along +x, the same as the field", mis:"A negative charge is pushed opposite to E (F = qE with q negative)."}, {t:"Zero, because the field components cancel", mis:"Only the y-components cancel. There is a net field along +x."} ],
+        exp:"E points along +x, and F = qE with q = &minus;e, so the force is along &minus;x." } ]},
+    { stem:"Points A and B are 2.0 m and 3.0 m from a +6.0 &mu;C charge.", parts:[
+      { sub:"1.3", skill:"calc", type:"num", prompt:"Calculate the potential difference V<sub>B</sub> &minus; V<sub>A</sub>. Include the sign.", unit:"V", ans:-9.0e3,
+        wrong:[[9.0e3,"That is V<sub>A</sub> &minus; V<sub>B</sub>. B is further away, so it is at a lower potential."],[-7.5e3,"You used r<sup>2</sup>. Potential uses 1/r."]],
+        exp:"V<sub>A</sub> = (9.0&times;10<sup>9</sup>)(6.0&times;10<sup>&minus;6</sup>)/2.0 = 2.7&times;10<sup>4</sup> V, V<sub>B</sub> = 1.8&times;10<sup>4</sup> V. V<sub>B</sub> &minus; V<sub>A</sub> = &minus;9.0&times;10<sup>3</sup> V." } ]},
+    { stem:"Point P is on the 60 V equipotential and point Q is on the 20 V equipotential.", parts:[
+      { sub:"1.3", skill:"calc", type:"num", prompt:"Calculate the work needed to bring a +1.2 &times; 10<sup>&minus;3</sup> C charge from P to Q. Include the sign.", unit:"J", ans:-0.048,
+        wrong:[[0.048,"Use W = q(V<sub>Q</sub> &minus; V<sub>P</sub>). The charge moves to a lower potential, so the work is negative."],[0.096,"You used V = 80 V. Use the difference, 20 &minus; 60 = &minus;40 V."]],
+        exp:"W = q(V<sub>Q</sub> &minus; V<sub>P</sub>) = (1.2&times;10<sup>&minus;3</sup>)(20 &minus; 60) = &minus;4.8&times;10<sup>&minus;2</sup> J." },
+      { sub:"1.3", skill:"theory", type:"mcq", prompt:"How much work is needed to move the same charge between two points on the 60 V line?",
+        opts:[ {t:"Zero", ok:true}, {t:"qV = 0.072 J", mis:"qV is the potential energy at that line. Moving along it changes nothing, since &Delta;V = 0."}, {t:"It depends on the path length", mis:"Work depends only on the start and end potentials. Along an equipotential &Delta;V = 0."} ],
+        exp:"W = q&Delta;V and &Delta;V = 0 along an equipotential." } ]},
+    { stem:"An electron is released from rest at the negative plate. The field between the plates is 500 V m<sup>&minus;1</sup> and the plates are 1.5 cm apart.", parts:[
+      { sub:"1.4", skill:"calc", type:"num", prompt:"Calculate the work done by the electric field on the electron as it crosses to the positive plate.", unit:"J", ans:1.2e-18,
+        wrong:[[8.0e-17,"You used W = eE. Work is force &times; distance: W = eEd = eV."]],
+        exp:"V = Ed = 500 &times; 0.015 = 7.5 V. W = eV = (1.60&times;10<sup>&minus;19</sup>)(7.5) = 1.2&times;10<sup>&minus;18</sup> J." } ]},
+    { stem:"Two plates 0.50 cm apart are connected to a 9.0 V battery. A proton (m = 1.67 &times; 10<sup>&minus;27</sup> kg) is released between them.", parts:[
+      { sub:"1.4", skill:"calc", type:"num", prompt:"Calculate the acceleration of the proton.", unit:"m s<sup>&minus;2</sup>", ans:1.72e11,
+        wrong:[[1.72e9,"Convert 0.50 cm to 0.0050 m."]],
+        exp:"E = 9.0/0.0050 = 1.8&times;10<sup>3</sup> V m<sup>&minus;1</sup>. a = eE/m = (1.60&times;10<sup>&minus;19</sup>)(1.8&times;10<sup>3</sup>)/(1.67&times;10<sup>&minus;27</sup>) = 1.72&times;10<sup>11</sup> m s<sup>&minus;2</sup>." },
+      { sub:"1.4", skill:"theory", type:"mcq", prompt:"Where between the plates is the proton's acceleration greatest?",
+        opts:[ {t:"It is the same everywhere between the plates", ok:true}, {t:"Next to the positive plate", mis:"The field between parallel plates is uniform, so the force is the same everywhere."}, {t:"Halfway between the plates", mis:"A uniform field gives the same force, and so the same acceleration, at every point."} ],
+        exp:"E = V/d is uniform between parallel plates, so F = qE and a = qE/m are constant." } ]}
+  ]
+},
+{
+  id: 2, title: "Capacitors and Dielectrics", open: true,
+  subtopics: [
+    { id:"2.1", name:"Capacitance, series and parallel, energy stored",
+      note:`<div class="formula">C = Q / V &nbsp;&nbsp; series: 1/C<sub>eff</sub> = 1/C<sub>1</sub> + 1/C<sub>2</sub> + ... &nbsp;&nbsp; parallel: C<sub>eff</sub> = C<sub>1</sub> + C<sub>2</sub> + ... &nbsp;&nbsp; U = &frac12;QV = &frac12;CV<sup>2</sup> = Q<sup>2</sup>/2C</div>
+      <h4>Problem-solving steps</h4>
+      <ul><li><b>Series:</b> every capacitor has the <b>same charge</b>. The voltages add up to the supply.</li>
+      <li><b>Parallel:</b> every capacitor has the <b>same voltage</b>. The charges add up.</li>
+      <li>Reduce the circuit step by step. Combine the innermost series or parallel group first, then redraw.</li>
+      <li>To go back out: find Q<sub>total</sub> = C<sub>eff</sub>V, then work backwards using the series and parallel rules.</li>
+      <li>Battery disconnected means Q is constant. Battery still connected means V is constant.</li></ul>
+      <div class="trap"><b>Common traps:</b> the series and parallel formulas are the opposite of resistors. Remember the &frac12; in the energy formula. Convert &mu;F to F before calculating charge or energy.</div>
+      <div class="ex"><b>Worked example.</b> 4 &mu;F and 6 &mu;F in series across 240 V. C<sub>eff</sub> = (4&times;6)/(4+6) = 2.4 &mu;F. Q = 2.4&times;10<sup>&minus;6</sup> &times; 240 = 5.76&times;10<sup>&minus;4</sup> C on <i>each</i>. V<sub>4</sub> = Q/4&micro;F = 144 V and V<sub>6</sub> = 96 V, which add up to 240 V.</div>` },
+    { id:"2.2", name:"Charging, discharging and time constant",
+      note:`<div class="formula">&tau; = RC &nbsp;&nbsp; discharging: Q = Q<sub>0</sub>e<sup>&minus;t/RC</sup> &nbsp;&nbsp; charging: Q = Q<sub>0</sub>(1 &minus; e<sup>&minus;t/RC</sup>) &nbsp;&nbsp; I<sub>0</sub> = V<sub>0</sub>/R</div>
+      <h4>Problem-solving steps</h4>
+      <ul><li>Decide first: is it <b>charging</b> or <b>discharging</b>? Pick the matching equation.</li>
+      <li>&tau; is in seconds: convert k&Omega;, M&Omega;, &mu;F and minutes first. Capacitors in the circuit? Use C<sub>eff</sub>.</li>
+      <li>To find t or &tau; from a fraction, take ln of both sides: Q/Q<sub>0</sub> = e<sup>&minus;t/&tau;</sup> gives t = &tau; ln(Q<sub>0</sub>/Q). 0.05% means Q/Q<sub>0</sub> = 0.0005.</li>
+      <li>Graphs: current always decays exponentially from I<sub>0</sub> to zero, both when charging and when discharging. Q rises towards Q<sub>0</sub> when charging and decays towards zero when discharging.</li></ul>
+      <div class="trap"><b>Meaning of &tau;:</b> the time to reach 63% of the maximum charge when charging, or to fall to 37% of the initial charge when discharging.</div>
+      <div class="ex"><b>Worked example.</b> 2.50 &mu;F charged to 12 V discharges through 2.0 M&Omega;. &tau; = 5.0 s and Q<sub>0</sub> = 3.0&times;10<sup>&minus;5</sup> C. After 40 s: Q = 3.0&times;10<sup>&minus;5</sup>e<sup>&minus;8</sup> = 1.01&times;10<sup>&minus;8</sup> C.</div>` },
+    { id:"2.3", name:"Capacitors with dielectrics",
+      note:`<div class="formula">C<sub>0</sub> = &epsilon;<sub>0</sub>A/d &nbsp;&nbsp; C = &epsilon;<sub>r</sub>&epsilon;<sub>0</sub>A/d &nbsp;&nbsp; &epsilon;<sub>r</sub> = C/C<sub>0</sub> = V<sub>0</sub>/V = E<sub>0</sub>/E &nbsp;&nbsp; &epsilon;<sub>0</sub> = 8.85&times;10<sup>&minus;12</sup> F m<sup>&minus;1</sup></div>
+      <h4>Problem-solving steps</h4>
+      <ul><li>Convert area: 1 cm<sup>2</sup> = 10<sup>&minus;4</sup> m<sup>2</sup> (not 10<sup>&minus;2</sup>). Separation: 1 mm = 10<sup>&minus;3</sup> m.</li>
+      <li><b>Battery disconnected</b> when the dielectric goes in: Q stays the same, so V falls by &epsilon;<sub>r</sub>. Use &epsilon;<sub>r</sub> = V<sub>0</sub>/V.</li>
+      <li><b>Battery still connected:</b> V stays the same, so Q rises by &epsilon;<sub>r</sub>. Extra charge added = Q &minus; Q<sub>0</sub>.</li></ul>
+      <div class="trap"><b>Common trap:</b> &epsilon;<sub>r</sub> is always greater than 1. If you get an answer below 1, you have the ratio upside down.</div>
+      <div class="ex"><b>Worked example.</b> An air capacitor is charged to 100 V and then disconnected. Glass is inserted and V drops to 25 V. &epsilon;<sub>r</sub> = V<sub>0</sub>/V = 100/25 = 4.0.</div>` }
+  ],
+  diagnostic: [
+    { stem:"A 33 &mu;F parallel-plate capacitor is charged by a 9.0 V battery. The battery is then disconnected.", parts:[
+      { sub:"2.1", skill:"calc", type:"num", prompt:"Calculate the charge on each plate.", unit:"C", ans:2.97e-4,
+        wrong:[[3.67e-6,"You divided C by V. Charge is Q = CV."]],
+        exp:"Q = CV = (33&times;10<sup>&minus;6</sup>)(9.0) = 2.97&times;10<sup>&minus;4</sup> C." },
+      { sub:"2.1", skill:"theory", type:"mcq", prompt:"The plate separation is now doubled. What happens to the potential difference between the plates?",
+        opts:[ {t:"It doubles, because Q stays constant while C halves", ok:true},
+               {t:"It stays at 9.0 V, because the capacitor was charged to 9.0 V", mis:"With the battery disconnected, nothing holds V at 9.0 V. It is Q that stays fixed."},
+               {t:"It halves, because C halves", mis:"C halves, but Q is constant, so V = Q/C doubles."} ],
+        exp:"C = &epsilon;<sub>0</sub>A/d, so doubling d halves C. The battery is disconnected, so Q is constant and V = Q/C doubles." } ]},
+
+    { stem:"C<sub>1</sub> = 4.0 &mu;F and C<sub>2</sub> = 6.0 &mu;F are in series, and this pair is in parallel with C<sub>3</sub> = 5.0 &mu;F, across a 12 V supply.", fig:FIG.c2, parts:[
+      { sub:"2.1", skill:"circuit", type:"num", prompt:"Calculate the effective capacitance.", unit:"&mu;F", ans:7.4,
+        wrong:[[15,"You added all three as if they were in parallel. C<sub>1</sub> and C<sub>2</sub> are in series, so combine them with 1/C first."],[1.62,"You put all three in series. C<sub>3</sub> is in parallel with the C<sub>1</sub>&ndash;C<sub>2</sub> branch."],[15.4,"You treated C<sub>1</sub> and C<sub>2</sub> as parallel. For series use 1/C<sub>eff</sub> = 1/C<sub>1</sub> + 1/C<sub>2</sub>."]],
+        exp:"C<sub>12</sub> = (4.0&times;6.0)/(4.0+6.0) = 2.4 &mu;F. In parallel with C<sub>3</sub>: C<sub>eff</sub> = 2.4 + 5.0 = 7.4 &mu;F." },
+      { sub:"2.1", skill:"circuit", type:"num", prompt:"Calculate the charge on C<sub>1</sub>.", unit:"C", ans:2.88e-5,
+        wrong:[[4.8e-5,"You used Q = C<sub>1</sub> &times; 12 V. C<sub>1</sub> does not have the full 12 V across it, because it shares the branch with C<sub>2</sub>."],[8.88e-5,"That is the total charge. Only the C<sub>1</sub>&ndash;C<sub>2</sub> branch charge passes through C<sub>1</sub>."]],
+        exp:"The branch has 12 V across it: Q = C<sub>12</sub>V = (2.4&times;10<sup>&minus;6</sup>)(12) = 2.88&times;10<sup>&minus;5</sup> C. C<sub>1</sub> and C<sub>2</sub> both carry this charge, since they are in series." },
+      { sub:"2.1", skill:"circuit", type:"num", prompt:"Calculate the potential difference across C<sub>2</sub>.", unit:"V", ans:4.8,
+        wrong:[[7.2,"That is the voltage across C<sub>1</sub>. For C<sub>2</sub>, V = Q/C<sub>2</sub> = Q/6.0 &mu;F."],[12,"C<sub>2</sub> is in series with C<sub>1</sub>, so the two share the 12 V."],[6,"The voltage does not split equally. The smaller capacitor takes the larger share."]],
+        exp:"V<sub>2</sub> = Q/C<sub>2</sub> = 2.88&times;10<sup>&minus;5</sup>/6.0&times;10<sup>&minus;6</sup> = 4.8 V. Check: V<sub>1</sub> = 7.2 V, and 7.2 + 4.8 = 12 V." },
+      { sub:"2.1", skill:"theory", type:"mcq", prompt:"Which quantity is always the same for capacitors connected in series?",
+        opts:[ {t:"The charge on each capacitor", ok:true}, {t:"The potential difference across each capacitor", mis:"Equal voltage is the rule for parallel. In series the voltages add up to the supply."}, {t:"The energy stored in each capacitor", mis:"U = Q<sup>2</sup>/2C, so with equal Q the energy depends on C and is generally different."} ],
+        exp:"In series, the same charge flows onto each plate in turn, so every capacitor carries the same Q." } ]},
+
+    { stem:"A 3.0 &mu;F capacitor is in series with a parallel pair of 2.0 &mu;F and 4.0 &mu;F, as shown. The potential difference across the 2.0 &mu;F capacitor is 6.0 V.", fig:FIG.c3, parts:[
+      { sub:"2.1", skill:"circuit", type:"num", prompt:"Calculate the effective capacitance.", unit:"&mu;F", ans:2.0,
+        wrong:[[9,"You added all three. The 3.0 &mu;F is in series with the parallel pair."],[0.923,"You put all three in series. The 2.0 &mu;F and 4.0 &mu;F are in parallel, so they add first."]],
+        exp:"Parallel pair: 2.0 + 4.0 = 6.0 &mu;F. In series with 3.0 &mu;F: C<sub>eff</sub> = (3.0&times;6.0)/(3.0+6.0) = 2.0 &mu;F." },
+      { sub:"2.1", skill:"circuit", type:"num", prompt:"Calculate the potential difference across the 3.0 &mu;F capacitor.", unit:"V", ans:12,
+        wrong:[[4,"You used only the 2.0 &mu;F charge (12 &mu;C). The 3.0 &mu;F carries the charge of the whole parallel pair: 12 + 24 = 36 &mu;C."],[6,"The 3.0 &mu;F is in series with the pair, not in parallel, so its voltage is not the same 6.0 V."]],
+        exp:"The parallel pair has 6.0 V across it: Q = (6.0&times;10<sup>&minus;6</sup>)(6.0) = 36 &mu;C. This charge is on the 3.0 &mu;F, so V = 36 &mu;C / 3.0 &mu;F = 12 V." },
+      { sub:"2.1", skill:"calc", type:"num", prompt:"Calculate the total energy stored in the capacitors.", unit:"J", ans:3.24e-4,
+        wrong:[[1.44e-4,"You used 12 V. The supply voltage is 12 + 6.0 = 18 V."],[6.48e-4,"You forgot the &frac12; in U = &frac12;CV<sup>2</sup>."],[3.6e-5,"You used 6.0 V, which is only the voltage across the parallel pair."]],
+        exp:"Supply V = 12 + 6.0 = 18 V. U = &frac12;C<sub>eff</sub>V<sup>2</sup> = &frac12;(2.0&times;10<sup>&minus;6</sup>)(18)<sup>2</sup> = 3.24&times;10<sup>&minus;4</sup> J." } ]},
+
+    { stem:"A 25 &mu;F capacitor holding a charge of 300 &mu;C is connected across a 40 k&Omega; resistor and discharges.", parts:[
+      { sub:"2.2", skill:"calc", type:"num", prompt:"Calculate the time constant.", unit:"s", ans:1.0,
+        wrong:[[1e-3,"You used 40 &Omega;. Convert 40 k&Omega; to 4.0&times;10<sup>4</sup> &Omega;."]],
+        exp:"&tau; = RC = (4.0&times;10<sup>4</sup>)(25&times;10<sup>&minus;6</sup>) = 1.0 s." },
+      { sub:"2.2", skill:"calc", type:"num", prompt:"Calculate the initial current.", unit:"A", ans:3.0e-4,
+        wrong:[[0.3,"You used 40 &Omega;. Convert 40 k&Omega; to 4.0&times;10<sup>4</sup> &Omega;."],[7.5e-9,"You divided the charge by R. Find V<sub>0</sub> = Q<sub>0</sub>/C first, then I<sub>0</sub> = V<sub>0</sub>/R."]],
+        exp:"V<sub>0</sub> = Q<sub>0</sub>/C = 300&times;10<sup>&minus;6</sup>/25&times;10<sup>&minus;6</sup> = 12 V. I<sub>0</sub> = V<sub>0</sub>/R = 12/4.0&times;10<sup>4</sup> = 3.0&times;10<sup>&minus;4</sup> A." },
+      { sub:"2.2", skill:"graph", type:"mcq", prompt:"Which describes the current&ndash;time graph during this discharge?",
+        opts:[ {t:"Starts at I<sub>0</sub> and decays exponentially towards zero", ok:true},
+               {t:"Decreases in a straight line to zero at t = &tau;", mis:"The decay is exponential, not linear. At t = &tau; the current is still 37% of I<sub>0</sub>."},
+               {t:"Starts at zero and rises exponentially towards I<sub>0</sub>", mis:"That shape is charge during charging. Current is largest at the start in both charging and discharging."},
+               {t:"Stays constant at I<sub>0</sub> until the capacitor is empty", mis:"As the capacitor's voltage falls, I = V/R falls too."} ],
+        exp:"I = I<sub>0</sub>e<sup>&minus;t/RC</sup>: maximum at t = 0, then decreasing exponentially towards zero." } ]},
+
+    { stem:"A 15 &mu;F capacitor charged to 8.0 V is connected in series with a 5.0 M&Omega; resistor and a switch.", parts:[
+      { sub:"2.2", skill:"calc", type:"num", prompt:"Calculate the charge on the capacitor 2.0 minutes after the switch is closed.", unit:"C", ans:2.42e-5,
+        wrong:[[1.17e-4,"You used t = 2.0. Convert 2.0 minutes to 120 s."],[9.58e-5,"You used the charging equation. A charged capacitor connected to a resistor is discharging: Q = Q<sub>0</sub>e<sup>&minus;t/RC</sup>."]],
+        exp:"Q<sub>0</sub> = CV = 1.2&times;10<sup>&minus;4</sup> C and &tau; = RC = (5.0&times;10<sup>6</sup>)(15&times;10<sup>&minus;6</sup>) = 75 s. Q = 1.2&times;10<sup>&minus;4</sup>e<sup>&minus;120/75</sup> = 2.42&times;10<sup>&minus;5</sup> C." } ]},
+
+    { stem:"A charged capacitor discharges through a resistor. After 76 s its charge has fallen to 0.05% of its initial value.", parts:[
+      { sub:"2.2", skill:"calc", type:"num", prompt:"Calculate the time constant of the circuit.", unit:"s", ans:10.0,
+        wrong:[[25.4,"0.05% is 0.0005, not 0.05. Convert the percentage before taking ln."]],
+        exp:"Q/Q<sub>0</sub> = 0.0005 = e<sup>&minus;76/&tau;</sup>. Taking ln: &tau; = 76 / ln(2000) = 76 / 7.60 = 10.0 s." },
+      { sub:"2.2", skill:"theory", type:"mcq", prompt:"What is the physical meaning of the time constant for a <b>discharging</b> capacitor?",
+        opts:[ {t:"The time for the charge to fall to 37% of its initial value", ok:true},
+               {t:"The time for the charge to fall to 63% of its initial value", mis:"63% is the charging definition (charge reaches 63% of maximum). Discharging falls to 37%, because e<sup>&minus;1</sup> = 0.37."},
+               {t:"The time for the capacitor to discharge completely", mis:"In theory an exponential decay never reaches zero. After one &tau; there is still 37% left."} ],
+        exp:"At t = &tau;, Q = Q<sub>0</sub>e<sup>&minus;1</sup> = 0.37Q<sub>0</sub>." } ]},
+
+    { stem:"A parallel-plate capacitor has plates of area 0.20 m<sup>2</sup> separated by 5.0 mm. The gap is filled with a dielectric of dielectric constant 4.0.", parts:[
+      { sub:"2.3", skill:"calc", type:"num", prompt:"Calculate its capacitance.", unit:"F", ans:1.416e-9,
+        wrong:[[3.54e-10,"You left out &epsilon;<sub>r</sub>. With a dielectric, C = &epsilon;<sub>r</sub>&epsilon;<sub>0</sub>A/d."]],
+        exp:"C = &epsilon;<sub>r</sub>&epsilon;<sub>0</sub>A/d = (4.0)(8.85&times;10<sup>&minus;12</sup>)(0.20)/(5.0&times;10<sup>&minus;3</sup>) = 1.42&times;10<sup>&minus;9</sup> F." } ]},
+
+    { stem:"A capacitor with air between its plates is charged to 120 V and then disconnected from the battery. A slab of glass is inserted, filling the gap, and the potential difference drops to 30 V.", parts:[
+      { sub:"2.3", skill:"calc", type:"num", prompt:"Calculate the dielectric constant of the glass.", unit:"(no unit)", ans:4.0,
+        wrong:[[0.25,"You have the ratio upside down. &epsilon;<sub>r</sub> = V<sub>0</sub>/V, and it is always greater than 1."]],
+        exp:"Q is constant, so &epsilon;<sub>r</sub> = V<sub>0</sub>/V = 120/30 = 4.0." },
+      { sub:"2.3", skill:"theory", type:"mcq", prompt:"Why does the potential difference drop when the glass is inserted?",
+        opts:[ {t:"The dielectric reduces the field between the plates while Q stays the same, so V = Ed falls", ok:true},
+               {t:"Charge leaks away through the glass", mis:"Glass is an insulator, so no charge flows through it. Q stays the same."},
+               {t:"The battery pulls charge back off the plates", mis:"The battery is disconnected, so it cannot move any charge."} ],
+        exp:"Polarised dipoles in the dielectric set up an opposing field, so E falls. V = Ed falls with it, while Q is unchanged. C = Q/V therefore increases." } ]},
+
+    { stem:"An empty capacitor of 2.0 &mu;F is connected to a 12 V battery. With the battery still connected, a dielectric slab is inserted, and an extra 3.6 &times; 10<sup>&minus;5</sup> C of charge flows onto the plates.", parts:[
+      { sub:"2.3", skill:"calc", type:"num", prompt:"Calculate the dielectric constant of the slab.", unit:"(no unit)", ans:2.5,
+        wrong:[[1.5,"You divided the extra charge by the original charge. The new total charge is 2.4&times;10<sup>&minus;5</sup> + 3.6&times;10<sup>&minus;5</sup> = 6.0&times;10<sup>&minus;5</sup> C."]],
+        exp:"Q<sub>0</sub> = C<sub>0</sub>V = 2.4&times;10<sup>&minus;5</sup> C. New Q = 6.0&times;10<sup>&minus;5</sup> C. V is constant, so &epsilon;<sub>r</sub> = Q/Q<sub>0</sub> = 2.5." } ]}
+  ],
+
+  practice: [
+    { stem:"Capacitors of 7.0 &mu;F and 13 &mu;F are connected in parallel across a 9.0 V battery.", parts:[
+      { sub:"2.1", skill:"circuit", type:"num", prompt:"Calculate the charge stored on the 13 &mu;F capacitor.", unit:"C", ans:1.17e-4,
+        wrong:[[4.1e-5,"You treated them as series. In parallel each capacitor has the full 9.0 V across it."],[1.8e-4,"That is the total charge on both capacitors."]],
+        exp:"Parallel means each has 9.0 V across it: Q = (13&times;10<sup>&minus;6</sup>)(9.0) = 1.17&times;10<sup>&minus;4</sup> C." } ]},
+    { stem:"Three 12 &mu;F capacitors are connected between A and B as shown. The potential difference across AB is 9.0 V.", fig:FIG.c4, parts:[
+      { sub:"2.1", skill:"circuit", type:"num", prompt:"Calculate the effective capacitance.", unit:"&mu;F", ans:8.0,
+        wrong:[[36,"Only two of them are in parallel. The third is in series with that pair."],[4,"Only the third capacitor is in series. The first two are in parallel, so they add to 24 &mu;F."],[18,"You added the parallel pair to half of one. Combine 24 &mu;F and 12 &mu;F in series: (24&times;12)/(24+12)."]],
+        exp:"Parallel pair: 24 &mu;F. In series with 12 &mu;F: (24&times;12)/(24+12) = 8.0 &mu;F." },
+      { sub:"2.1", skill:"calc", type:"num", prompt:"Calculate the total energy stored.", unit:"J", ans:3.24e-4,
+        wrong:[[6.48e-4,"You forgot the &frac12; in U = &frac12;CV<sup>2</sup>."]],
+        exp:"U = &frac12;(8.0&times;10<sup>&minus;6</sup>)(9.0)<sup>2</sup> = 3.24&times;10<sup>&minus;4</sup> J." },
+      { sub:"2.1", skill:"theory", type:"mcq", prompt:"Another capacitor is added in parallel with the whole combination. What happens to the effective capacitance?",
+        opts:[ {t:"It increases", ok:true}, {t:"It decreases", mis:"Adding in parallel always adds capacitance. Adding in series is what decreases it."}, {t:"It stays the same", mis:"Parallel capacitances add: C<sub>eff</sub> = C<sub>1</sub> + C<sub>2</sub> + ..."} ],
+        exp:"Parallel: C<sub>eff</sub> = sum of the capacitances, so adding one in parallel always increases C<sub>eff</sub>." } ]},
+    { stem:"A 3.0 &mu;F capacitor is fully charged to 28 &mu;C.", parts:[
+      { sub:"2.1", skill:"calc", type:"num", prompt:"Calculate the energy stored.", unit:"J", ans:1.31e-4,
+        wrong:[[2.61e-4,"You forgot the &frac12;: U = Q<sup>2</sup>/2C."]],
+        exp:"U = Q<sup>2</sup>/2C = (28&times;10<sup>&minus;6</sup>)<sup>2</sup>/(2 &times; 3.0&times;10<sup>&minus;6</sup>) = 1.31&times;10<sup>&minus;4</sup> J." } ]},
+    { stem:"Two fully charged capacitors, C<sub>1</sub> = 100 &mu;F and C<sub>2</sub> = 200 &mu;F, are connected in series with a 1.0 k&Omega; resistor.", parts:[
+      { sub:"2.2", skill:"calc", type:"num", prompt:"Calculate the time constant when the switch is closed.", unit:"s", ans:0.0667,
+        wrong:[[0.3,"You added the capacitances. In series, C<sub>eff</sub> = (100&times;200)/(100+200) = 66.7 &mu;F."]],
+        exp:"C<sub>eff</sub> = 66.7 &mu;F. &tau; = RC<sub>eff</sub> = (1.0&times;10<sup>3</sup>)(66.7&times;10<sup>&minus;6</sup>) = 6.67&times;10<sup>&minus;2</sup> s." } ]},
+    { stem:"A 2.50 &mu;F capacitor is fully charged by a 12 V battery and then connected across a 2.0 M&Omega; resistor.", parts:[
+      { sub:"2.2", skill:"calc", type:"num", prompt:"Calculate the charge on the capacitor after 40 s.", unit:"C", ans:1.01e-8,
+        wrong:[[3.0e-5,"You used the charging equation. This capacitor is discharging, so use Q = Q<sub>0</sub>e<sup>&minus;t/RC</sup>."]],
+        exp:"Q<sub>0</sub> = 3.0&times;10<sup>&minus;5</sup> C and &tau; = 5.0 s. Q = 3.0&times;10<sup>&minus;5</sup>e<sup>&minus;8</sup> = 1.01&times;10<sup>&minus;8</sup> C." },
+      { sub:"2.2", skill:"graph", type:"mcq", prompt:"Which graph shape shows charge against time while a capacitor is <b>charging</b>?",
+        opts:[ {t:"Rises steeply at first, then levels off towards Q<sub>0</sub>", ok:true}, {t:"Rises in a straight line until it reaches Q<sub>0</sub>", mis:"Charging slows down as the capacitor fills, so the curve flattens. It is not a straight line."}, {t:"Starts at Q<sub>0</sub> and decays towards zero", mis:"That is discharging. When charging, Q starts at zero."} ],
+        exp:"Q = Q<sub>0</sub>(1 &minus; e<sup>&minus;t/RC</sup>): it rises quickly at first, then approaches Q<sub>0</sub>, reaching 63% of Q<sub>0</sub> at t = &tau;." } ]},
+    { stem:"An air-filled parallel-plate capacitor has plates of area 100 cm<sup>2</sup> separated by 5.0 mm. It is connected to a 300 V supply.", parts:[
+      { sub:"2.3", skill:"calc", type:"num", prompt:"Calculate the charge on the capacitor.", unit:"C", ans:5.31e-9,
+        wrong:[[5.31e-7,"You converted 100 cm<sup>2</sup> as 1 m<sup>2</sup>. 1 cm<sup>2</sup> = 10<sup>&minus;4</sup> m<sup>2</sup>, so 100 cm<sup>2</sup> = 0.010 m<sup>2</sup>."]],
+        exp:"C = &epsilon;<sub>0</sub>A/d = (8.85&times;10<sup>&minus;12</sup>)(0.010)/(5.0&times;10<sup>&minus;3</sup>) = 1.77&times;10<sup>&minus;11</sup> F. Q = CV = 5.31&times;10<sup>&minus;9</sup> C." } ]},
+    { stem:"A parallel-plate capacitor has plates of area 0.25 m<sup>2</sup> separated by 1.0 mm of mica (&epsilon;<sub>r</sub> = 7.0). The potential difference is 3.0 &times; 10<sup>4</sup> V.", parts:[
+      { sub:"2.3", skill:"calc", type:"num", prompt:"Calculate the energy stored.", unit:"J", ans:6.97,
+        wrong:[[0.996,"You left out &epsilon;<sub>r</sub> = 7.0."],[13.9,"You forgot the &frac12; in U = &frac12;CV<sup>2</sup>."]],
+        exp:"C = (7.0)(8.85&times;10<sup>&minus;12</sup>)(0.25)/(1.0&times;10<sup>&minus;3</sup>) = 1.55&times;10<sup>&minus;8</sup> F. U = &frac12;CV<sup>2</sup> = &frac12;(1.55&times;10<sup>&minus;8</sup>)(3.0&times;10<sup>4</sup>)<sup>2</sup> = 6.97 J." },
+      { sub:"2.3", skill:"theory", type:"mcq", prompt:"If the mica were inserted while the battery stays connected, what happens to the charge on the plates?",
+        opts:[ {t:"It increases by a factor of &epsilon;<sub>r</sub>", ok:true}, {t:"It stays the same", mis:"Q stays the same only when the battery is disconnected. When connected, V is fixed, so Q = CV rises with C."}, {t:"It decreases", mis:"C increases, and with V fixed by the battery, Q = CV must increase."} ],
+        exp:"Battery connected means V is constant. C increases by &epsilon;<sub>r</sub>, so Q = CV increases by &epsilon;<sub>r</sub>." } ]}
+  ]
+},
+
+{ id:3, title:"Electric Current and DC Circuits", open:false },
+{ id:4, title:"Magnetism", open:false },
+{ id:5, title:"Electromagnetic Induction", open:false },
+{ id:6, title:"Geometrical Optics", open:false },
+{ id:7, title:"Physical Optics", open:false },
+{ id:8, title:"Quantum Physics", open:false },
+{ id:9, title:"Nuclear Physics", open:false }
+];
+
+
+/* =====================================================================
+   THEORY LESSONS (Tuesday asynchronous lecture, Bloom C1 and C2)
+   One entry per chapter id. Each section has reading (html) and
+   questions (bloom "C1" remember or "C2" understand). Students must
+   answer every question in a section before moving on.
+   ===================================================================== */
+const THEORY = {
+1: [
+  { sub:"1.1", title:"Coulomb's law",
+    html:`<p><b>Coulomb's law</b> states that the magnitude of the electrostatic force between two point charges is <b>directly proportional to the product of the magnitudes of the charges</b> and <b>inversely proportional to the square of the distance</b> between them.</p>
+    <div class="formula">F = k q<sub>1</sub>q<sub>2</sub> / r<sup>2</sup> &nbsp;&nbsp; k = 1/(4&pi;&epsilon;<sub>0</sub>) = 9.0&times;10<sup>9</sup> N m<sup>2</sup> C<sup>&minus;2</sup> &nbsp;&nbsp; &epsilon;<sub>0</sub> = 8.85&times;10<sup>&minus;12</sup> C<sup>2</sup> N<sup>&minus;1</sup> m<sup>&minus;2</sup></div>
+    <ul><li>Like charges repel and unlike charges attract.</li>
+    <li>The force acts along the line joining the two charges.</li>
+    <li>The two charges exert <b>equal and opposite</b> forces on each other (Newton's third law), even when the charges are different sizes.</li>
+    <li>Force is a <b>vector</b>, so forces from several charges are added as vectors.</li></ul>`,
+    qs:[
+      { bloom:"C1", prompt:"Which is the correct statement of Coulomb's law?",
+        opts:[ {t:"The force between two point charges is proportional to the product of the charges and inversely proportional to the square of their separation", ok:true},
+               {t:"The force between two point charges is proportional to the sum of the charges and inversely proportional to their separation", mis:"The force depends on the <i>product</i> of the charges and on 1/r<sup>2</sup>, not on the sum or 1/r."},
+               {t:"The force between two point charges is proportional to the product of their masses and inversely proportional to the square of their separation", mis:"That is Newton's law of gravitation. Coulomb's law is about charges."} ],
+        exp:"F &prop; q<sub>1</sub>q<sub>2</sub> and F &prop; 1/r<sup>2</sup>, so F = kq<sub>1</sub>q<sub>2</sub>/r<sup>2</sup>." },
+      { bloom:"C1", prompt:"What is the SI unit of the permittivity of free space, &epsilon;<sub>0</sub>?",
+        opts:[ {t:"C<sup>2</sup> N<sup>&minus;1</sup> m<sup>&minus;2</sup>", ok:true}, {t:"N m<sup>2</sup> C<sup>&minus;2</sup>", mis:"That is the unit of k. &epsilon;<sub>0</sub> = 1/(4&pi;k), so its unit is the inverse."}, {t:"N C<sup>&minus;1</sup>", mis:"That is the unit of electric field strength."} ],
+        exp:"From k = 1/(4&pi;&epsilon;<sub>0</sub>), the unit of &epsilon;<sub>0</sub> is the inverse of N m<sup>2</sup> C<sup>&minus;2</sup>, which is C<sup>2</sup> N<sup>&minus;1</sup> m<sup>&minus;2</sup> (also written F m<sup>&minus;1</sup>)." },
+      { bloom:"C2", prompt:"A +4q charge exerts a force F on a nearby +q charge. What force does the +q charge exert on the +4q charge?",
+        opts:[ {t:"F, in the opposite direction", ok:true}, {t:"4F, because the other charge is four times bigger", mis:"Both charges appear in the same product q<sub>1</sub>q<sub>2</sub>, so each feels the same size of force."}, {t:"F/4, because +q is smaller", mis:"Newton's third law: the forces on the two charges are equal in size and opposite in direction."} ],
+        exp:"The forces form a Newton's third law pair, so they are equal in magnitude and opposite in direction." },
+      { bloom:"C2", prompt:"The distance between two point charges is tripled. What happens to the force between them?",
+        opts:[ {t:"It becomes one ninth of its original value", ok:true}, {t:"It becomes one third of its original value", mis:"F &prop; 1/r<sup>2</sup>, so tripling r divides F by 3<sup>2</sup> = 9."}, {t:"It is three times bigger", mis:"Force decreases as distance increases."} ],
+        exp:"F &prop; 1/r<sup>2</sup>: F&prime; = F/3<sup>2</sup> = F/9." } ] },
+
+  { sub:"1.2", title:"Electric field",
+    html:`<p>An <b>electric field</b> is a region around a charge in which another charge experiences an electric force.</p>
+    <p><b>Electric field strength</b> at a point is the electric force per unit <b>positive</b> test charge placed at that point. It is a vector, with unit N C<sup>&minus;1</sup> (equal to V m<sup>&minus;1</sup>).</p>
+    <div class="formula">E = F / q<sub>0</sub> &nbsp;&nbsp; point charge: E = kQ / r<sup>2</sup></div>
+    <h4>Electric field lines</h4>
+    <ul><li>Start on positive charges and end on negative charges.</li>
+    <li>Never cross, because the field has only one direction at any point.</li>
+    <li>The tangent to a line gives the direction of E at that point.</li>
+    <li>Closer lines mean a stronger field.</li>
+    <li>Between parallel plates the lines are <b>parallel and equally spaced</b>, which shows a uniform field.</li></ul>`,
+    qs:[
+      { bloom:"C1", prompt:"Define electric field strength.",
+        opts:[ {t:"The electric force per unit positive charge at a point", ok:true}, {t:"The work done per unit positive charge in bringing it from infinity", mis:"That is the definition of electric potential."}, {t:"The electric force per unit mass at a point", mis:"Electric field is force per unit <i>charge</i>, not mass."} ],
+        exp:"E = F/q<sub>0</sub>, where q<sub>0</sub> is a small positive test charge." },
+      { bloom:"C2", prompt:"Why can electric field lines never cross?",
+        opts:[ {t:"The electric field has only one direction at any point", ok:true}, {t:"Field lines repel each other", mis:"Field lines are a drawing tool. They do not exert forces on each other."}, {t:"The field is zero wherever two lines would meet", mis:"If two lines crossed, the point would need two field directions at once, which is impossible."} ],
+        exp:"At a crossing point, a test charge would have two possible force directions. Since E has a single direction at each point, lines cannot cross." },
+      { bloom:"C2", prompt:"Which field line pattern represents a <b>uniform</b> electric field?",
+        opts:[ {t:"Parallel, equally spaced straight lines", ok:true}, {t:"Straight lines spreading out from a point charge", mis:"Radial lines spread apart, so the field gets weaker with distance. It is not uniform."}, {t:"Curved lines from a positive charge to a negative charge", mis:"The spacing of curved lines changes, so the field strength changes from point to point."} ],
+        exp:"Uniform means the same magnitude and direction everywhere: parallel lines with equal spacing, as between parallel plates." },
+      { bloom:"C2", prompt:"An electron is placed at a point where the electric field points east. In which direction is the force on the electron?",
+        opts:[ {t:"West", ok:true}, {t:"East", mis:"E is defined using a <i>positive</i> test charge. A negative charge is pushed the opposite way."}, {t:"There is no force on it, because the electron is negative", mis:"Any charge in a field feels a force, F = qE. The sign of q only sets the direction."} ],
+        exp:"F = qE with q = &minus;e, so the force is opposite to E." } ] },
+
+  { sub:"1.3", title:"Electric potential, potential energy and equipotentials",
+    html:`<p><b>Electric potential</b> at a point is the work done by an external force in bringing a unit positive charge from infinity to that point. It is a <b>scalar</b>, with unit volt (V = J C<sup>&minus;1</sup>).</p>
+    <div class="formula">V = kQ / r &nbsp;&nbsp; U = qV = kq<sub>1</sub>q<sub>2</sub> / r &nbsp;&nbsp; W = q&Delta;V</div>
+    <ul><li><b>Potential difference</b> between two points is the work done per unit charge in moving a charge from one point to the other.</li>
+    <li><b>Electric potential energy</b> of a charge at a point is the work done in bringing that charge from infinity to the point.</li>
+    <li>Potentials from several charges are added algebraically, with signs. There are no components.</li></ul>
+    <h4>Equipotential surfaces</h4>
+    <ul><li>An equipotential surface is a surface on which every point has the same potential.</li>
+    <li>No work is done moving a charge along it, because &Delta;V = 0.</li>
+    <li>Field lines are always <b>perpendicular</b> to equipotentials and point from higher to lower potential.</li>
+    <li>Point charge: concentric spheres. Uniform field: parallel planes.</li></ul>`,
+    qs:[
+      { bloom:"C1", prompt:"Define electric potential at a point.",
+        opts:[ {t:"The work done in bringing a unit positive charge from infinity to that point", ok:true}, {t:"The force acting on a unit positive charge at that point", mis:"Force per unit charge is electric field strength."}, {t:"The work done in moving a unit positive charge through 1 m", mis:"Potential is measured from infinity, not over a fixed distance."} ],
+        exp:"V = W/q<sub>0</sub>, measured from infinity, where V = 0." },
+      { bloom:"C1", prompt:"The volt is equivalent to which unit?",
+        opts:[ {t:"J C<sup>&minus;1</sup>", ok:true}, {t:"N C<sup>&minus;1</sup>", mis:"N C<sup>&minus;1</sup> is the unit of electric field strength (equal to V m<sup>&minus;1</sup>), not potential."}, {t:"C J<sup>&minus;1</sup>", mis:"That is upside down. Potential is energy per unit charge."} ],
+        exp:"Potential is work (energy) per unit charge: 1 V = 1 J C<sup>&minus;1</sup>." },
+      { bloom:"C2", prompt:"Why is no work done when a charge moves along an equipotential surface?",
+        opts:[ {t:"The potential difference between any two points on it is zero", ok:true}, {t:"The electric field is zero on an equipotential surface", mis:"The field is not zero there. It is perpendicular to the surface, so it has no component along the motion."}, {t:"The charge moves at constant speed", mis:"The work depends on &Delta;V, not on the speed."} ],
+        exp:"W = q&Delta;V, and &Delta;V = 0 between points at the same potential." },
+      { bloom:"C2", prompt:"How are electric field lines related to equipotential surfaces?",
+        opts:[ {t:"They are perpendicular, and the field points towards lower potential", ok:true}, {t:"They are parallel to each other", mis:"If E had a component along an equipotential, moving along it would need work, which contradicts &Delta;V = 0."}, {t:"They are perpendicular, and the field points towards higher potential", mis:"The field points the way a positive charge naturally moves, which is towards lower potential."} ],
+        exp:"E is perpendicular to equipotentials and points in the direction of decreasing potential." } ] },
+
+  { sub:"1.4", title:"Charge in a uniform electric field",
+    html:`<p>Between two parallel charged plates the field is uniform, and its strength depends on the potential difference and the separation.</p>
+    <div class="formula">E = V / d &nbsp;&nbsp; F = qE &nbsp;&nbsp; a = qE / m</div>
+    <ul><li>The force on a charge is the same everywhere between the plates.</li>
+    <li>Positive charges accelerate in the direction of E. Electrons accelerate opposite to E, towards the positive plate.</li>
+    <li>A proton and an electron feel forces of the same size (same |q|), but the electron's acceleration is about 1800 times bigger because its mass is much smaller.</li>
+    <li>A charge entering at right angles to the field follows a <b>parabola</b>, like a projectile. Its horizontal velocity stays constant.</li></ul>`,
+    qs:[
+      { bloom:"C1", prompt:"For two parallel plates with potential difference V and separation d, the electric field between them is",
+        opts:[ {t:"E = V / d", ok:true}, {t:"E = Vd", mis:"A bigger gap gives a weaker field, so d must be in the denominator."}, {t:"E = kQ / d<sup>2</sup>", mis:"That is the field of a point charge, not of parallel plates."} ],
+        exp:"For a uniform field, E = V/d (unit V m<sup>&minus;1</sup>)." },
+      { bloom:"C2", prompt:"A proton and an electron are placed in the same uniform field. Which statement is correct?",
+        opts:[ {t:"They feel forces of equal size in opposite directions, and the electron has a much larger acceleration", ok:true}, {t:"They feel forces of equal size in the same direction, and have equal accelerations", mis:"Opposite charges are pushed in opposite directions, and a = F/m depends on mass."}, {t:"The proton feels a larger force because it is heavier", mis:"F = qE depends on charge, not mass. Both have |q| = e."} ],
+        exp:"F = eE for both, in opposite directions. a = F/m, and m<sub>e</sub> is about 1/1836 of m<sub>p</sub>." },
+      { bloom:"C2", prompt:"An electron enters the space between horizontal plates at right angles to the field. What path does it follow?",
+        opts:[ {t:"A parabola curving towards the positive plate", ok:true}, {t:"A straight line, because the field is uniform", mis:"A uniform field gives a constant force, which still bends the path."}, {t:"A circular arc curving towards the negative plate", mis:"A constant force at right angles to the initial velocity gives a parabola. Electrons are attracted to the positive plate."} ],
+        exp:"Constant horizontal velocity plus constant vertical acceleration gives a parabola, just like projectile motion." } ] }
+],
+
+2: [
+  { sub:"2.1", title:"Capacitance, series and parallel, energy stored",
+    html:`<p>A <b>capacitor</b> is a device that stores electric charge, and so stores electric potential energy. It consists of two conductors separated by a small air gap or a thin insulator, called a <b>dielectric</b>.</p>
+    <p><b>Capacitance</b> is defined as the ratio of the charge on either plate to the potential difference between the plates. It is a scalar with SI unit the <b>farad</b> (F = C V<sup>&minus;1</sup>).</p>
+    <div class="formula">C = Q / V</div>
+    <ul><li><b>1 farad</b> is the capacitance when 1 coulomb of charge is stored on each plate with a potential difference of 1 volt.</li>
+    <li>A capacitor's capacitance does not change unless it is designed to be variable.</li>
+    <li><b>Series:</b> each capacitor carries the same charge Q. The voltages add up.</li>
+    <li><b>Parallel:</b> each capacitor has the same voltage V. The charges add up.</li></ul>
+    <h4>Energy stored</h4>
+    <p>Work must be done to push extra charge onto the plates against the growing potential difference. That work is stored as electric potential energy.</p>
+    <div class="formula">U = &frac12;QV = &frac12;CV<sup>2</sup> = Q<sup>2</sup>/2C</div>`,
+    qs:[
+      { bloom:"C1", prompt:"Define capacitance.",
+        opts:[ {t:"The ratio of the charge on either plate to the potential difference between the plates", ok:true}, {t:"The product of the charge on a plate and the potential difference", mis:"Q &times; V is related to energy. Capacitance is Q divided by V."}, {t:"The total charge stored on both plates per second", mis:"Capacitance has nothing to do with time. It is charge per unit potential difference."} ],
+        exp:"C = Q/V, where Q is the charge on either plate." },
+      { bloom:"C1", prompt:"A capacitance of 1 farad means that",
+        opts:[ {t:"1 C of charge is stored on each plate for a potential difference of 1 V", ok:true}, {t:"1 J of energy is stored for a potential difference of 1 V", mis:"The farad is defined from charge and voltage: 1 F = 1 C V<sup>&minus;1</sup>."}, {t:"1 A of current flows for 1 s", mis:"That is the definition of 1 coulomb, not 1 farad."} ],
+        exp:"1 F = 1 C V<sup>&minus;1</sup>." },
+      { bloom:"C2", prompt:"For capacitors connected in series, which quantity is the same for every capacitor?",
+        opts:[ {t:"The charge", ok:true}, {t:"The potential difference", mis:"Equal voltage is the rule for <i>parallel</i>. In series the voltages share the supply."}, {t:"The capacitance", mis:"Capacitors in series can have different capacitances. What they share is charge."} ],
+        exp:"In series, the charge pushed onto one plate induces the same charge on every plate along the chain." },
+      { bloom:"C2", prompt:"Why does a charged capacitor store energy?",
+        opts:[ {t:"Work is done to move charge onto the plates against the increasing potential difference, and this is stored as electric potential energy", ok:true}, {t:"It stores the current that flowed while it was charging", mis:"Current cannot be stored. The capacitor stores charge, and energy in its electric field."}, {t:"The dielectric heats up and holds the energy as heat", mis:"The energy is stored in the electric field between the plates, not as heat."} ],
+        exp:"Each extra bit of charge must be pushed against the existing voltage. That work, U = &frac12;QV, is stored in the electric field." } ] },
+
+  { sub:"2.2", title:"Charging, discharging and time constant",
+    html:`<h4>Charging through a resistor</h4>
+    <ul><li>When the switch closes, a current I<sub>0</sub> flows immediately. It is at its largest at the start.</li>
+    <li>As charge builds up, the potential difference across the capacitor grows and opposes the battery, so the <b>current decreases</b>.</li>
+    <li>When the capacitor's voltage equals the battery voltage V<sub>0</sub>, the current stops and the charge has reached its maximum Q<sub>0</sub>.</li></ul>
+    <h4>Discharging through a resistor</h4>
+    <ul><li>At the start, the voltage across the capacitor is at its maximum, so the current I<sub>0</sub> = V<sub>0</sub>/R is at its maximum.</li>
+    <li>As charge flows off the plates, the voltage falls, and so does the current, until both reach zero.</li></ul>
+    <h4>Time constant</h4>
+    <div class="formula">&tau; = RC &nbsp;&nbsp; charging: Q = Q<sub>0</sub>(1 &minus; e<sup>&minus;t/RC</sup>) &nbsp;&nbsp; discharging: Q = Q<sub>0</sub>e<sup>&minus;t/RC</sup></div>
+    <ul><li>&tau; is a scalar with SI unit the <b>second</b>. It measures how quickly the capacitor charges or discharges.</li>
+    <li><b>Charging:</b> &tau; is the time for the charge to reach 63% of its maximum value.</li>
+    <li><b>Discharging:</b> &tau; is the time for the charge to fall to 37% of its initial value.</li>
+    <li>A bigger R or a bigger C gives a bigger &tau;, so the process is slower.</li></ul>`,
+    qs:[
+      { bloom:"C1", prompt:"What is the SI unit of the time constant &tau;?",
+        opts:[ {t:"Second", ok:true}, {t:"Farad", mis:"The farad is the unit of capacitance. &tau; = RC has the unit of time."}, {t:"Coulomb", mis:"The coulomb is the unit of charge. &tau; is a time."} ],
+        exp:"&tau; = RC: &Omega; &times; F = (V A<sup>&minus;1</sup>)(C V<sup>&minus;1</sup>) = C A<sup>&minus;1</sup> = s." },
+      { bloom:"C2", prompt:"Why does the current decrease while a capacitor is charging?",
+        opts:[ {t:"The potential difference across the capacitor increases and opposes the battery", ok:true}, {t:"The battery gradually runs out of charge", mis:"An ideal battery keeps its emf. The current falls because the capacitor's own voltage builds up against it."}, {t:"The resistor heats up and its resistance increases", mis:"R is treated as constant. The current falls because there is less net voltage across R."} ],
+        exp:"The current is (V<sub>0</sub> &minus; V<sub>C</sub>)/R. As V<sub>C</sub> grows towards V<sub>0</sub>, the current falls towards zero." },
+      { bloom:"C2", prompt:"State the physical meaning of the time constant for a <b>charging</b> capacitor.",
+        opts:[ {t:"The time for the charge to reach 63% of its maximum value", ok:true}, {t:"The time for the charge to reach 37% of its maximum value", mis:"37% is the discharging definition (falling to 37% of the initial charge)."}, {t:"The time for the capacitor to become fully charged", mis:"In theory an exponential never quite reaches the maximum. At t = &tau; it has 63%."} ],
+        exp:"At t = &tau;, Q = Q<sub>0</sub>(1 &minus; e<sup>&minus;1</sup>) = 0.63Q<sub>0</sub>." },
+      { bloom:"C2", prompt:"The resistor in an RC circuit is replaced with one of larger resistance. What happens?",
+        opts:[ {t:"The capacitor charges more slowly, because &tau; increases", ok:true}, {t:"The capacitor charges faster, because more voltage is across the resistor", mis:"A larger R means a smaller current, so charge builds up more slowly."}, {t:"The maximum charge stored increases", mis:"The maximum charge is Q<sub>0</sub> = CV<sub>0</sub>, which does not depend on R."} ],
+        exp:"&tau; = RC, so a larger R gives a larger &tau; and slower charging. Q<sub>0</sub> is unchanged." } ] },
+
+  { sub:"2.3", title:"Capacitors with dielectrics",
+    html:`<p>The capacitance of a parallel-plate capacitor is <b>proportional to the plate area</b>, <b>inversely proportional to the plate separation</b>, and depends on the dielectric between the plates.</p>
+    <div class="formula">air: C<sub>0</sub> = &epsilon;<sub>0</sub>A / d &nbsp;&nbsp; with dielectric: C = &epsilon;<sub>r</sub>&epsilon;<sub>0</sub>A / d = &epsilon;<sub>r</sub>C<sub>0</sub></div>
+    <p>A <b>dielectric</b> is a non-conducting (insulating) material placed between the plates. The <b>dielectric constant</b> &epsilon;<sub>r</sub> is the ratio of the permittivity of the material to the permittivity of free space. It has no unit and is always greater than 1.</p>
+    <div class="formula">&epsilon;<sub>r</sub> = &epsilon;/&epsilon;<sub>0</sub> = C/C<sub>0</sub> = V<sub>0</sub>/V = E<sub>0</sub>/E</div>
+    <h4>Advantages of a dielectric</h4>
+    <ul><li>Increases the capacitance.</li><li>Increases the maximum operating voltage.</li><li>Gives mechanical support, so the plates can be closer without touching.</li></ul>
+    <h4>How it works</h4>
+    <ul><li>The dipoles in the dielectric line up and create a reverse field, so the field between the plates decreases: E = E<sub>0</sub> &minus; E<sub>d</sub>.</li>
+    <li><b>Battery disconnected:</b> Q stays constant, so V decreases and C increases.</li>
+    <li><b>Battery still connected:</b> V stays constant, so extra charge flows on and Q increases.</li></ul>`,
+    qs:[
+      { bloom:"C1", prompt:"Define dielectric constant.",
+        opts:[ {t:"The ratio of the permittivity of the dielectric material to the permittivity of free space", ok:true}, {t:"The ratio of the permittivity of free space to the permittivity of the material", mis:"That is upside down. &epsilon;<sub>r</sub> = &epsilon;/&epsilon;<sub>0</sub>, which is always greater than 1."}, {t:"The charge stored per unit thickness of the dielectric", mis:"The dielectric constant is a ratio of permittivities. It has no unit."} ],
+        exp:"&epsilon;<sub>r</sub> = &epsilon;/&epsilon;<sub>0</sub>. It is dimensionless and greater than 1." },
+      { bloom:"C1", prompt:"Which of these is <b>not</b> an advantage of inserting a dielectric?",
+        opts:[ {t:"It allows current to flow through the capacitor", ok:true}, {t:"It increases the capacitance", mis:"This is an advantage: C = &epsilon;<sub>r</sub>C<sub>0</sub>."}, {t:"It increases the maximum operating voltage", mis:"This is an advantage: the dielectric can withstand a larger voltage before it breaks down."} ],
+        exp:"A dielectric is an insulator, so it does not let current through. Its advantages are larger C, a larger maximum operating voltage and mechanical support." },
+      { bloom:"C2", prompt:"The plate separation of an air-filled parallel-plate capacitor is doubled. What happens to its capacitance?",
+        opts:[ {t:"It is halved", ok:true}, {t:"It is doubled", mis:"C = &epsilon;<sub>0</sub>A/d, so C is inversely proportional to d."}, {t:"It is unchanged", mis:"Capacitance depends on the geometry: area, separation and dielectric."} ],
+        exp:"C &prop; 1/d, so doubling d halves C." },
+      { bloom:"C2", prompt:"A dielectric is inserted while the capacitor <b>remains connected</b> to the battery. Which statement is correct?",
+        opts:[ {t:"V stays the same and Q increases", ok:true}, {t:"Q stays the same and V decreases", mis:"That happens when the battery is <i>disconnected</i>. When connected, the battery holds V fixed."}, {t:"Both Q and V stay the same", mis:"C increases, and with V fixed by the battery, Q = CV must increase."} ],
+        exp:"The battery fixes V. C increases by &epsilon;<sub>r</sub>, so Q = CV increases and extra charge flows onto the plates." } ] }
+]
+};
+
+/* =====================================================================
+   APP LOGIC (no need to edit below this line)
+   ===================================================================== */
+const SKILLS = { calc:"Calculation", vector:"Vector resolution", circuit:"Circuit reduction", graph:"Graphs and time constant", theory:"Theory for problem-solving" };
+const TOL = 0.05;
+const app = document.getElementById("app");
+const LETTERS = "ABCD";
+const state = { student:null, chapter:null, qs:[], i:0, answers:[], result:null, saveMsg:null, practice:null };
+const $ = s => document.querySelector(s);
+/* Where results are sent. EXEC_URL is the Apps Script web app's /exec link. */
+const EXEC_URL = "https://script.google.com/macros/s/AKfycbz_aBbEow5sgbwkAZIuAiWnv6-UGYxKYCt09z_K8j_rrnACadw_Mmbmn51QuAy2niCu/exec";
+const GAS = typeof google !== "undefined" && google.script && google.script.run;
+const ON_WEB_HOST = /\.github\.io$/.test(location.hostname);
+const HAS_BACKEND = !!(GAS || ON_WEB_HOST);
+
+function esc(s){ return String(s==null?"":s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c])); }
+function shuffle(a){ a=a.slice(); for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; }
+function prepQ(q){ return Object.assign({}, q, { parts: q.parts.map(p => p.type==="mcq" ? Object.assign({}, p, {opts: shuffle(p.opts)}) : p) }); }
+function loadStudent(){ try{ return JSON.parse(localStorage.getItem("sp025_student")||"null"); }catch(e){ return null; } }
+function saveStudent(s){ try{ localStorage.setItem("sp025_student", JSON.stringify(s)); }catch(e){} }
+function plain(html){ const d=document.createElement("div"); d.innerHTML=html; return d.textContent; }
+function toTop(){ try{ window.scrollTo(0,0); }catch(e){} }
+const STATUS_COLOR = {Mastered:"var(--ok)", Developing:"var(--mid)", Weak:"var(--bad)"};
+function statusOf(correct, total, guessed){ const f = total ? correct/total : 0; return (f===1 && !guessed) ? "Mastered" : (f>=0.6 ? "Developing" : "Weak"); }
+
+/* number parsing: accepts 1.05, -4.5e-4, 4.5x10^-4, 4.5 × 10^-4, 4.5*10-4 */
+function parseNum(s){
+  if(s==null) return NaN;
+  let t = String(s).trim().replace(/[−–—]/g,"-").replace(/,/g,"").replace(/\s+/g,"");
+  t = t.replace(/[x×X*]10\^?\(?([+-]?\d+)\)?/, "e$1");
+  const m = t.match(/^[+-]?(\d+\.?\d*|\.\d+)(e[+-]?\d+)?/i);
+  return m ? Number(m[0]) : NaN;
+}
+function close(x, target){ return target===0 ? Math.abs(x) < 1e-12 : Math.abs(x-target) <= TOL*Math.abs(target); }
+function fmt(v){
+  if(v===0) return "0";
+  const a = Math.abs(v);
+  if(a>=0.01 && a<1e4) return String(Number(v.toPrecision(3)));
+  const ex = Math.floor(Math.log10(a)), m = v/Math.pow(10,ex);
+  return `${Number(m.toPrecision(3))} &times; 10<sup>${ex}</sup>`;
+}
+function gradePart(p, resp){
+  if(p.type==="mcq"){ const o = p.opts[resp]; return {ok:!!(o&&o.ok), mis:o&&!o.ok?o.mis:"", shown:o?o.t:""}; }
+  const x = parseNum(resp);
+  if(isNaN(x)) return {ok:false, mis:"That answer could not be read as a number.", shown:esc(resp)};
+  const shown = fmt(x);
+  if(close(x, p.ans)) return {ok:true, shown};
+  for(const [v, m] of (p.wrong||[])) if(close(x, v)) return {ok:false, mis:m, shown};
+  if(p.ans!==0 && close(-x, p.ans)) return {ok:false, mis:"The size is right but the sign is wrong. Check the signs of the charges and the direction of the change.", shown};
+  if(p.ans!==0 && x/p.ans>0){ const r = Math.log10(x/p.ans), n = Math.round(r);
+    if(n!==0 && Math.abs(r-n) < 0.022) return {ok:false, mis:`Your digits are right but the answer is off by a factor of 10<sup>${n}</sup>. Check your unit conversions (cm to m, &mu;C or nC to C, g to kg).`, shown}; }
+  return {ok:false, mis:"", shown};
+}
+function answered(p, r){ return p.type==="mcq" ? r!=null : (r!=null && String(r).trim()!==""); }
+
+function send(payload){
+  return new Promise(res => {
+    if(!HAS_BACKEND){ res({ok:false, preview:true}); return; }
+    if(GAS){
+      google.script.run.withSuccessHandler(() => res({ok:true}))
+        .withFailureHandler(e => res({ok:false, error:String(e && e.message || e)})).saveResult(payload);
+      return;
+    }
+    const attempt = n => fetch(EXEC_URL, { method:"POST", body: JSON.stringify(payload),
+        headers:{ "Content-Type":"text/plain;charset=utf-8" }, credentials:"omit", redirect:"follow" })
+      .then(r => r.json())
+      .then(j => j && j.ok ? res({ok:true}) : res({ok:false, error:(j && j.error) || "server did not confirm"}))
+      .catch(e => n > 0 ? setTimeout(() => attempt(n-1), 1500) : res({ok:false, error:"no internet connection or server busy"}));
+    attempt(2);
+  });
+}
+function saveBanner(m){
+  if(!m) return `<div class="save">Sending your results to your lecturer...</div>`;
+  if(m.preview) return `<div class="save">Preview mode: results are not being sent anywhere.</div>`;
+  if(m.ok) return `<div class="save ok">Your results have been sent to your lecturer.</div>`;
+  return `<div class="save bad">Your results could not be sent (${esc(m.error)}). Take a screenshot of this page and show your lecturer.</div>`;
+}
+
+/* ---------- part rendering ---------- */
+function partHTML(p, pi, resp, opts){
+  // opts: {locked, feedback, nameAttr}
+  const label = `<span class="plabel">(${String.fromCharCode(97+pi)})</span>`;
+  const tag = `<span class="skill">${opts.tag || SKILLS[p.skill]}</span>`;
+  let body = "";
+  const g = opts.feedback ? gradePart(p, resp) : null;
+  if(p.type==="mcq"){
+    body = `<div class="opts" style="margin-top:8px">${p.opts.map((o,k) => {
+      let c = "opt"; if(g){ if(o.ok) c+=" right"; else if(k===resp) c+=" wrong"; } else if(resp===k) c+=" sel";
+      return `<button class="${c}" data-p="${pi}" data-k="${k}" ${opts.locked?"disabled":""}><span class="L">${LETTERS[k]}</span><span>${o.t}</span></button>`; }).join("")}</div>`;
+  } else {
+    body = `<div class="numrow"><input inputmode="decimal" data-p="${pi}" value="${esc(resp||"")}" placeholder="e.g. 4.5x10^-4" class="${g?(g.ok?"right":"wrong"):""}" ${opts.locked?"disabled":""}>
+      <span class="unit">${p.unit}</span>${opts.checkBtn && !opts.locked ? `<button class="btn sm" data-check="${pi}">Check</button>` : ""}</div>`;
+  }
+  let fb = "";
+  if(g) fb = `<div class="fb ${g.ok?"good":"bad"}"><b>${g.ok?"Correct.":"Not quite."}</b> ${!g.ok && p.type==="num" ? `The answer is ${fmt(p.ans)} ${p.unit}. ` : ""}${g.mis ? g.mis+" " : ""}<br><span class="small">${p.exp}</span></div>`;
+  return `<div class="part">${label}${p.prompt}${tag}${body}${fb}</div>`;
+}
+
+/* ---------- Home ---------- */
+function renderHome(){
+  toTop();
+  const s = loadStudent() || {name:"",matric:"",group:""};
+  const nParts = ch => ch.diagnostic.reduce((t,q)=>t+q.parts.length,0);
+  app.innerHTML = `
+  <section class="card">
+    <h1>Find out what you really understand</h1>
+    <p class="muted"><b>Every Tuesday:</b> do the <b>Theory lesson</b> for that week's chapter (definitions and concepts). <b>After the tutorial:</b> take the <b>Diagnostic</b> to find out which calculations and skills need work, then get targeted notes and practice.</p>
+    <p class="muted small">Have a calculator and paper ready. Type numerical answers to 3 significant figures in SI units. Say honestly when you are guessing.</p>
+    <div class="grid3">
+      <label>Full name<input id="f-name" value="${esc(s.name)}" autocomplete="name"></label>
+      <label>Matric no.<input id="f-matric" value="${esc(s.matric)}"></label>
+      <label>Tutorial group<input id="f-group" value="${esc(s.group)}" placeholder="e.g. T3"></label>
+    </div>
+    <p id="f-err" class="err"></p>
+    ${HAS_BACKEND ? "" : `<div class="preview">Preview mode. Results are only saved when this page runs from the lecturer's Google link.</div>`}
+  </section>
+  <h2 class="sec">SP025 chapters</h2>
+  <div class="chapters">
+    ${CHAPTERS.map(c => `<div class="chap ${c.open?"":"locked"}">
+        <span class="num">${c.id}</span><span class="ct">${esc(c.title)}</span>
+        ${c.open ? `<span class="acts">
+          ${THEORY[c.id] ? `<button class="btn sm ghost" data-go="theory" data-id="${c.id}">Theory lesson<small>${THEORY[c.id].reduce((t,s)=>t+s.qs.length,0)} questions, ~20 min</small></button>` : ""}
+          <button class="btn sm" data-go="diag" data-id="${c.id}">Diagnostic<small>${nParts(c)} questions, ~30 min</small></button></span>`
+          : `<span class="cs">Not open yet</span>`}</div>`).join("")}
+  </div>`;
+  app.querySelectorAll("[data-go]").forEach(b => b.onclick = () => {
+    const st = { name:$("#f-name").value.trim(), matric:$("#f-matric").value.trim().toUpperCase(), group:$("#f-group").value.trim().toUpperCase() };
+    if(!st.name || !st.matric){ $("#f-err").textContent = "Please enter your full name and matric number first."; (st.name?$("#f-matric"):$("#f-name")).focus(); return; }
+    saveStudent(st); state.student = st;
+    const ch = CHAPTERS.find(c => String(c.id) === b.dataset.id);
+    if(b.dataset.go === "theory") startTheory(ch); else startDiagnostic(ch);
+  });
+}
+
+/* ---------- Theory lesson ---------- */
+function startTheory(ch){
+  state.chapter = ch;
+  const secs = THEORY[ch.id].map(s => Object.assign({}, s, { qs: s.qs.map(q => Object.assign({type:"mcq", sub:s.sub, skill:"theory"}, q, {opts: shuffle(q.opts)})) }));
+  state.theory = { secs, idx:0, ans: secs.map(s => s.qs.map(() => null)), startedAt: Date.now() };
+  renderTheory();
+}
+function renderTheory(keep){
+  const y = window.scrollY; if(!keep) toTop();
+  const T = state.theory, ch = state.chapter, sec = T.secs[T.idx], ans = T.ans[T.idx];
+  const last = T.idx === T.secs.length-1, done = ans.every(a => a!=null);
+  app.innerHTML = `
+  <div class="qhead"><span>Theory lesson: Chapter ${ch.id}</span><span>Part ${T.idx+1} of ${T.secs.length}</span></div>
+  <div class="bar"><i style="width:${T.idx/T.secs.length*100}%"></i></div>
+  <section class="card note"><span class="tag">${sec.sub}</span><h2>${esc(sec.title)}</h2>${sec.html}</section>
+  <h2 class="sec">Check your understanding</h2>
+  <section class="card">
+    ${sec.qs.map((q,qi) => partHTML(q, qi, ans[qi], {locked: ans[qi]!=null, feedback: ans[qi]!=null, tag: q.bloom==="C1" ? "C1 Remember" : "C2 Understand"})).join("")}
+  </section>
+  <p class="muted small">${done ? "" : "Answer every question above to continue."}</p>
+  <div class="nav">
+    <button class="btn ghost" id="back" ${T.idx===0?"disabled":""}>Back</button>
+    <button class="btn" id="nx" ${done?"":"disabled"}>${last?"Finish lesson":"Next part"}</button>
+  </div>`;
+  app.querySelectorAll(".opt:not(:disabled)").forEach(b => b.onclick = () => { ans[+b.dataset.p] = +b.dataset.k; renderTheory(true); });
+  if(keep){ try{ window.scrollTo(0,y); }catch(e){} }
+  $("#back").onclick = () => { T.idx--; renderTheory(); };
+  $("#nx").onclick = () => { if(last) finishTheory(); else { T.idx++; renderTheory(); } };
+}
+function finishTheory(){
+  toTop();
+  const T = state.theory, ch = state.chapter, st = state.student;
+  const rows = T.secs.map((s,si) => ({ id:s.sub, name:s.title, total:s.qs.length,
+    correct: s.qs.filter((q,qi) => q.opts[T.ans[si][qi]].ok).length }));
+  const bl = {C1:{c:0,t:0}, C2:{c:0,t:0}};
+  T.secs.forEach((s,si) => s.qs.forEach((q,qi) => { bl[q.bloom].t++; if(q.opts[T.ans[si][qi]].ok) bl[q.bloom].c++; }));
+  const score = rows.reduce((t,r)=>t+r.correct,0), total = rows.reduce((t,r)=>t+r.total,0);
+  app.innerHTML = `
+  <section class="card">
+    <h1>Theory lesson complete</h1>
+    <p>Chapter ${ch.id}: ${esc(ch.title)}. You got <b>${score} of ${total}</b> right first time.</p>
+    ${rows.map(r => `<div class="subrow"><div class="subline"><div class="subname"><small>${r.id}</small>${esc(r.name)}</div><b>${r.correct}/${r.total}</b></div></div>`).join("")}
+    <div class="subrow"><div class="subline"><div class="subname">C1 Remember (definitions, units)</div><b>${bl.C1.c}/${bl.C1.t}</b></div></div>
+    <div class="subrow"><div class="subline"><div class="subname">C2 Understand (explain, interpret)</div><b>${bl.C2.c}/${bl.C2.t}</b></div></div>
+    <div id="savebox">${saveBanner(null)}</div>
+    <p class="muted small" style="margin-top:14px">Next: after the tutorial for this chapter, take the <b>diagnostic</b> to test your calculations. Definitions you got wrong here are worth memorising word for word, because PSPM asks for them.</p>
+    <div class="nav"><button class="btn ghost" id="home">Back to chapters</button><button class="btn ghost" id="again">Redo lesson</button></div>
+  </section>`;
+  $("#home").onclick = renderHome;
+  $("#again").onclick = () => startTheory(ch);
+  send({ type:"Theory", name:st.name, matric:st.matric, group:st.group, chapter: ch.id+" "+ch.title, score, total,
+         subtopics: rows.map(r => Object.assign({status:""}, r)),
+         skills: [{name:"C1 Remember", correct:bl.C1.c, total:bl.C1.t, status:""},{name:"C2 Understand", correct:bl.C2.c, total:bl.C2.t, status:""}],
+         weak:[], confidentWrong:"", misconceptions:[], minutes: Math.round((Date.now()-T.startedAt)/6000)/10 })
+    .then(m => { const el = $("#savebox"); if(el) el.innerHTML = saveBanner(m); });
+}
+
+/* ---------- Diagnostic ---------- */
+function startDiagnostic(ch){
+  state.chapter = ch; state.qs = ch.diagnostic.map(prepQ);
+  state.i = 0; state.answers = state.qs.map(q => ({resp: q.parts.map(()=>null), sure:null}));
+  state.result = null; state.saveMsg = null; state.practice = null; state.startedAt = Date.now();
+  renderQ();
+}
+function renderQ(){
+  toTop();
+  const ch = state.chapter, n = state.qs.length, q = state.qs[state.i], a = state.answers[state.i];
+  app.innerHTML = `
+  <div class="qhead"><span>Chapter ${ch.id}: ${esc(ch.title)}</span><span>Question ${state.i+1} of ${n}</span></div>
+  <div class="bar"><i style="width:${state.i/n*100}%"></i></div>
+  <section class="card">
+    <div class="qtext">${q.stem}</div>${q.fig||""}
+    ${q.parts.map((p,pi) => partHTML(p, pi, a.resp[pi], {})).join("")}
+    <div class="conf"><span>How sure are you about this question?</span>
+      <button class="pill ${a.sure===true?"sel":""}" data-s="1">I'm sure</button>
+      <button class="pill ${a.sure===false?"sel":""}" data-s="0">I'm guessing</button>
+    </div>
+    <div class="nav">
+      <button class="btn ghost" id="back" ${state.i===0?"disabled":""}>Back</button>
+      <button class="btn" id="next">${state.i===n-1?"Finish and see my diagnosis":"Next"}</button>
+    </div>
+    <p class="err" id="qerr"></p>
+  </section>`;
+  const ready = () => q.parts.every((p,pi) => answered(p, a.resp[pi])) && a.sure!=null;
+  const upd = () => { $("#next").disabled = !ready(); };
+  app.querySelectorAll(".opt").forEach(b => b.onclick = () => { a.resp[+b.dataset.p] = +b.dataset.k; renderQKeep(); });
+  app.querySelectorAll(".numrow input").forEach(inp => inp.oninput = () => { a.resp[+inp.dataset.p] = inp.value; upd(); });
+  app.querySelectorAll(".pill").forEach(b => b.onclick = () => { a.sure = b.dataset.s==="1"; app.querySelectorAll(".pill").forEach(x => x.classList.toggle("sel", x===b)); upd(); });
+  $("#back").onclick = () => { state.i--; renderQ(); };
+  $("#next").onclick = () => {
+    const bad = q.parts.findIndex((p,pi) => p.type==="num" && isNaN(parseNum(a.resp[pi])));
+    if(bad>=0){ $("#qerr").textContent = `Part (${String.fromCharCode(97+bad)}) is not a number. Use a format like 4.5e-4 or 4.5x10^-4.`; return; }
+    if(state.i < n-1){ state.i++; renderQ(); } else finishDiagnostic();
+  };
+  upd();
+  function renderQKeep(){ const y = window.scrollY; renderQ(); try{ window.scrollTo(0,y); }catch(e){} }
+}
+
+function analyse(){
+  const ch = state.chapter, per = {}, sk = {};
+  ch.subtopics.forEach(s => per[s.id] = {sub:s, correct:0, total:0, guessedRight:0, sureWrong:0});
+  Object.keys(SKILLS).forEach(k => sk[k] = {key:k, name:SKILLS[k], correct:0, total:0, guessedRight:0});
+  const mis = []; let score = 0, total = 0, confidentWrong = 0;
+  state.qs.forEach((q,i) => { const a = state.answers[i];
+    q.parts.forEach((p,pi) => {
+      const g = gradePart(p, a.resp[pi]); const P = per[p.sub], S = sk[p.skill];
+      P.total++; S.total++; total++;
+      if(g.ok){ P.correct++; S.correct++; score++; if(!a.sure){ P.guessedRight++; S.guessedRight++; } }
+      else { if(a.sure){ P.sureWrong++; confidentWrong++; } if(g.mis) mis.push({sub:p.sub, text:g.mis, sure:a.sure}); }
+    }); });
+  const list = ch.subtopics.map(s => per[s.id]).filter(p => p.total);
+  list.forEach(p => p.status = statusOf(p.correct, p.total, p.guessedRight>0));
+  const skills = Object.values(sk).filter(s => s.total);
+  skills.forEach(s => s.status = statusOf(s.correct, s.total, s.guessedRight>0));
+  mis.sort((x,y) => ((y.sure?1:0)-(x.sure?1:0)) || x.sub.localeCompare(y.sub));
+  return { list, skills, mis, score, total, confidentWrong };
+}
+
+function finishDiagnostic(){
+  const r = analyse(); state.result = r; state.saveMsg = null;
+  renderResults();
+  const st = state.student, ch = state.chapter;
+  send({
+    type:"Diagnostic", name:st.name, matric:st.matric, group:st.group, chapter: ch.id+" "+ch.title,
+    score:r.score, total:r.total,
+    subtopics: r.list.map(p => ({id:p.sub.id, name:p.sub.name, correct:p.correct, total:p.total, status:p.status})),
+    skills: r.skills.map(s => ({name:s.name, correct:s.correct, total:s.total, status:s.status})),
+    weak: r.list.filter(p => p.status!=="Mastered").map(p => p.sub.id+" "+p.sub.name),
+    confidentWrong: r.confidentWrong,
+    misconceptions: r.mis.map(m => (m.sure?"[sure] ":"")+m.sub+": "+plain(m.text)),
+    minutes: Math.round((Date.now()-state.startedAt)/6000)/10
+  }).then(m => { state.saveMsg = m; const el = $("#savebox"); if(el) el.innerHTML = saveBanner(m); });
+}
+
+function barRow(id, name, o){
+  const f = o.total ? o.correct/o.total : 0;
+  return `<div class="subrow">
+    <div class="subline"><div class="subname">${id?`<small>${id}</small>`:""}${esc(name)}</div><span class="chip ${o.status}">${o.status}</span></div>
+    <div class="mbar"><i style="width:${f*100}%;background:${STATUS_COLOR[o.status]}"></i></div>
+    <div class="hint">${o.correct} of ${o.total} correct.
+      ${o.sureWrong ? ` <b style="color:var(--bad)">You were sure about ${o.sureWrong} wrong answer${o.sureWrong>1?"s":""}</b>, which points to a misconception rather than a slip.` : ""}
+      ${o.guessedRight ? ` ${o.guessedRight} correct answer${o.guessedRight>1?"s were":" was"} a guess, so this is not secure yet.` : ""}</div></div>`;
+}
+
+function renderResults(){
+  toTop();
+  const r = state.result, ch = state.chapter, f = r.score/r.total;
+  const need = r.list.filter(p => p.status!=="Mastered");
+  const seen = new Set(), mis = r.mis.filter(m => !seen.has(m.text) && seen.add(m.text));
+  const ringC = f>=0.999?"var(--ok)":(f>=0.6?"var(--mid)":"var(--bad)");
+  app.innerHTML = `
+  <section class="card">
+    <div class="score">
+      <div class="ring" style="border:7px solid ${ringC};color:${ringC}">${r.score}/${r.total}</div>
+      <div><h1 style="margin:0">Your diagnosis</h1><div class="muted">Chapter ${ch.id}: ${esc(ch.title)}, ${esc(state.student.name)}</div></div>
+    </div>
+    <div id="savebox">${saveBanner(state.saveMsg)}</div>
+  </section>
+  <h2 class="sec">By subtopic</h2>
+  <section class="card">${r.list.map(p => barRow(p.sub.id, p.sub.name, p)).join("")}</section>
+  <h2 class="sec">By skill</h2>
+  <section class="card">${r.skills.map(s => barRow("", s.name, s)).join("")}</section>
+  ${mis.length ? `<h2 class="sec">What your wrong answers reveal</h2>
+  <section class="card"><ul class="mis">${mis.map(m => `<li>${m.sure?'<span class="flag">You were sure</span>':""}<b>${m.sub}</b> ${m.text}</li>`).join("")}</ul></section>` : ""}
+  <div class="nav" style="margin-top:6px">
+    <button class="btn ghost" id="home">Back to chapters</button>
+    ${need.length ? `<button class="btn" id="go">Start reinforcement (${need.length} subtopic${need.length>1?"s":""})</button>` : `<button class="btn" id="again">Retake</button>`}
+  </div>
+  ${need.length ? "" : `<section class="card"><b>Excellent.</b> You have mastered every subtopic in this chapter with confidence.</section>`}
+  <h2 class="sec">Review your answers and full working</h2>
+  <section class="card">
+    ${state.qs.map((q,i) => { const a = state.answers[i]; const gs = q.parts.map((p,pi)=>gradePart(p,a.resp[pi])); const allOk = gs.every(g=>g.ok);
+      return `<details><summary>${allOk?"&#10003;":"&#10007;"} Question ${i+1} <span class="muted">(${[...new Set(q.parts.map(p=>p.sub))].join(", ")})</span></summary>
+        <div class="rev"><div class="q">${q.stem}</div>${q.fig||""}
+        ${q.parts.map((p,pi) => { const g = gs[pi]; return `<div class="part"><span class="plabel">(${String.fromCharCode(97+pi)})</span>${p.prompt}
+          <div>Your answer: <b style="color:${g.ok?"var(--ok)":"var(--bad)"}">${g.shown}${p.type==="num"?" "+p.unit:""}</b> ${a.sure?"":"(guess)"}</div>
+          ${g.ok?"":`<div>Correct answer: <b style="color:var(--ok)">${p.type==="num"?fmt(p.ans)+" "+p.unit:p.opts.find(o=>o.ok).t}</b></div>`}
+          <div class="fb ${g.ok?"good":"bad"}">${g.ok?"":(g.mis?g.mis+" ":"")}${p.exp}</div></div>`; }).join("")}
+        </div></details>`; }).join("")}
+  </section>`;
+  $("#home").onclick = renderHome;
+  if($("#go")) $("#go").onclick = startPractice;
+  if($("#again")) $("#again").onclick = () => startDiagnostic(ch);
+}
+
+/* ---------- Reinforcement ---------- */
+function startPractice(){
+  const r = state.result, ch = state.chapter;
+  const order = r.list.filter(p => p.status==="Weak").concat(r.list.filter(p => p.status==="Developing")).map(p => p.sub.id);
+  const qs = {}, ans = {};
+  order.forEach(id => {
+    qs[id] = ch.practice.filter(q => q.parts[0].sub===id).map(prepQ);
+    ans[id] = qs[id].map(q => ({resp:q.parts.map(()=>null), done:q.parts.map(()=>false)}));
+  });
+  state.practice = { subs:order, idx:0, qs, ans };
+  renderPractice();
+}
+function renderPractice(keep){
+  const y = window.scrollY; if(!keep) toTop();
+  const P = state.practice, ch = state.chapter, sid = P.subs[P.idx];
+  const sub = ch.subtopics.find(s => s.id===sid), qs = P.qs[sid], ans = P.ans[sid], last = P.idx===P.subs.length-1;
+  const allDone = ans.every(a => a.done.every(Boolean));
+  app.innerHTML = `
+  <div class="qhead"><span>Reinforcement ${P.idx+1} of ${P.subs.length}</span><span>Chapter ${ch.id}: ${esc(ch.title)}</span></div>
+  <div class="bar"><i style="width:${P.idx/P.subs.length*100}%"></i></div>
+  <section class="card note"><span class="tag">${sub.id}</span><h2>${esc(sub.name)}</h2>${sub.note}</section>
+  <h2 class="sec">Now try these</h2>
+  ${qs.length ? qs.map((q,qi) => `<section class="card" data-q="${qi}"><div class="qtext">${q.stem}</div>${q.fig||""}
+      ${q.parts.map((p,pi) => partHTML(p, pi, ans[qi].resp[pi], {locked:ans[qi].done[pi], feedback:ans[qi].done[pi], checkBtn:true})).join("")}</section>`).join("")
+     : `<section class="card muted">No practice questions for this subtopic yet.</section>`}
+  <div class="nav">
+    <button class="btn ghost" id="res">Back to my diagnosis</button>
+    <button class="btn" id="nx" ${allDone?"":"disabled"}>${last?"Finish reinforcement":"Next subtopic"}</button>
+  </div>`;
+  app.querySelectorAll("section[data-q]").forEach(sec => {
+    const qi = +sec.dataset.q, A = ans[qi];
+    sec.querySelectorAll(".opt:not(:disabled)").forEach(b => b.onclick = () => { const pi=+b.dataset.p; A.resp[pi]=+b.dataset.k; A.done[pi]=true; renderPractice(true); });
+    sec.querySelectorAll(".numrow input:not(:disabled)").forEach(inp => {
+      inp.oninput = () => { A.resp[+inp.dataset.p] = inp.value; };
+      inp.onkeydown = e => { if(e.key==="Enter"){ const b = sec.querySelector(`[data-check="${inp.dataset.p}"]`); if(b) b.click(); } };
+    });
+    sec.querySelectorAll("[data-check]").forEach(b => b.onclick = () => {
+      const pi = +b.dataset.check; if(!answered(qs[qi].parts[pi], A.resp[pi]) || isNaN(parseNum(A.resp[pi]))) return;
+      A.done[pi] = true; renderPractice(true); });
+  });
+  if(keep){ try{ window.scrollTo(0,y); }catch(e){} }
+  $("#res").onclick = renderResults;
+  $("#nx").onclick = () => { if(last) finishPractice(); else { P.idx++; renderPractice(); } };
+}
+function finishPractice(){
+  toTop();
+  const P = state.practice, ch = state.chapter, st = state.student;
+  const rows = P.subs.map(id => { let c=0, t=0;
+    P.qs[id].forEach((q,qi) => q.parts.forEach((p,pi) => { t++; if(gradePart(p, P.ans[id][qi].resp[pi]).ok) c++; }));
+    return { id, name: ch.subtopics.find(s=>s.id===id).name, correct:c, total:t }; });
+  const score = rows.reduce((t,r)=>t+r.correct,0), total = rows.reduce((t,r)=>t+r.total,0);
+  app.innerHTML = `
+  <section class="card">
+    <h1>Reinforcement complete</h1>
+    <p>You got <b>${score} of ${total}</b> practice questions right.</p>
+    ${rows.map(r => `<div class="subrow"><div class="subline"><div class="subname"><small>${r.id}</small>${esc(r.name)}</div><b>${r.correct}/${r.total}</b></div></div>`).join("")}
+    <div id="savebox">${saveBanner(null)}</div>
+    <p class="muted small" style="margin-top:14px">${score===total ? "Well done. Retake the diagnostic in a few days to check it has stuck." : "Re-read the notes for any subtopic you missed, then retake the diagnostic. Bring the questions you still find confusing to the next tutorial."}</p>
+    <div class="nav"><button class="btn ghost" id="home">Back to chapters</button><button class="btn" id="again">Retake diagnostic</button></div>
+  </section>`;
+  $("#home").onclick = renderHome;
+  $("#again").onclick = () => startDiagnostic(ch);
+  send({ type:"Practice", name:st.name, matric:st.matric, group:st.group, chapter: ch.id+" "+ch.title,
+         score, total, subtopics: rows.map(r => Object.assign({status:""}, r)), skills:[], weak:[], confidentWrong:"", misconceptions:[], minutes:"" })
+    .then(m => { const el = $("#savebox"); if(el) el.innerHTML = saveBanner(m); });
+}
+
+renderHome();
+</script>
+</body>
+</html>
