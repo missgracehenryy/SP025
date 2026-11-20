@@ -119,10 +119,46 @@ table.sym th,table.sym td,table.cmp th,table.cmp td{border:1px solid #dbe2ea;pad
 table.sym th,table.cmp th{background:#f3f6fa;font-weight:600}
 table.sym td.s{font-family:"Cambria Math",Cambria,Georgia,serif;font-size:16px;white-space:nowrap}
 @media(max-width:560px){table.sym,table.cmp{font-size:13px}table.sym th,table.sym td,table.cmp th,table.cmp td{padding:5px}}
+.hist .hrow{display:grid;grid-template-columns:1fr auto auto;gap:10px;align-items:center;padding:10px 0;border-bottom:1px solid var(--line)}
+.hist .hrow:last-child{border-bottom:0}.hist .hs{font-weight:700}
+
+.cat{fill:none;stroke:var(--brand);stroke-width:2;stroke-linecap:round;stroke-linejoin:round;overflow:visible}
+.cat .eye{fill:var(--brand);stroke:none;transform-box:fill-box;transform-origin:center;animation:blink 4.5s infinite}
+.cat .draw{stroke-dasharray:1;stroke-dashoffset:1;animation:draw 1.8s ease-out forwards}
+.cat .tail{stroke-dasharray:1;stroke-dashoffset:1;transform-box:view-box;transform-origin:45px 57px;animation:draw 1.8s ease-out forwards,swish 2.6s ease-in-out 1.8s infinite}
+.cat.head{position:absolute;right:16px;bottom:2px;width:44px;height:44px;stroke:#fff}
+.cat.head .eye{fill:#fff}
+header.top .wrap{position:relative}
+.catbar{position:relative;margin-top:8px;padding-top:18px}
+.catbar .bar{margin-top:0}
+.barcat{position:absolute;top:-6px;transform:translateX(-50%);transition:left .6s ease}
+.cat.tiny{width:26px;height:26px;stroke-width:3}
+.cat.tiny .draw,.cat.tiny .tail{stroke-dasharray:none;stroke-dashoffset:0;animation:none}
+.cat.tiny .tail{animation:swish 2.6s ease-in-out infinite}
+.cat.tiny .face path{display:none}
+.nap{text-align:center;margin:26px 0 8px}
+.cat.sleep{width:180px;height:90px}
+.cat.sleep .breathe{transform-box:view-box;transform-origin:60px 62px;animation:breathe 3.6s ease-in-out infinite}
+.cat .z{fill:var(--brand2);stroke:none;font:600 11px system-ui,sans-serif;opacity:0;animation:zz 3.6s ease-in-out infinite}
+.cat .z2{animation-delay:.6s;font-size:13px}.cat .z3{animation-delay:1.2s;font-size:15px}
+.cheer{display:flex;align-items:flex-end;gap:10px;margin:-6px 0 6px}
+.cheer span{font-weight:650;color:var(--brand2);padding-bottom:10px}
+.cat.peek{width:110px;height:68px;flex:none}
+.cat.peek .wave{transform-box:fill-box;transform-origin:50% 100%;animation:wave 1.1s ease-in-out 1.6s 3}
+.cat.peek{animation:pop .7s cubic-bezier(.3,1.6,.6,1) both}
+@keyframes draw{to{stroke-dashoffset:0}}
+@keyframes blink{0%,90%,100%{transform:scaleY(1)}94%{transform:scaleY(.1)}}
+@keyframes swish{0%,100%{transform:rotate(0)}50%{transform:rotate(-14deg)}}
+@keyframes breathe{0%,100%{transform:scale(1,1)}50%{transform:scale(1.015,1.06)}}
+@keyframes zz{0%{opacity:0;transform:translate(0,4px)}30%{opacity:1}100%{opacity:0;transform:translate(4px,-10px)}}
+@keyframes wave{0%,100%{transform:rotate(0)}30%{transform:rotate(-18deg) translateY(-4px)}70%{transform:rotate(14deg) translateY(-4px)}}
+@keyframes pop{from{transform:translateY(16px);opacity:0}to{transform:none;opacity:1}}
+@media (prefers-reduced-motion:reduce){.cat *,.cat{animation:none!important;stroke-dashoffset:0!important}.cat .z{opacity:1}}
+@media(max-width:420px){.cat.head{width:36px;height:36px;right:10px}}
 </style>
 </head>
 <body>
-<header class="top"><div class="wrap"><div class="brand">Fizik SP025</div><div class="sub">Weekly self-diagnosis</div></div></header>
+<header class="top"><div class="wrap"><div class="brand">Fizik SP025</div><div class="sub">Weekly self-diagnosis</div><span id="hcat"></span></div></header>
 <main class="wrap" id="app"></main>
 
 <script>
@@ -1395,6 +1431,7 @@ function send(payload){
   });
 }
 function saveBanner(m){
+  if(m && m.review) return `<div class="save">Saved attempt from ${fmtDate(m.review)}.</div>`;
   if(!m) return `<div class="save">Sending your results to your lecturer...</div>`;
   if(m.preview) return `<div class="save">Preview mode: results are not being sent anywhere.</div>`;
   if(m.ok) return `<div class="save ok">Your results have been sent to your lecturer.</div>`;
@@ -1425,11 +1462,14 @@ function partHTML(p, pi, resp, opts){
 function renderHome(){
   toTop();
   const s = loadStudent() || {name:"",matric:"",group:""};
+  state.student = s.matric ? s : state.student;
+  const prog = s.matric ? getProg() : {theory:{}, diag:{}};
   const nParts = ch => ch.diagnostic.reduce((t,q)=>t+q.parts.length,0);
   app.innerHTML = `
   <section class="card">
     <h1>Find out what you really understand</h1>
     <p class="muted"><b>Every Tuesday:</b> do the <b>Theory lesson</b> for that week's chapter (definitions and concepts). <b>After the tutorial:</b> take the <b>Diagnostic</b> to find out which calculations and skills need work, then get targeted notes and practice.</p>
+    <p class="muted small">Your progress is saved automatically on this device, so you can stop and continue later. Use the same phone or laptop, and type your matric number the same way each time.</p>
     <p class="muted small">Have a calculator and paper ready. Type numerical answers to 3 significant figures in SI units. Say honestly when you are guessing.</p>
     <div class="grid3">
       <label>Full name<input id="f-name" value="${esc(s.name)}" autocomplete="name"></label>
@@ -1444,19 +1484,125 @@ function renderHome(){
     ${CHAPTERS.map(c => `<div class="chap ${c.open?"":"locked"}">
         <span class="num">${c.id}</span><span class="ct">${esc(c.title)}</span>
         ${c.open ? `<span class="acts">
-          ${THEORY[c.id] ? `<button class="btn sm ghost" data-go="theory" data-id="${c.id}">Theory lesson<small>${THEORY[c.id].reduce((t,s)=>t+s.qs.length,0)+SYMQ_N} questions, ~50 min</small></button>` : ""}
-          ${c.diagnostic ? `<button class="btn sm" data-go="diag" data-id="${c.id}">Diagnostic<small>${nParts(c)} questions, ~30 min</small></button>` : `<span class="cs">Diagnostic coming soon</span>`}</span>`
+          ${THEORY[c.id] ? (prog.theory[c.id] ? `<button class="btn sm" data-go="theory" data-id="${c.id}">Continue lesson<small>Part ${prog.theory[c.id].idx+1} of ${prog.theory[c.id].secs.length}</small></button><button class="btn sm ghost" data-go="theory-new" data-id="${c.id}">Start lesson again<small>Clears your unfinished lesson</small></button>` : `<button class="btn sm ghost" data-go="theory" data-id="${c.id}">Theory lesson<small>${THEORY[c.id].reduce((t,s)=>t+s.qs.length,0)+SYMQ_N} questions, ~50 min</small></button>`) : ""}
+          ${c.diagnostic ? (prog.diag[c.id] ? `<button class="btn sm" data-go="diag" data-id="${c.id}">Continue diagnostic<small>Question ${prog.diag[c.id].i+1} of ${prog.diag[c.id].answers.length}</small></button><button class="btn sm ghost" data-go="diag-new" data-id="${c.id}">Start diagnostic again<small>Clears your unfinished attempt</small></button>` : `<button class="btn sm" data-go="diag" data-id="${c.id}">Diagnostic<small>${nParts(c)} questions, ~30 min</small></button>`) : `<span class="cs">Diagnostic coming soon</span>`}</span>`
           : `<span class="cs">Not open yet</span>`}</div>`).join("")}
-  </div>`;
+  </div>
+  ${s.matric ? historyHTML() : ""}
+  <div class="nap">${CAT.sleep()}<p class="muted small">Need a break? Your answers are saved on this device, so you can continue later.</p></div>`;
   app.querySelectorAll("[data-go]").forEach(b => b.onclick = () => {
     const st = { name:$("#f-name").value.trim(), matric:$("#f-matric").value.trim().toUpperCase(), group:$("#f-group").value.trim().toUpperCase() };
     if(!st.name || !st.matric){ $("#f-err").textContent = "Please enter your full name and matric number first."; (st.name?$("#f-matric"):$("#f-name")).focus(); return; }
     saveStudent(st); state.student = st;
-    const ch = CHAPTERS.find(c => String(c.id) === b.dataset.id);
-    if(b.dataset.go === "theory") startTheory(ch); else startDiagnostic(ch);
+    const ch = CHAPTERS.find(c => String(c.id) === b.dataset.id), go = b.dataset.go;
+    if(go.endsWith("-new")){ if(!confirm("Clear your unfinished attempt and start again?")) return; setProg(go.startsWith("theory")?"theory":"diag", ch.id, null); }
+    if(go.startsWith("theory")) startTheory(ch); else startDiagnostic(ch);
   });
+  app.querySelectorAll("[data-hist]").forEach(b => b.onclick = () => openAttempt(getHist()[+b.dataset.hist]));
 }
 
+
+
+
+/* ---------- Cats (original line drawings) ---------- */
+const CAT = {
+  sit: (cls="") => `<svg class="cat ${cls}" viewBox="0 0 64 64" aria-hidden="true">
+    <path class="tail" pathLength="1" d="M45 57 Q58 55 57 43 Q56 36 50 38"/>
+    <path class="draw" pathLength="1" d="M23 32 Q14 44 18 58 L46 58 Q50 44 41 32"/>
+    <path class="draw" pathLength="1" d="M20 23 L18 9 L26 15 Q32 13 38 15 L46 9 L44 23 Q46 33 32 34 Q18 33 20 23Z"/>
+    <path class="draw" pathLength="1" d="M27 58 Q26 52 28 49 M37 58 Q38 52 36 49"/>
+    <g class="face"><ellipse class="eye" cx="27" cy="23" rx="1.6" ry="2.2"/><ellipse class="eye" cx="37" cy="23" rx="1.6" ry="2.2"/>
+    <path d="M30.8 27 L33.2 27 L32 28.4Z M32 28.4 Q30.6 30.6 29 29.6 M32 28.4 Q33.4 30.6 35 29.6 M24 27 L15 25.5 M24 29 L15 30 M40 27 L49 25.5 M40 29 L49 30"/></g></svg>`,
+  sleep: () => `<svg class="cat sleep" viewBox="0 0 140 70" aria-hidden="true">
+    <g class="breathe"><path class="draw" pathLength="1" d="M18 60 Q8 34 40 26 Q70 20 88 34"/>
+    <path class="draw" pathLength="1" d="M18 60 Q55 66 96 60 Q112 58 110 46"/>
+    <path class="draw" pathLength="1" d="M88 34 L86 22 L95 29 Q101 28 106 30 L114 23 L113 36 Q116 48 104 52 Q92 54 88 46 Q86 40 88 34Z"/>
+    <path d="M94 40 Q96.5 42 99 40 M104 40 Q106.5 42 109 40 M100.5 45 L102.5 45 L101.5 46.2Z"/>
+    <path class="draw" pathLength="1" d="M26 58 Q40 50 62 56 Q74 59 84 54"/></g>
+    <text class="z z1" x="116" y="22">z</text><text class="z z2" x="124" y="14">z</text><text class="z z3" x="131" y="7">Z</text></svg>`,
+  peek: () => `<svg class="cat peek" viewBox="0 0 90 56" aria-hidden="true">
+    <path class="draw" pathLength="1" d="M27 42 Q22 30 26 22 L24 6 L34 14 Q45 11 56 14 L66 6 L64 22 Q68 30 63 42"/>
+    <ellipse class="eye" cx="37" cy="27" rx="2" ry="2.6"/><ellipse class="eye" cx="53" cy="27" rx="2" ry="2.6"/>
+    <path d="M43.6 32 L46.4 32 L45 33.6Z M45 33.6 Q43.4 36 41.5 35 M45 33.6 Q46.6 36 48.5 35 M34 32 L22 30 M34 35 L22 36 M56 32 L68 30 M56 35 L68 36"/>
+    <path class="paw-l" d="M24 50 Q24 41 31 41 Q38 41 38 50"/>
+    <g class="wave"><path d="M52 50 Q52 41 59 41 Q66 41 66 50"/><path d="M56 44 L56 46.5 M59.5 43.5 L59.5 46 M63 44 L63 46.5"/></g>
+    <line x1="4" y1="50" x2="86" y2="50"/></svg>`
+};
+function catBar(f){ const pc = Math.max(0, Math.min(100, f*100));
+  return `<div class="catbar"><div class="bar"><i style="width:${pc}%"></i></div><span class="barcat" style="left:${pc}%">${CAT.sit("tiny")}</span></div>`; }
+function cheer(text){ return `<div class="cheer">${CAT.peek()}<span>${text}</span></div>`; }
+
+/* ---------- Saved progress and past attempts (on this device) ---------- */
+const HIST_MAX = 60;
+function mkey(kind){ const st = state.student || loadStudent() || {}; return "sp025_"+kind+"_"+String(st.matric||"anon").toUpperCase(); }
+function lsGet(k, d){ try{ const v = localStorage.getItem(k); return v ? JSON.parse(v) : d; }catch(e){ return d; } }
+function lsSet(k, v){ try{ localStorage.setItem(k, JSON.stringify(v)); return true; }catch(e){ return false; } }
+function getProg(){ return lsGet(mkey("prog"), {theory:{}, diag:{}}); }
+function setProg(kind, chId, snap){ const P = getProg(); P[kind] = P[kind] || {}; if(snap) P[kind][chId] = snap; else delete P[kind][chId]; lsSet(mkey("prog"), P); }
+function getHist(){ return lsGet(mkey("hist"), []); }
+function addHist(entry){
+  let H = getHist(); H.unshift(entry); H = H.slice(0, HIST_MAX);
+  while(H.length && !lsSet(mkey("hist"), H)) H.pop();
+}
+function permOf(shuffled, orig){ return shuffled.map(o => orig.indexOf(o)); }
+/* theory snapshot */
+function theorySnap(){
+  const T = state.theory, ch = state.chapter;
+  return { ch: ch.id, idx: T.idx, startedAt: T.startedAt, ans: T.ans,
+    secs: T.secs.map((s,si) => {
+      const base = (THEORY[ch.id]||[]).find(x => x.sub === s.sub);
+      if(!base || s.review) return { sub:s.sub, full:s };
+      return { sub:s.sub, perms: s.qs.map((q,qi) => permOf(q.opts, base.qs[qi].opts)) };
+    }) };
+}
+function theoryFromSnap(snap){
+  try{
+    const secs = snap.secs.map(s => {
+      if(s.full) return s.full;
+      const base = THEORY[snap.ch].find(x => x.sub === s.sub);
+      return Object.assign({}, base, { qs: s.perms.map((perm,qi) => { const oq = base.qs[qi];
+        if(!oq || perm.some(j => j < 0 || !oq.opts[j])) throw 0;
+        return Object.assign({type:"mcq", sub:base.sub, skill:"theory"}, oq, {opts: perm.map(j => oq.opts[j])}); }) });
+    });
+    return { secs, idx: Math.min(snap.idx, secs.length-1), ans: snap.ans, startedAt: snap.startedAt };
+  }catch(e){ return null; }
+}
+/* diagnostic snapshot */
+function diagSnap(){
+  const ch = state.chapter;
+  return { ch: ch.id, i: state.i, startedAt: state.startedAt, answers: state.answers,
+    perms: state.qs.map((q,i) => q.parts.map((p,pi) => p.type==="mcq" ? permOf(p.opts, ch.diagnostic[i].parts[pi].opts) : null)) };
+}
+function diagFromSnap(ch, snap){
+  try{
+    const qs = ch.diagnostic.map((oq,i) => Object.assign({}, oq, { parts: oq.parts.map((p,pi) => {
+      if(p.type !== "mcq") return p;
+      const perm = snap.perms[i][pi]; if(perm.length !== p.opts.length || perm.some(j => j < 0)) throw 0;
+      return Object.assign({}, p, {opts: perm.map(j => p.opts[j])}); }) }));
+    if(snap.answers.length !== qs.length) throw 0;
+    return qs;
+  }catch(e){ return null; }
+}
+function fmtDate(t){ try{ return new Date(t).toLocaleString("en-GB",{day:"numeric",month:"short",hour:"2-digit",minute:"2-digit"}); }catch(e){ return ""; } }
+function openAttempt(h){
+  const ch = CHAPTERS.find(c => c.id === h.ch); if(!ch) return;
+  state.chapter = ch; state.student = state.student || loadStudent();
+  if(h.type === "Theory"){
+    const T = theoryFromSnap(h.snap); if(!T){ alert("This attempt can no longer be opened because the lesson has been updated."); return; }
+    T.reviewing = true; T.doneAt = h.at; state.theory = T; finishTheory(true);
+  } else {
+    const qs = diagFromSnap(ch, h.snap); if(!qs){ alert("This attempt can no longer be opened because the diagnostic has been updated."); return; }
+    state.qs = qs; state.answers = h.snap.answers; state.startedAt = h.snap.startedAt;
+    state.result = analyse(); state.saveMsg = {review:h.at}; state.practice = null; renderResults();
+  }
+}
+function historyHTML(){
+  const H = getHist(); if(!H.length) return "";
+  return `<h2 class="sec">My past attempts <span class="muted small">(saved on this device)</span></h2>
+  <section class="card hist">${H.map((h,k) => { const ch = CHAPTERS.find(c => c.id===h.ch) || {title:""};
+    return `<div class="hrow"><div><b>${h.type==="Theory"?"Theory lesson":"Diagnostic"}</b>, Chapter ${h.ch}<div class="muted small">${esc(ch.title)} · ${fmtDate(h.at)}</div></div>
+      <span class="hs">${h.score}/${h.total}</span><button class="btn sm ghost" data-hist="${k}">Open</button></div>`; }).join("")}</section>`;
+}
 
 /* ---------- Symbols and units ---------- */
 const SYMQ_N = 10;
@@ -1500,6 +1646,8 @@ function symbolsSection(id){
 /* ---------- Theory lesson ---------- */
 function startTheory(ch){
   state.chapter = ch;
+  const saved = getProg().theory[ch.id], T0 = saved && theoryFromSnap(saved);
+  if(T0){ state.theory = T0; renderTheory(); return; }
   const secs = THEORY[ch.id].concat(symbolsSection(ch.id)).map(s => Object.assign({}, s, { qs: s.qs.map(q => Object.assign({type:"mcq", sub:s.sub, skill:"theory"}, q, {opts: shuffle(q.opts)})) }));
   state.theory = { secs, idx:0, ans: secs.map(s => s.qs.map(() => null)), startedAt: Date.now() };
   renderTheory();
@@ -1508,25 +1656,26 @@ function renderTheory(keep){
   const y = window.scrollY; if(!keep) toTop();
   const T = state.theory, ch = state.chapter, sec = T.secs[T.idx], ans = T.ans[T.idx];
   const last = T.idx === T.secs.length-1, done = ans.every(a => a!=null);
+  if(!T.reviewing) setProg("theory", ch.id, theorySnap());
   app.innerHTML = `
-  <div class="qhead"><span>Theory lesson: Chapter ${ch.id}</span><span>Part ${T.idx+1} of ${T.secs.length}</span></div>
-  <div class="bar"><i style="width:${T.idx/T.secs.length*100}%"></i></div>
+  <div class="qhead"><span>${T.reviewing?"Reviewing":"Theory lesson"}: Chapter ${ch.id}</span><span>Part ${T.idx+1} of ${T.secs.length}</span></div>
+  ${catBar(T.idx/T.secs.length)}
   <section class="card note"><span class="tag">${sec.sub}</span><h2>${esc(sec.title)}</h2>${sec.html}${symTable(sec.sym, sec.review ? "All symbols in this chapter" : "Symbols and units")}</section>
   <h2 class="sec">Check your understanding</h2>
   <section class="card">
     ${sec.qs.map((q,qi) => partHTML(q, qi, ans[qi], {locked: ans[qi]!=null, feedback: ans[qi]!=null, tag: q.bloom==="C1" ? "C1 Remember" : "C2 Understand"})).join("")}
   </section>
-  <p class="muted small">${done ? "" : "Answer every question above to continue."}</p>
+  <p class="muted small">${done ? "" : "Answer every question above to continue. Your answers are saved as you go."}</p>
   <div class="nav">
     <button class="btn ghost" id="back" ${T.idx===0?"disabled":""}>Back</button>
-    <button class="btn" id="nx" ${done?"":"disabled"}>${last?"Finish lesson":"Next part"}</button>
+    <button class="btn" id="nx" ${done?"":"disabled"}>${last?(T.reviewing?"Back to results":"Finish lesson"):"Next part"}</button>
   </div>`;
   app.querySelectorAll(".opt:not(:disabled)").forEach(b => b.onclick = () => { ans[+b.dataset.p] = +b.dataset.k; renderTheory(true); });
   if(keep){ try{ window.scrollTo(0,y); }catch(e){} }
   $("#back").onclick = () => { T.idx--; renderTheory(); };
-  $("#nx").onclick = () => { if(last) finishTheory(); else { T.idx++; renderTheory(); } };
+  $("#nx").onclick = () => { if(last) finishTheory(T.reviewing); else { T.idx++; renderTheory(); } };
 }
-function finishTheory(){
+function finishTheory(review){
   toTop();
   const T = state.theory, ch = state.chapter, st = state.student;
   const rows = T.secs.map((s,si) => ({ id:s.sub, name:s.title, total:s.qs.length,
@@ -1536,17 +1685,23 @@ function finishTheory(){
   const score = rows.reduce((t,r)=>t+r.correct,0), total = rows.reduce((t,r)=>t+r.total,0);
   app.innerHTML = `
   <section class="card">
+    ${cheer(score===total ? "Purr-fect! Every answer right." : "Lesson done. Nice work!")}
     <h1>Theory lesson complete</h1>
     <p>Chapter ${ch.id}: ${esc(ch.title)}. You got <b>${score} of ${total}</b> right first time.</p>
     ${rows.map(r => `<div class="subrow"><div class="subline"><div class="subname"><small>${r.id}</small>${esc(r.name)}</div><b>${r.correct}/${r.total}</b></div></div>`).join("")}
     <div class="subrow"><div class="subline"><div class="subname">C1 Remember (definitions, units)</div><b>${bl.C1.c}/${bl.C1.t}</b></div></div>
     <div class="subrow"><div class="subline"><div class="subname">C2 Understand (explain, interpret)</div><b>${bl.C2.c}/${bl.C2.t}</b></div></div>
-    <div id="savebox">${saveBanner(null)}</div>
+    <div id="savebox">${review ? `<div class="save">Saved attempt from ${fmtDate(T.doneAt)}.</div>` : saveBanner(null)}</div>
     <p class="muted small" style="margin-top:14px">Next: after the tutorial for this chapter, take the <b>diagnostic</b> to test your calculations. Definitions you got wrong here are worth memorising word for word, because PSPM asks for them.</p>
-    <div class="nav"><button class="btn ghost" id="home">Back to chapters</button><button class="btn ghost" id="again">Redo lesson</button></div>
+    <div class="nav"><button class="btn ghost" id="home">Back to chapters</button><button class="btn ghost" id="rev">Review my answers</button><button class="btn ghost" id="again">Redo lesson</button></div>
   </section>`;
   $("#home").onclick = renderHome;
-  $("#again").onclick = () => startTheory(ch);
+  $("#rev").onclick = () => { T.reviewing = true; T.doneAt = T.doneAt || Date.now(); T.idx = 0; renderTheory(); };
+  $("#again").onclick = () => { setProg("theory", ch.id, null); startTheory(ch); };
+  if(review) return;
+  setProg("theory", ch.id, null);
+  T.doneAt = Date.now();
+  addHist({ type:"Theory", ch: ch.id, at: T.doneAt, score, total, snap: theorySnap() });
   send({ type:"Theory", name:st.name, matric:st.matric, group:st.group, chapter: ch.id+" "+ch.title, score, total,
          subtopics: rows.map(r => Object.assign({status:""}, r)),
          skills: [{name:"C1 Remember", correct:bl.C1.c, total:bl.C1.t, status:""},{name:"C2 Understand", correct:bl.C2.c, total:bl.C2.t, status:""}],
@@ -1556,9 +1711,12 @@ function finishTheory(){
 
 /* ---------- Diagnostic ---------- */
 function startDiagnostic(ch){
-  state.chapter = ch; state.qs = ch.diagnostic.map(prepQ);
+  state.chapter = ch; state.result = null; state.saveMsg = null; state.practice = null;
+  const saved = getProg().diag[ch.id], qs = saved && diagFromSnap(ch, saved);
+  if(qs){ state.qs = qs; state.answers = saved.answers; state.i = Math.min(saved.i, qs.length-1); state.startedAt = saved.startedAt; renderQ(); return; }
+  state.qs = ch.diagnostic.map(prepQ);
   state.i = 0; state.answers = state.qs.map(q => ({resp: q.parts.map(()=>null), sure:null}));
-  state.result = null; state.saveMsg = null; state.practice = null; state.startedAt = Date.now();
+  state.startedAt = Date.now();
   renderQ();
 }
 function renderQ(){
@@ -1566,7 +1724,7 @@ function renderQ(){
   const ch = state.chapter, n = state.qs.length, q = state.qs[state.i], a = state.answers[state.i];
   app.innerHTML = `
   <div class="qhead"><span>Chapter ${ch.id}: ${esc(ch.title)}</span><span>Question ${state.i+1} of ${n}</span></div>
-  <div class="bar"><i style="width:${state.i/n*100}%"></i></div>
+  ${catBar(state.i/n)}
   <section class="card">
     <div class="qtext">${q.stem}</div>${q.fig||""}
     ${q.parts.map((p,pi) => partHTML(p, pi, a.resp[pi], {})).join("")}
@@ -1581,7 +1739,7 @@ function renderQ(){
     <p class="err" id="qerr"></p>
   </section>`;
   const ready = () => q.parts.every((p,pi) => answered(p, a.resp[pi])) && a.sure!=null;
-  const upd = () => { $("#next").disabled = !ready(); };
+  const upd = () => { $("#next").disabled = !ready(); setProg("diag", ch.id, diagSnap()); };
   app.querySelectorAll(".opt").forEach(b => b.onclick = () => { a.resp[+b.dataset.p] = +b.dataset.k; renderQKeep(); });
   app.querySelectorAll(".numrow input").forEach(inp => inp.oninput = () => { a.resp[+inp.dataset.p] = inp.value; upd(); });
   app.querySelectorAll(".pill").forEach(b => b.onclick = () => { a.sure = b.dataset.s==="1"; app.querySelectorAll(".pill").forEach(x => x.classList.toggle("sel", x===b)); upd(); });
@@ -1617,6 +1775,8 @@ function analyse(){
 
 function finishDiagnostic(){
   const r = analyse(); state.result = r; state.saveMsg = null;
+  setProg("diag", state.chapter.id, null);
+  addHist({ type:"Diagnostic", ch: state.chapter.id, at: Date.now(), score: r.score, total: r.total, snap: diagSnap() });
   renderResults();
   const st = state.student, ch = state.chapter;
   send({
@@ -1649,6 +1809,7 @@ function renderResults(){
   const ringC = f>=0.999?"var(--ok)":(f>=0.6?"var(--mid)":"var(--bad)");
   app.innerHTML = `
   <section class="card">
+    ${cheer(f>=0.999 ? "Purr-fect score!" : "Diagnosis ready. Let's see what to work on.")}
     <div class="score">
       <div class="ring" style="border:7px solid ${ringC};color:${ringC}">${r.score}/${r.total}</div>
       <div><h1 style="margin:0">Your diagnosis</h1><div class="muted">Chapter ${ch.id}: ${esc(ch.title)}, ${esc(state.student.name)}</div></div>
@@ -1679,7 +1840,7 @@ function renderResults(){
   </section>`;
   $("#home").onclick = renderHome;
   if($("#go")) $("#go").onclick = startPractice;
-  if($("#again")) $("#again").onclick = () => startDiagnostic(ch);
+  if($("#again")) $("#again").onclick = () => { setProg("diag", ch.id, null); startDiagnostic(ch); };
 }
 
 /* ---------- Reinforcement ---------- */
@@ -1701,7 +1862,7 @@ function renderPractice(keep){
   const allDone = ans.every(a => a.done.every(Boolean));
   app.innerHTML = `
   <div class="qhead"><span>Reinforcement ${P.idx+1} of ${P.subs.length}</span><span>Chapter ${ch.id}: ${esc(ch.title)}</span></div>
-  <div class="bar"><i style="width:${P.idx/P.subs.length*100}%"></i></div>
+  ${catBar(P.idx/P.subs.length)}
   <section class="card note"><span class="tag">${sub.id}</span><h2>${esc(sub.name)}</h2>${sub.note}</section>
   <h2 class="sec">Now try these</h2>
   ${qs.length ? qs.map((q,qi) => `<section class="card" data-q="${qi}"><div class="qtext">${q.stem}</div>${q.fig||""}
@@ -1735,6 +1896,7 @@ function finishPractice(){
   const score = rows.reduce((t,r)=>t+r.correct,0), total = rows.reduce((t,r)=>t+r.total,0);
   app.innerHTML = `
   <section class="card">
+    ${cheer(score===total ? "Purr-fect!" : "Reinforcement done!")}
     <h1>Reinforcement complete</h1>
     <p>You got <b>${score} of ${total}</b> practice questions right.</p>
     ${rows.map(r => `<div class="subrow"><div class="subline"><div class="subname"><small>${r.id}</small>${esc(r.name)}</div><b>${r.correct}/${r.total}</b></div></div>`).join("")}
@@ -1743,12 +1905,13 @@ function finishPractice(){
     <div class="nav"><button class="btn ghost" id="home">Back to chapters</button><button class="btn" id="again">Retake diagnostic</button></div>
   </section>`;
   $("#home").onclick = renderHome;
-  $("#again").onclick = () => startDiagnostic(ch);
+  $("#again").onclick = () => { setProg("diag", ch.id, null); startDiagnostic(ch); };
   send({ type:"Practice", name:st.name, matric:st.matric, group:st.group, chapter: ch.id+" "+ch.title,
          score, total, subtopics: rows.map(r => Object.assign({status:""}, r)), skills:[], weak:[], confidentWrong:"", misconceptions:[], minutes:"" })
     .then(m => { const el = $("#savebox"); if(el) el.innerHTML = saveBanner(m); });
 }
 
+try{ document.getElementById("hcat").innerHTML = CAT.sit("head"); }catch(e){}
 renderHome();
 </script>
 </body>
