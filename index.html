@@ -1221,6 +1221,165 @@ const CH8 = {
   ]
 };
 
+const CH9 = {
+  id: 9, title: "Nuclear and Particle Physics", open: true,
+  subtopics: [
+    { id:"9.1", name:"Mass defect and binding energy",
+      note:`<p>A nucleus has less mass than its separate protons and neutrons. This mass defect is the binding energy: the energy needed to pull the nucleus completely apart.</p>
+      <div class="formula" data-tex="\\Delta m=\\left(Zm_p+Nm_n\\right)-m_{\\text{nucleus}}||E_B=\\Delta mc^2=\\Delta m\\,(931.5\\ \\text{MeV u}^{-1})||\\text{per nucleon}=\\dfrac{E_B}{A}">&Delta;m = (Zm<sub>p</sub> + Nm<sub>n</sub>) &minus; m<sub>nucleus</sub> &nbsp;&nbsp; E<sub>B</sub> = &Delta;mc<sup>2</sup> = &Delta;m (931.5 MeV/u) &nbsp;&nbsp; per nucleon = E<sub>B</sub>/A</div>
+      <h4>Problem-solving steps</h4>
+      <ul><li>N = A &minus; Z.</li>
+      <li>If the question gives the <b>atomic</b> mass, subtract the electrons first: m<sub>nucleus</sub> = m<sub>atom</sub> &minus; Zm<sub>e</sub>.</li>
+      <li>&Delta;m in u: multiply by 931.5 for MeV. For joules, convert to kg (1 u = 1.66&times;10<sup>&minus;27</sup> kg) and use &Delta;mc<sup>2</sup>.</li>
+      <li>Divide by A (all nucleons), not Z, for binding energy per nucleon. The larger E<sub>B</sub>/A, the more stable the nucleus.</li></ul>
+      <div class="ex"><b>Worked example.</b> Fe-56 (Z = 26), atomic mass 55.934937 u.<br>m<sub>nucleus</sub> = 55.934937 &minus; 26(0.000549)<br>m<sub>nucleus</sub> = 55.920663 u<br>&Delta;m = 26(1.007276) + 30(1.008665) &minus; 55.920663<br>&Delta;m = 0.528463 u<br>E<sub>B</sub> = 0.528463 &times; 931.5<br>E<sub>B</sub> = 492 MeV<br>E<sub>B</sub>/A = 492/56<br>E<sub>B</sub>/A = 8.79 MeV per nucleon</div>` },
+    { id:"9.2", name:"Radioactive decay, decay law and half-life",
+      note:`<p>Radioactive decay is spontaneous and random. The activity is proportional to the number of undecayed nuclei, so N and A fall exponentially.</p>
+      <div class="formula" data-tex="A=\\lambda N||N=N_0e^{-\\lambda t}||A=A_0e^{-\\lambda t}||T_{1/2}=\\dfrac{\\ln2}{\\lambda}||N=\\dfrac{m}{M}N_A">A = &lambda;N &nbsp;&nbsp; N = N<sub>0</sub>e<sup>&minus;&lambda;t</sup> &nbsp;&nbsp; A = A<sub>0</sub>e<sup>&minus;&lambda;t</sup> &nbsp;&nbsp; T<sub>&frac12;</sub> = ln 2/&lambda; &nbsp;&nbsp; N = (m/M)N<sub>A</sub></div>
+      <h4>Problem-solving steps</h4>
+      <ul><li>For activity in Bq, &lambda; must be in s<sup>&minus;1</sup>: convert the half-life to seconds first.</li>
+      <li>Number of nuclei from mass: N = (m/M) &times; 6.022&times;10<sup>23</sup>, with M in g mol<sup>&minus;1</sup> (= A).</li>
+      <li>Finding t: t = ln(A<sub>0</sub>/A)/&lambda;. Keep t and T<sub>&frac12;</sub> in the same unit.</li>
+      <li>&alpha; decay: A &minus; 4, Z &minus; 2. &beta;<sup>&minus;</sup>: n &rarr; p, Z + 1, with an antineutrino. &beta;<sup>+</sup>: p &rarr; n, Z &minus; 1, with a neutrino. &gamma;: no change in A or Z.</li></ul>
+      <div class="ex"><b>Worked example.</b> Activity falls from 0.231 to 0.090 Bq per gram, T<sub>&frac12;</sub> = 5730 years.<br>&lambda; = ln 2 / 5730<br>&lambda; = 1.21&times;10<sup>&minus;4</sup> yr<sup>&minus;1</sup><br>t = ln(0.231/0.090) / &lambda;<br>t = 7.79&times;10<sup>3</sup> years</div>` },
+    { id:"9.3", name:"Particle accelerators and detectors",
+      note:`<p>Thermionic emission releases electrons from a heated metal. In accelerators, <b>electric</b> fields speed the particles up, and <b>magnetic</b> fields bend them into curved paths. In a cyclotron, the alternating voltage across the gap accelerates the particle each half turn, and the magnetic field bends it round inside the dees. In a detector, charged particles ionise the material and a magnetic field curves their tracks. High energies give a short de Broglie wavelength, small enough to probe the inside of nucleons.</p>` },
+    { id:"9.4", name:"Fundamental particles",
+      note:`<p>Quarks and leptons (and their antiparticles) are the fundamental particles. Hadrons are made of quarks: baryons have three quarks (proton uud, neutron udd) and mesons have a quark and an antiquark. Leptons, such as the electron and neutrino, are not made of quarks. Every particle has an antiparticle with the same mass and opposite charge.</p>` }
+  ],
+
+  diagnostic: [
+    { stem:"The atomic mass of iron-56 (Z = 26) is 55.934937 u. (m<sub>p</sub> = 1.007276 u, m<sub>n</sub> = 1.008665 u, m<sub>e</sub> = 0.000549 u, 1 u = 931.5 MeV/c<sup>2</sup>)", parts:[
+      { sub:"9.1", skill:"calc", type:"num", prompt:"Calculate the mass defect of the nucleus.", unit:"u", ans:0.5285,
+        wrong:[],
+        exp:"m<sub>nucleus</sub> = 55.934937 &minus; 26(0.000549) = 55.920663 u. &Delta;m = 26(1.007276) + 30(1.008665) &minus; 55.920663 = 0.528463 u." },
+      { sub:"9.1", skill:"calc", type:"num", prompt:"Calculate the binding energy per nucleon.", unit:"MeV", ans:8.79,
+        wrong:[[18.9,"Divide by A = 56 (all nucleons), not Z."],[492,"That is the total binding energy. Divide by 56."]],
+        exp:"E<sub>B</sub> = 0.528463 &times; 931.5 = 492.3 MeV. E<sub>B</sub>/A = 492.3/56 = 8.79 MeV per nucleon." },
+      { sub:"9.1", skill:"calc", type:"num", prompt:"Calculate the total binding energy in joules.", unit:"J", ans:7.88e-11,
+        wrong:[[2.63e-19,"Convert u to kg (1.66&times;10<sup>&minus;27</sup> kg) and multiply by c<sup>2</sup>, not c."],[492,"That is in MeV. Use 1 MeV = 1.60&times;10<sup>&minus;13</sup> J."]],
+        exp:"E<sub>B</sub> = &Delta;mc<sup>2</sup> = (0.528463 &times; 1.66&times;10<sup>&minus;27</sup>)(3.0&times;10<sup>8</sup>)<sup>2</sup> = 7.90&times;10<sup>&minus;11</sup> J (or 492.3 MeV &times; 1.60&times;10<sup>&minus;13</sup> = 7.88&times;10<sup>&minus;11</sup> J)." },
+      { sub:"9.1", skill:"theory", type:"mcq", prompt:"Neon-20 has a binding energy per nucleon of about 8.0 MeV. Which nucleus is more stable?",
+        opts:[ {t:"Iron-56, because its binding energy per nucleon is larger", ok:true},
+               {t:"Neon-20, because it has fewer nucleons to hold together", mis:"Stability depends on binding energy <b>per nucleon</b>, and Fe-56 is near the peak of the curve."},
+               {t:"Iron-56, because its total binding energy is larger", mis:"Total E<sub>B</sub> always grows with A. Compare E<sub>B</sub>/A."} ],
+        exp:"Larger E<sub>B</sub>/A means each nucleon is more tightly bound. Fe-56 is at the peak (about 8.8 MeV)." } ]},
+
+    { stem:"Calcium-40 (Z = 20) has a binding energy per nucleon of 8.551 MeV.", parts:[
+      { sub:"9.1", skill:"calc", type:"num", prompt:"Calculate the mass defect of the calcium-40 nucleus.", unit:"u", ans:0.3672,
+        wrong:[[0.00918,"8.551 MeV is per nucleon. Multiply by A = 40 first: E<sub>B</sub> = 342.0 MeV."],[342,"That is the binding energy in MeV. Divide by 931.5 MeV/u."]],
+        exp:"E<sub>B</sub> = 8.551 &times; 40 = 342.0 MeV. &Delta;m = 342.0/931.5 = 0.3672 u." },
+      { sub:"9.1", skill:"theory", type:"mcq", prompt:"How does the mass of the calcium-40 nucleus compare with the total mass of 20 free protons and 20 free neutrons?",
+        opts:[ {t:"It is smaller, by the mass defect of 0.367 u", ok:true},
+               {t:"It is larger, by 0.367 u", mis:"Energy is released when the nucleus forms, so mass is lost: the nucleus is lighter."},
+               {t:"They are equal, because mass is conserved", mis:"In nuclear processes mass and energy convert: E = mc<sup>2</sup>."} ],
+        exp:"m<sub>nucleus</sub> = (Zm<sub>p</sub> + Nm<sub>n</sub>) &minus; &Delta;m." } ]},
+
+    { stem:"Radium-226 decays by alpha emission to radon-222. Atomic masses: Ra-226 = 226.025410 u, Rn-222 = 222.017578 u, He-4 = 4.002603 u.", parts:[
+      { sub:"9.2", skill:"calc", type:"num", prompt:"Calculate the energy released in MeV.", unit:"MeV", ans:4.87,
+        wrong:[[-4.87,"Energy released is positive: mass before minus mass after."]],
+        exp:"&Delta;m = 226.025410 &minus; (222.017578 + 4.002603) = 0.005229 u. Q = 0.005229 &times; 931.5 = 4.87 MeV." },
+      { sub:"9.2", skill:"theory", type:"mcq", prompt:"Radon-222 (Z = 86) then decays by &beta;<sup>&minus;</sup> emission. The daughter nucleus has",
+        opts:[ {t:"A = 222 and Z = 87", ok:true},
+               {t:"A = 222 and Z = 85", mis:"That is &beta;<sup>+</sup> decay. In &beta;<sup>&minus;</sup> a neutron becomes a proton, so Z goes up by 1."},
+               {t:"A = 218 and Z = 84", mis:"That is alpha decay."} ],
+        exp:"&beta;<sup>&minus;</sup>: n &rarr; p + e<sup>&minus;</sup> + antineutrino. A stays the same, Z increases by 1." } ]},
+
+    { stem:"Strontium-90 (molar mass 90 g mol<sup>&minus;1</sup>) has a half-life of 28.8 years. A sample contains 2.0 g of it. (N<sub>A</sub> = 6.022 &times; 10<sup>23</sup> mol<sup>&minus;1</sup>, 1 year = 365 days)", parts:[
+      { sub:"9.2", skill:"calc", type:"num", prompt:"Calculate the decay constant in s<sup>&minus;1</sup>.", unit:"s<sup>&minus;1</sup>", ans:7.63e-10,
+        wrong:[[0.0241,"That is per year. Convert 28.8 years to seconds."],[1.10e-9,"&lambda; = ln 2/T<sub>&frac12;</sub>, not 1/T<sub>&frac12;</sub>."]],
+        exp:"T<sub>&frac12;</sub> = 28.8 &times; 365 &times; 24 &times; 3600 = 9.08&times;10<sup>8</sup> s. &lambda; = 0.693/9.08&times;10<sup>8</sup> = 7.63&times;10<sup>&minus;10</sup> s<sup>&minus;1</sup>." },
+      { sub:"9.2", skill:"calc", type:"num", prompt:"Calculate the activity of the sample.", unit:"Bq", ans:1.02e13,
+        wrong:[[3.22e20,"You used &lambda; per year. Activity in Bq needs &lambda; in s<sup>&minus;1</sup>."]],
+        exp:"N = (2.0/90)(6.022&times;10<sup>23</sup>) = 1.34&times;10<sup>22</sup>. A = &lambda;N = (7.63&times;10<sup>&minus;10</sup>)(1.34&times;10<sup>22</sup>) = 1.02&times;10<sup>13</sup> Bq." } ]},
+
+    { stem:"A hospital receives technetium-99m (half-life 6.0 h) with an activity of 800 MBq.", parts:[
+      { sub:"9.2", skill:"calc", type:"num", prompt:"How long after delivery is its activity 300 MBq?", unit:"h", ans:8.49,
+        wrong:[[5.88,"You left out ln 2. t = T<sub>&frac12;</sub> ln(A<sub>0</sub>/A)/ln 2."],[2.25,"Use the ratio A<sub>0</sub>/A = 800/300 inside a logarithm, not as a multiplier."]],
+        exp:"&lambda; = ln 2/6.0 = 0.1155 h<sup>&minus;1</sup>. t = ln(800/300)/0.1155 = 8.49 h." } ]},
+
+    { stem:"The activity of a sample falls from 13 nCi to 5.0 nCi in 1.0 hour.", parts:[
+      { sub:"9.2", skill:"calc", type:"num", prompt:"Calculate the decay constant in s<sup>&minus;1</sup>.", unit:"s<sup>&minus;1</sup>", ans:2.65e-4,
+        wrong:[[0.956,"That is per hour. Divide by 3600 s."],[1.59e-2,"That is per minute. Use seconds."]],
+        exp:"A = A<sub>0</sub>e<sup>&minus;&lambda;t</sup>: &lambda; = ln(13/5.0)/3600 = 2.65&times;10<sup>&minus;4</sup> s<sup>&minus;1</sup>." } ]},
+
+    { stem:"A radioactive sample has a half-life of 10 minutes. At t = 12 min there are 4000 undecayed nuclei.", parts:[
+      { sub:"9.2", skill:"calc", type:"num", prompt:"How many undecayed nuclei remain at t = 27 min?", unit:"", ans:1414,
+        wrong:[[616,"Count the time from t = 12 min, not from zero: 15 minutes have passed."],[2000,"15 min is 1.5 half-lives, not 1."]],
+        exp:"Time elapsed = 15 min = 1.5 half-lives. N = 4000 &times; (&frac12;)<sup>1.5</sup> = 4000e<sup>&minus;(0.0693)(15)</sup> = 1414." } ]},
+
+    { stem:"The carbon-14 activity of an ancient bone is 0.090 Bq per gram of carbon. Living bone has 0.231 Bq per gram. The half-life of carbon-14 is 5730 years.", parts:[
+      { sub:"9.2", skill:"calc", type:"num", prompt:"Calculate the age of the bone.", unit:"years", ans:7790,
+        wrong:[[5400,"You left out ln 2 in &lambda; = ln 2/T<sub>&frac12;</sub>."]],
+        exp:"&lambda; = 0.693/5730 = 1.21&times;10<sup>&minus;4</sup> yr<sup>&minus;1</sup>. t = ln(0.231/0.090)/&lambda; = 7.79&times;10<sup>3</sup> years." },
+      { sub:"9.2", skill:"theory", type:"mcq", prompt:"Radioactive decay is described as random and spontaneous. This means",
+        opts:[ {t:"we cannot predict when a particular nucleus will decay, and nothing outside the nucleus (heat, pressure, chemistry) changes the rate", ok:true},
+               {t:"the activity of a sample changes randomly from day to day", mis:"For a large sample the activity falls smoothly and predictably. Only individual decays are random."},
+               {t:"heating a sample makes it decay faster", mis:"Spontaneous means it is not affected by external conditions."} ],
+        exp:"Random: the moment of each decay is unpredictable. Spontaneous: it needs no trigger and is unaffected by physical or chemical conditions." },
+      { sub:"9.2", skill:"theory", type:"mcq", prompt:"Which radiation is NOT deflected by a magnetic field?",
+        opts:[ {t:"Gamma", ok:true}, {t:"Alpha", mis:"Alpha particles carry charge +2e, so they are deflected."}, {t:"Beta", mis:"Beta particles are charged (&plusmn;e), so they are deflected."} ],
+        exp:"Gamma rays are uncharged photons." } ]},
+
+    { stem:"Particle accelerators and detectors use electric and magnetic fields.", parts:[
+      { sub:"9.3", skill:"theory", type:"mcq", prompt:"In a cyclotron, what does each field do?",
+        opts:[ {t:"The electric field across the gap accelerates the particle; the magnetic field bends it into a circular path", ok:true},
+               {t:"The magnetic field accelerates the particle; the electric field bends it", mis:"A magnetic force is always perpendicular to v, so it changes direction only, not speed."},
+               {t:"Both fields accelerate the particle in a straight line", mis:"The particle moves in a growing spiral: the magnetic field bends it each half turn."} ],
+        exp:"Electric field: speeds up (does work). Magnetic field: F = qvB is perpendicular to v, so it only turns the particle." },
+      { sub:"9.3", skill:"theory", type:"mcq", prompt:"Why are very high energies needed to study the structure of nucleons?",
+        opts:[ {t:"High momentum gives a de Broglie wavelength short enough (below about 10<sup>&minus;15</sup> m) to resolve inside a nucleon", ok:true},
+               {t:"High energy is needed to make the particles visible", mis:"The point is the wavelength: &lambda; = h/p must be smaller than the structure being probed."},
+               {t:"Nucleons only exist at high energies", mis:"Nucleons exist in ordinary matter. High energy is needed to probe them."} ],
+        exp:"&lambda; = h/p: larger p, shorter &lambda;, finer detail." } ]},
+
+    { stem:"The standard model classifies particles as quarks and leptons.", parts:[
+      { sub:"9.4", skill:"theory", type:"mcq", prompt:"Which statement is correct?",
+        opts:[ {t:"A proton is a baryon made of three quarks (uud)", ok:true},
+               {t:"An electron is a hadron made of quarks", mis:"The electron is a lepton, a fundamental particle with no quarks."},
+               {t:"A meson is made of three quarks", mis:"A meson is a quark&ndash;antiquark pair. Three quarks make a baryon."} ],
+        exp:"Hadrons are made of quarks: baryons (3 quarks) and mesons (quark + antiquark). Leptons are fundamental." } ]}
+  ],
+
+  practice: [
+    { stem:"Gold-197 (Z = 79) has atomic mass 196.966569 u.", parts:[
+      { sub:"9.1", skill:"calc", type:"num", prompt:"Calculate the binding energy per nucleon.", unit:"MeV", ans:7.92,
+        wrong:[[19.7,"Divide by A = 197, not Z."]],
+        exp:"m<sub>nucleus</sub> = 196.966569 &minus; 79(0.000549) = 196.923198 u. &Delta;m = 79(1.007276) + 118(1.008665) &minus; 196.923198 = 1.6747 u. E<sub>B</sub> = 1560 MeV, E<sub>B</sub>/A = 7.92 MeV." } ]},
+    { stem:"The binding energy per nucleon is plotted against nucleon number A.", parts:[
+      { sub:"9.1", skill:"theory", type:"mcq", prompt:"Where is the peak of the curve, and what does it mean?",
+        opts:[ {t:"Near A = 56 (iron); these nuclei are the most stable", ok:true}, {t:"At A = 1; hydrogen is the most stable", mis:"Hydrogen-1 has one nucleon and zero binding energy."}, {t:"At the largest A; heavy nuclei are the most stable", mis:"E<sub>B</sub>/A falls slowly for heavy nuclei, which is why they can undergo fission."} ],
+        exp:"E<sub>B</sub>/A peaks at about 8.8 MeV near iron-56." } ]},
+    { stem:"Cobalt-60 has a half-life of 5.26 years. A source contains 5.2 &times; 10<sup>14</sup> nuclei.", parts:[
+      { sub:"9.2", skill:"calc", type:"num", prompt:"Calculate its activity after 10 years.", unit:"Bq", ans:5.81e5,
+        wrong:[[2.17e6,"That is the initial activity. Multiply by e<sup>&minus;&lambda;t</sup>."],[0.0183,"Activity in Bq needs &lambda; in s<sup>&minus;1</sup>."]],
+        exp:"&lambda; = 0.693/(5.26 &times; 3.154&times;10<sup>7</sup> s) = 4.18&times;10<sup>&minus;9</sup> s<sup>&minus;1</sup>. A<sub>0</sub> = &lambda;N = 2.17&times;10<sup>6</sup> Bq. A = A<sub>0</sub>e<sup>&minus;(0.1318)(10)</sup> = 5.81&times;10<sup>5</sup> Bq." } ]},
+    { stem:"A sample of uranium-233 contains 5.0 &times; 10<sup>20</sup> nuclei. Its half-life is 1.59 &times; 10<sup>5</sup> years.", parts:[
+      { sub:"9.2", skill:"calc", type:"num", prompt:"Calculate the number of disintegrations per minute.", unit:"min<sup>&minus;1</sup>", ans:4.14e9,
+        wrong:[[6.91e7,"That is per second. Multiply by 60."],[2.18e15,"&lambda; must be per minute or per second, not per year."]],
+        exp:"&lambda; = 0.693/(1.59&times;10<sup>5</sup> &times; 365 &times; 24 &times; 60 min) = 8.29&times;10<sup>&minus;12</sup> min<sup>&minus;1</sup>. A = &lambda;N = 4.14&times;10<sup>9</sup> per minute." },
+      { sub:"9.2", skill:"theory", type:"mcq", prompt:"The half-life of a nuclide",
+        opts:[ {t:"is constant, whatever the number of nuclei left", ok:true}, {t:"gets shorter as the sample decays", mis:"Every half-life halves N; the time for each halving is the same."}, {t:"depends on the initial mass of the sample", mis:"A larger sample has more activity, but the same half-life."} ],
+        exp:"T<sub>&frac12;</sub> = ln 2/&lambda; depends only on &lambda;, a property of the nuclide." } ]},
+    { stem:"A metal filament is heated in an electron gun.", parts:[
+      { sub:"9.3", skill:"theory", type:"mcq", prompt:"Thermionic emission is",
+        opts:[ {t:"the emission of electrons from the surface of a heated metal", ok:true}, {t:"the emission of electrons when light falls on a metal", mis:"That is the photoelectric effect."}, {t:"the emission of heat from an electron beam", mis:"It is electrons leaving a hot metal, not heat leaving electrons."} ],
+        exp:"Heat gives some electrons enough energy to overcome the work function and escape." } ]},
+    { stem:"Particle tracks are recorded in a detector with a magnetic field perpendicular to the tracks.", parts:[
+      { sub:"9.3", skill:"theory", type:"mcq", prompt:"Two tracks curve in opposite directions. This shows that the particles",
+        opts:[ {t:"have opposite charges", ok:true}, {t:"have different masses", mis:"Mass affects how sharply they curve, not which way."}, {t:"are both neutral", mis:"Neutral particles leave no ionisation track and are not deflected."} ],
+        exp:"F = qvB: reversing the sign of q reverses the force." } ]},
+    { stem:"Particles are classified by what they are made of.", parts:[
+      { sub:"9.4", skill:"theory", type:"mcq", prompt:"Which of these is a lepton?",
+        opts:[ {t:"The neutrino", ok:true}, {t:"The neutron", mis:"The neutron is a baryon (udd)."}, {t:"The pion", mis:"A pion is a meson, made of a quark and an antiquark."} ],
+        exp:"Leptons (electron, muon, neutrinos) are fundamental and contain no quarks." } ]},
+    { stem:"Every particle has an antiparticle.", parts:[
+      { sub:"9.4", skill:"theory", type:"mcq", prompt:"Compared with the electron, the positron has",
+        opts:[ {t:"the same mass and the opposite charge", ok:true}, {t:"the same charge and a larger mass", mis:"Antiparticles have the same mass and opposite charge."}, {t:"no charge and no mass", mis:"That describes the neutrino approximately, not the positron."} ],
+        exp:"The positron is the electron's antiparticle: mass m<sub>e</sub>, charge +e." } ]}
+  ]
+};
+
 const CH3 = {
   id: 3, title: "Electric Current and Direct-Current Circuits", open: true,
   subtopics: [
@@ -1865,7 +2024,7 @@ CH5,
 CH6,
 CH7,
 CH8,
-{ id:9, title:"Nuclear and Particle Physics", open:true }
+CH9
 ];
 
 
