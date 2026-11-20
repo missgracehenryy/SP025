@@ -783,6 +783,314 @@ const CH6 = {
   ]
 };
 
+FIG.fringe7 = (function(){ let b=""; for(let k=-3;k<=3;k++){ const x=170+40*k; b+=`<rect x="${x-9}" y="60" width="18" height="50" fill="#f5c542" opacity="${k===0?1:0.85}"/>`; }
+  let t=""; for(let k=0;k<=3;k++){ const x=170+40*k; t+=lbl(x,52,String(k),"#9a6200"); }
+  for(let k=0;k<3;k++){ const x=190+40*k; t+=`<line x1="${x}" y1="110" x2="${x}" y2="124" stroke="#5b6476"/>`+lbl(x,138,["1st","2nd","3rd"][k],"#1b2232")+lbl(x,154,"m="+k,"#2a6aa3"); }
+  return svg(360, 190, `<rect x="40" y="60" width="270" height="50" fill="#1b2232"/>${b}` + t
+    + lbl(150,30,"bright fringes: m =","#9a6200") + lbl(300,30,"(same on the left)","#5b6476") + lbl(110,148,"dark fringes:","#2a6aa3") + lbl(170,180,"central bright","#1b2232")
+    + `<line x1="170" y1="110" x2="170" y2="168" stroke="#9aa3b2" stroke-dasharray="3 3"/>`); })();
+
+const CH7 = {
+  id: 7, title: "Optics", open: true,
+  subtopics: [
+    { id:"7.1", name:"Spherical mirrors",
+      note:`<div class="formula" data-tex="\\dfrac1f=\\dfrac1u+\\dfrac1v||f=\\dfrac R2||M=\\dfrac{h_i}{h_o}=-\\dfrac vu">1/f = 1/u + 1/v &nbsp;&nbsp; f = R/2 &nbsp;&nbsp; M = h<sub>i</sub>/h<sub>o</sub> = &minus;v/u</div>
+      <h4>Problem-solving steps</h4>
+      <ul><li>Signs: f positive for a <b>concave</b> mirror, negative for a <b>convex</b> mirror. v positive = real image, negative = virtual.</li>
+      <li>M positive = upright, M negative = inverted. Use the sign of M to write v in terms of u (e.g. M = +1.5 means v = &minus;1.5u).</li>
+      <li>A convex mirror always gives a virtual, upright, diminished image.</li></ul>
+      <div class="ex"><b>Worked example.</b> Convex mirror, |f| = 0.25 m, object at 3.0 m.<br>1/v = 1/f &minus; 1/u<br>1/v = 1/(&minus;0.25) &minus; 1/3.0<br>v = &minus;0.231 m<br>M = &minus;v/u<br>M = 0.231/3.0<br>M = 0.077</div>` },
+    { id:"7.2", name:"Refraction at a spherical surface",
+      note:`<div class="formula" data-tex="\\dfrac{n_1}{u}+\\dfrac{n_2}{v}=\\dfrac{n_2-n_1}{R}">n<sub>1</sub>/u + n<sub>2</sub>/v = (n<sub>2</sub> &minus; n<sub>1</sub>)/R</div>
+      <h4>Problem-solving steps</h4>
+      <ul><li>n<sub>1</sub> is where the <b>object</b> is, n<sub>2</sub> is where the light goes next.</li>
+      <li>R is positive if the surface bulges <b>towards</b> the object (convex as seen from the object), negative if it curves away (concave).</li>
+      <li>For an object inside a sphere or flask looking out, the surface is concave as seen from the object, so R is negative.</li>
+      <li>v negative: virtual image on the same side as the object.</li></ul>
+      <div class="ex"><b>Worked example.</b> Object in air 20 cm from a convex glass surface, R = 4.0 cm, n = 1.50.<br>1/20 + 1.50/v = (1.50 &minus; 1.00)/4.0<br>1.50/v = 0.125 &minus; 0.050<br>v = 20 cm (real, inside the glass)</div>` },
+    { id:"7.3", name:"Thin lenses and lens maker's equation",
+      note:`<div class="formula" data-tex="\\dfrac1f=\\dfrac1u+\\dfrac1v||\\dfrac1f=\\left(\\dfrac{n_{\\text{lens}}}{n_{\\text{medium}}}-1\\right)\\left(\\dfrac1{R_1}-\\dfrac1{R_2}\\right)||M=-\\dfrac vu">1/f = 1/u + 1/v &nbsp;&nbsp; 1/f = (n<sub>lens</sub>/n<sub>medium</sub> &minus; 1)(1/R<sub>1</sub> &minus; 1/R<sub>2</sub>) &nbsp;&nbsp; M = &minus;v/u</div>
+      <h4>Problem-solving steps</h4>
+      <ul><li>f positive for a convex (converging) lens, negative for a concave (diverging) lens.</li>
+      <li>Lens maker: R<sub>1</sub> is the surface the light meets first. Biconvex: R<sub>1</sub> positive, R<sub>2</sub> negative.</li>
+      <li>In a liquid, use n<sub>lens</sub>/n<sub>medium</sub>. If n<sub>medium</sub> &gt; n<sub>lens</sub>, a convex lens becomes diverging.</li>
+      <li>Two lenses: the image of lens 1 is the object for lens 2. u<sub>2</sub> = separation &minus; v<sub>1</sub>.</li></ul>
+      <div class="ex"><b>Worked example.</b> f<sub>1</sub> = 10 cm, f<sub>2</sub> = 12 cm, 45 cm apart, object 15 cm before lens 1.<br>1/v<sub>1</sub> = 1/10 &minus; 1/15<br>v<sub>1</sub> = 30 cm<br>u<sub>2</sub> = 45 &minus; 30<br>u<sub>2</sub> = 15 cm<br>1/v<sub>2</sub> = 1/12 &minus; 1/15<br>v<sub>2</sub> = 60 cm</div>` },
+    { id:"7.4", name:"Huygens's principle",
+      note:`<p>Every point on a wavefront acts as a source of secondary wavelets that spread out at the wave speed. The new wavefront is the surface touching (the envelope of) all these wavelets. At a narrow slit only a few wavelets pass, so the wave spreads out: this is diffraction.</p>` },
+    { id:"7.5", name:"Coherence and interference",
+      note:`<p>Coherent sources have the same frequency (wavelength) and a constant phase difference. Interference between them gives a steady pattern.</p>
+      <div class="formula" data-tex="\\text{in phase: bright if } \\Delta=m\\lambda,\\ \\text{dark if } \\Delta=\\left(m+\\tfrac12\\right)\\lambda">in phase: bright if path difference = m&lambda;, dark if = (m + &frac12;)&lambda;</div>
+      <ul><li>Divide the path difference by &lambda;. A whole number means constructive, a half number means destructive (for in-phase sources).</li></ul>` },
+    { id:"7.6", name:"Young's double slit and order numbers",
+      note:`<div class="formula" data-tex="\\text{bright: } y_m=\\dfrac{m\\lambda D}{d}||\\text{dark: } y_m=\\dfrac{\\left(m+\\frac12\\right)\\lambda D}{d}||\\Delta y=\\dfrac{\\lambda D}{d}">bright: y<sub>m</sub> = m&lambda;D/d &nbsp;&nbsp; dark: y<sub>m</sub> = (m + &frac12;)&lambda;D/d &nbsp;&nbsp; &Delta;y = &lambda;D/d</div>
+      <h4>Order number first</h4>
+      <table class="cmp"><tr><th>Question says</th><th>m</th><th>y in units of &lambda;D/d</th></tr>
+      <tr><td>n<sup>th</sup> bright</td><td>n</td><td>n</td></tr>
+      <tr><td>n<sup>th</sup> dark</td><td>n &minus; 1</td><td>n &minus; &frac12;</td></tr>
+      <tr><td>n<sup>th</sup>-order dark / minimum</td><td>n</td><td>n + &frac12;</td></tr></table>
+      <ul><li>Write every fringe position in units of &lambda;D/d first. Same side: subtract. Opposite sides: add.</li>
+      <li>Convert d (mm) and D (m) to metres. Smaller &lambda; (e.g. in water), smaller D or larger d all bring the fringes closer.</li></ul>
+      <div class="ex"><b>Worked example.</b> Distance between the 8th bright and the 3rd dark fringe (same side).<br>8th bright: m = 8, y = 8&lambda;D/d<br>3rd dark: m = 2, y = 2.5&lambda;D/d<br>&Delta; = (8 &minus; 2.5)&lambda;D/d<br>&Delta; = 5.5&lambda;D/d</div>` },
+    { id:"7.7", name:"Thin-film interference",
+      note:`<p>Check each reflection first. Reflection off a <b>higher</b> n: phase change &pi;. Off a <b>lower</b> n: none.</p>
+      <table class="cmp"><tr><th>Phase changes</th><th>Bright (constructive)</th><th>Dark (destructive)</th></tr>
+      <tr><td>Both or neither (no phase difference)</td><td>2nt = m&lambda;</td><td>2nt = (m + &frac12;)&lambda;</td></tr>
+      <tr><td>Only one (phase difference &pi;)</td><td>2nt = (m + &frac12;)&lambda;</td><td>2nt = m&lambda;</td></tr></table>
+      <ul><li>Minimum thickness: m = 0 for a (m + &frac12;) condition. For an m&lambda; condition, the minimum <b>non-zero</b> thickness uses m = 1.</li>
+      <li>Coating on glass (air &lt; coating &lt; glass): both reflections change phase. Soap film in air or oil on water: only the top one does.</li></ul>
+      <div class="ex"><b>Worked example.</b> Soap film n = 1.40 in air looks dark for 600 nm. Only the top reflection changes phase, so dark: 2nt = m&lambda;, m = 1.<br>t = &lambda;/(2n)<br>t = 600&times;10<sup>&minus;9</sup>/(2 &times; 1.40)<br>t = 2.14&times;10<sup>&minus;7</sup> m</div>` },
+    { id:"7.8", name:"Single-slit diffraction",
+      note:`<div class="formula" data-tex="\\text{dark: } y_m=\\dfrac{m\\lambda D}{a}||\\text{bright: } y_m=\\dfrac{\\left(m+\\frac12\\right)\\lambda D}{a}||w=\\dfrac{2\\lambda D}{a}||a\\sin\\theta=m\\lambda">dark: y<sub>m</sub> = m&lambda;D/a &nbsp;&nbsp; bright: y<sub>m</sub> = (m + &frac12;)&lambda;D/a &nbsp;&nbsp; w = 2&lambda;D/a &nbsp;&nbsp; a sin &theta; = m&lambda; (dark)</div>
+      <ul><li>Single slit: the order number <b>is</b> the fringe count (3rd dark: m = 3). m starts at 1.</li>
+      <li>m&lambda; gives <b>dark</b> here, the opposite of the double slit.</li>
+      <li>Width of the central maximum = 2 &times; distance to the first dark fringe.</li></ul>
+      <div class="ex"><b>Worked example.</b> &lambda; = 580 nm, a = 0.30 mm, D = 2.0 m.<br>w = 2&lambda;D/a<br>w = 2(580&times;10<sup>&minus;9</sup>)(2.0)/(0.30&times;10<sup>&minus;3</sup>)<br>w = 7.73&times;10<sup>&minus;3</sup> m</div>` },
+    { id:"7.9", name:"Diffraction grating",
+      note:`<div class="formula" data-tex="d\\sin\\theta=m\\lambda||d=\\dfrac1N">d sin &theta; = m&lambda; &nbsp;&nbsp; d = 1/N</div>
+      <ul><li>N in lines per <b>metre</b>: 500 lines per mm = 5.0 &times; 10<sup>5</sup> m<sup>&minus;1</sup>. "20 000 slits in 2.5 cm": N = 20 000/0.025.</li>
+      <li>m = 0 is the central maximum. Highest order = whole-number part of d/&lambda; (round <b>down</b>).</li>
+      <li>Total bright fringes = 2m<sub>max</sub> + 1.</li></ul>
+      <div class="ex"><b>Worked example.</b> 600 lines per mm, &lambda; = 550 nm.<br>d = 1/(6.0&times;10<sup>5</sup>)<br>d = 1.67&times;10<sup>&minus;6</sup> m<br>d/&lambda; = 3.03<br>m<sub>max</sub> = 3<br>total = 2(3) + 1 = 7</div>` }
+  ],
+
+  diagnostic: [
+    { stem:"A concave mirror has a radius of curvature of 40 cm. A person looking into it sees an upright image of his face 1.5 times its actual size.", parts:[
+      { sub:"7.1", skill:"calc", type:"num", prompt:"Calculate the distance of his face from the mirror.", unit:"cm", ans:6.67,
+        wrong:[[13.3,"You used f = 40 cm. f = R/2 = 20 cm."],[33.3,"Upright means M = +1.5, so v = &minus;1.5u (virtual image). You used an inverted image."]],
+        exp:"f = 20 cm. M = &minus;v/u = +1.5, so v = &minus;1.5u. 1/20 = 1/u &minus; 1/(1.5u) = 1/(3u), so u = 6.67 cm." } ]},
+
+    { stem:"An object is 30 cm in front of a convex mirror whose focal length has magnitude 20 cm.", parts:[
+      { sub:"7.1", skill:"calc", type:"num", prompt:"Calculate the image distance v. Include the sign.", unit:"cm", ans:-12,
+        wrong:[[60,"For a convex mirror f is negative: f = &minus;20 cm."],[12,"Keep the sign. A negative v tells you the image is virtual, behind the mirror."]],
+        exp:"1/v = 1/f &minus; 1/u = &minus;1/20 &minus; 1/30 = &minus;1/12, so v = &minus;12 cm." },
+      { sub:"7.1", skill:"calc", type:"num", prompt:"Calculate the distance between the object and its image.", unit:"cm", ans:42,
+        wrong:[[18,"The image is behind the mirror and the object is in front, so add: 30 + 12."],[90,"This follows from using f = +20 cm."]],
+        exp:"Object 30 cm in front, image 12 cm behind: separation = 30 + 12 = 42 cm." },
+      { sub:"7.1", skill:"theory", type:"mcq", prompt:"Describe the image.",
+        opts:[ {t:"Virtual, upright and diminished", ok:true},
+               {t:"Real, inverted and diminished", mis:"A convex mirror never forms a real image of a real object. v is negative."},
+               {t:"Virtual, upright and magnified", mis:"M = &minus;v/u = 12/30 = 0.4, which is smaller than 1."} ],
+        exp:"v &lt; 0: virtual. M = +0.4: upright and diminished. This is always true for a convex mirror." } ]},
+
+    { stem:"A small bead is inside a solid glass sphere (n = 1.50) of radius 20 cm. Viewed from outside along a diameter, the bead is 8.0 cm from the near surface.", parts:[
+      { sub:"7.2", skill:"calc", type:"num", prompt:"Calculate the image distance from the surface. Include the sign.", unit:"cm", ans:-6.15,
+        wrong:[[-4.71,"Seen from the bead, the surface curves away (concave), so R = &minus;20 cm."],[-10,"n<sub>1</sub> is where the object is (glass, 1.50) and n<sub>2</sub> is air (1.00)."]],
+        exp:"n<sub>1</sub> = 1.50, n<sub>2</sub> = 1.00, u = 8.0 cm, R = &minus;20 cm. 1.50/8.0 + 1.00/v = (1.00 &minus; 1.50)/(&minus;20) = 0.025. 1/v = 0.025 &minus; 0.1875, so v = &minus;6.15 cm: a virtual image 6.15 cm inside the glass." } ]},
+
+    { stem:"One end of a long glass rod (n = 1.50) is ground to a convex hemispherical surface of radius 4.0 cm. A small object in air is on the axis, 20 cm from this surface.", parts:[
+      { sub:"7.2", skill:"calc", type:"num", prompt:"Calculate the image distance.", unit:"cm", ans:20,
+        wrong:[[13.3,"You left out n<sub>2</sub> on the image side: the term is 1.50/v."],[-8.57,"The surface is convex towards the object, so R = +4.0 cm."]],
+        exp:"1.00/20 + 1.50/v = (1.50 &minus; 1.00)/4.0 = 0.125. 1.50/v = 0.075, so v = 20 cm." },
+      { sub:"7.2", skill:"theory", type:"mcq", prompt:"What does the positive value of v tell you?",
+        opts:[ {t:"The image is real and inside the glass rod", ok:true},
+               {t:"The image is virtual and in the air", mis:"Positive v puts the image on the far side of the surface, in the glass, where the light actually goes."},
+               {t:"The image is upright", mis:"The sign of v tells you real or virtual. Upright or inverted comes from the magnification."} ],
+        exp:"v &gt; 0: a real image in the second medium." } ]},
+
+    { stem:"A biconvex lens made of glass (n = 1.50) has radii of curvature 20 cm and 30 cm.", parts:[
+      { sub:"7.3", skill:"calc", type:"num", prompt:"Calculate its focal length in air.", unit:"cm", ans:24,
+        wrong:[[120,"For a biconvex lens R<sub>2</sub> is negative, so 1/R<sub>1</sub> &minus; 1/R<sub>2</sub> = 1/20 + 1/30."],[-24,"A biconvex lens in air is converging, so f is positive."]],
+        exp:"1/f = (1.50 &minus; 1)(1/20 + 1/30) = 0.5 &times; 0.0833 = 0.0417, so f = 24 cm." },
+      { sub:"7.3", skill:"calc", type:"num", prompt:"Calculate its focal length when it is in water (n = 1.33).", unit:"cm", ans:93.9,
+        wrong:[[70.6,"Use the ratio n<sub>lens</sub>/n<sub>medium</sub> = 1.50/1.33, not the difference 1.50 &minus; 1.33."],[24,"The focal length changes in water: use n<sub>lens</sub>/n<sub>water</sub>."]],
+        exp:"1/f = (1.50/1.33 &minus; 1)(1/20 + 1/30) = 0.128 &times; 0.0833 = 0.01065, so f = 93.9 cm." },
+      { sub:"7.3", skill:"theory", type:"mcq", prompt:"The lens is put in a liquid with n = 1.80. How does it behave?",
+        opts:[ {t:"As a diverging lens, because n<sub>lens</sub>/n<sub>medium</sub> &minus; 1 is negative", ok:true},
+               {t:"Still as a converging lens, because its shape has not changed", mis:"The shape is the same, but 1.50/1.80 &minus; 1 &lt; 0 makes f negative."},
+               {t:"It has no effect on light, because it is fully immersed", mis:"It only stops bending light if n<sub>medium</sub> = n<sub>lens</sub>."} ],
+        exp:"1.50/1.80 &minus; 1 = &minus;0.167, so f is negative: diverging." } ]},
+
+    { stem:"An object 2.5 cm tall is placed 15 cm from a diverging lens of focal length magnitude 10 cm.", parts:[
+      { sub:"7.3", skill:"calc", type:"num", prompt:"Calculate the image distance. Include the sign.", unit:"cm", ans:-6.0,
+        wrong:[[30,"A diverging lens has f = &minus;10 cm."],[6.0,"Keep the sign: the image is virtual, so v is negative."]],
+        exp:"1/v = 1/f &minus; 1/u = &minus;1/10 &minus; 1/15 = &minus;1/6, so v = &minus;6.0 cm." },
+      { sub:"7.3", skill:"calc", type:"num", prompt:"Calculate the height of the image.", unit:"cm", ans:1.0,
+        wrong:[[5.0,"This follows from f = +10 cm. Use f = &minus;10 cm."],[6.25,"M = &minus;v/u = 6/15 = 0.4, not u/v."]],
+        exp:"M = &minus;v/u = 6.0/15 = 0.40. h<sub>i</sub> = 0.40 &times; 2.5 = 1.0 cm." } ]},
+
+    { stem:"Two converging lenses with focal lengths 10 cm (lens 1) and 12 cm (lens 2) are 45 cm apart. An object is 15 cm in front of lens 1.", parts:[
+      { sub:"7.3", skill:"calc", type:"num", prompt:"Calculate the distance of the final image from lens 2.", unit:"cm", ans:60,
+        wrong:[[16.4,"The object for lens 2 is the image from lens 1, so u<sub>2</sub> = 45 &minus; 30 = 15 cm, not 45 cm."],[20,"u<sub>2</sub> is the distance from the first image to lens 2: 45 &minus; 30 = 15 cm."]],
+        exp:"Lens 1: 1/v<sub>1</sub> = 1/10 &minus; 1/15, v<sub>1</sub> = 30 cm. u<sub>2</sub> = 45 &minus; 30 = 15 cm. Lens 2: 1/v<sub>2</sub> = 1/12 &minus; 1/15, v<sub>2</sub> = 60 cm." } ]},
+
+    { stem:"Huygens's principle is used to explain how a wavefront moves forward.", parts:[
+      { sub:"7.4", skill:"theory", type:"mcq", prompt:"Which statement is Huygens's principle?",
+        opts:[ {t:"Every point on a wavefront is a source of secondary wavelets, and the new wavefront is the envelope of these wavelets", ok:true},
+               {t:"Light always travels in straight lines from a source", mis:"Huygens's principle explains why light can spread (diffract), not why it goes straight."},
+               {t:"Two waves meeting in phase always produce a bright fringe", mis:"That is the condition for constructive interference."} ],
+        exp:"Each point acts as a new source; the tangent to all the wavelets gives the next wavefront." } ]},
+
+    { stem:"Two coherent sources in phase emit light of wavelength 600 nm. At point P the path difference is 1.5 &mu;m.", parts:[
+      { sub:"7.5", skill:"theory", type:"mcq", prompt:"What is observed at P?",
+        opts:[ {t:"A dark fringe, because the path difference is 2.5&lambda;", ok:true},
+               {t:"A bright fringe, because the path difference is a whole number of micrometres", mis:"Compare with &lambda;: 1.5 &mu;m / 600 nm = 2.5, a half number."},
+               {t:"A bright fringe of order 2.5", mis:"Order numbers are whole numbers. 2.5&lambda; = (2 + &frac12;)&lambda; gives destructive interference."} ],
+        exp:"1.5&times;10<sup>&minus;6</sup> / 600&times;10<sup>&minus;9</sup> = 2.5. For in-phase sources, (m + &frac12;)&lambda; gives a dark fringe." },
+      { sub:"7.5", skill:"theory", type:"mcq", prompt:"Which pair of sources is coherent?",
+        opts:[ {t:"Two slits lit by the same laser", ok:true},
+               {t:"Two identical light bulbs", mis:"Separate bulbs emit randomly, so their phase difference is not constant."},
+               {t:"A red lamp and a green lamp", mis:"Coherent sources must have the same frequency."} ],
+        exp:"Coherent: same frequency and a constant phase difference. Splitting one source does this." } ]},
+
+    { stem:"The diagram shows the order numbers of the fringes in a Young's double-slit pattern. In one experiment the slits are 0.20 mm apart and the screen is 1.6 m away. The distance between the 8th bright fringe and the 3rd dark fringe, on the same side, is 22.0 mm.", fig:FIG.fringe7, parts:[
+      { sub:"7.6", skill:"calc", type:"num", prompt:"Calculate the wavelength of the light.", unit:"m", ans:5.0e-7,
+        wrong:[[6.11e-7,"The 3rd dark fringe has m = 2, not 3. It is at 2.5&lambda;D/d, so the gap is 8 &minus; 2.5 = 5.5 fringe spacings."],[5.5e-7,"Dark fringes are at (m + &frac12;)&lambda;D/d. The 3rd dark is at 2.5&lambda;D/d, not 3&lambda;D/d."]],
+        exp:"8th bright: 8&lambda;D/d. 3rd dark (m = 2): 2.5&lambda;D/d. 5.5&lambda;D/d = 22.0 mm, so &lambda;D/d = 4.0 mm. &lambda; = (4.0&times;10<sup>&minus;3</sup>)(0.20&times;10<sup>&minus;3</sup>)/1.6 = 5.0&times;10<sup>&minus;7</sup> m." } ]},
+
+    { stem:"In a double-slit experiment, light of wavelength 650 nm passes through slits 0.15 mm apart onto a screen 1.0 m away.", fig:FIG.fringe7, parts:[
+      { sub:"7.6", skill:"calc", type:"num", prompt:"Calculate the distance between the fifth-order bright fringe and the third dark fringe on the same side.", unit:"m", ans:1.083e-2,
+        wrong:[[6.5e-3,"The 3rd dark fringe has m = 2 (y = 2.5&lambda;D/d), not m = 3."],[8.67e-3,"Dark fringes need the &frac12;: the 3rd dark is at 2.5&lambda;D/d."]],
+        exp:"&lambda;D/d = (650&times;10<sup>&minus;9</sup>)(1.0)/(0.15&times;10<sup>&minus;3</sup>) = 4.33 mm. 5th-order bright: 5 &times; 4.33 = 21.7 mm. 3rd dark (m = 2): 2.5 &times; 4.33 = 10.8 mm. Difference = 10.8 mm = 1.08&times;10<sup>&minus;2</sup> m." } ]},
+
+    { stem:"In a Young's double-slit experiment the slits are 0.30 mm apart and the screen is 1.8 m away. The first bright fringe is 3.0 mm from the centre of the pattern.", parts:[
+      { sub:"7.6", skill:"calc", type:"num", prompt:"Calculate the wavelength.", unit:"m", ans:5.0e-7,
+        wrong:[[2.5e-7,"The 1st bright fringe has m = 1, so y = &lambda;D/d. You treated it as m = 2."],[5.0e-4,"Convert 3.0 mm and 0.30 mm to metres."]],
+        exp:"y<sub>1</sub> = &lambda;D/d, so &lambda; = y<sub>1</sub>d/D = (3.0&times;10<sup>&minus;3</sup>)(0.30&times;10<sup>&minus;3</sup>)/1.8 = 5.0&times;10<sup>&minus;7</sup> m." },
+      { sub:"7.6", skill:"calc", type:"num", prompt:"Calculate the distance of the fourth dark fringe from the centre.", unit:"m", ans:1.05e-2,
+        wrong:[[1.35e-2,"You used m = 4. The 4th dark fringe has m = 3, so y = 3.5&lambda;D/d."],[1.2e-2,"Dark fringes need the &frac12;: (m + &frac12;)&lambda;D/d with m = 3."]],
+        exp:"4th dark: m = 3. y = (3 + &frac12;)(3.0 mm) = 10.5 mm = 1.05&times;10<sup>&minus;2</sup> m." },
+      { sub:"7.6", skill:"calc", type:"num", prompt:"Calculate the distance of the second-order minimum (dark fringe) from the centre.", unit:"m", ans:7.5e-3,
+        wrong:[[4.5e-3,"Second-<b>order</b> means m = 2, not the second dark fringe (m = 1)."],[6.0e-3,"Minima need the &frac12;: (2 + &frac12;)&lambda;D/d."]],
+        exp:"Second-order minimum: m = 2. y = (2 + &frac12;)(3.0 mm) = 7.5 mm." },
+      { sub:"7.6", skill:"theory", type:"mcq", prompt:"The whole apparatus is placed under water. What happens to the fringes?",
+        opts:[ {t:"They move closer together, because the wavelength in water is shorter", ok:true},
+               {t:"They move further apart, because water slows the light", mis:"Slower light in water has a shorter wavelength, and &Delta;y &prop; &lambda;."},
+               {t:"They do not change, because the slits and screen have not moved", mis:"&Delta;y = &lambda;D/d also depends on &lambda;, which is smaller in water."} ],
+        exp:"&lambda;<sub>water</sub> = &lambda;/n is smaller, so &Delta;y = &lambda;D/d is smaller." } ]},
+
+    { stem:"In the same experiment (&lambda;D/d = 3.0 mm), consider the second bright fringe on one side of the centre and the third dark fringe on the other side.", fig:FIG.fringe7, parts:[
+      { sub:"7.6", skill:"calc", type:"num", prompt:"Calculate the distance between these two fringes.", unit:"m", ans:1.35e-2,
+        wrong:[[1.5e-3,"They are on opposite sides of the centre, so add the distances."],[1.65e-2,"The 3rd dark fringe has m = 2: y = 2.5&lambda;D/d, not 3.5&lambda;D/d."]],
+        exp:"2nd bright: 2 &times; 3.0 = 6.0 mm. 3rd dark (m = 2): 2.5 &times; 3.0 = 7.5 mm. Opposite sides: 6.0 + 7.5 = 13.5 mm." } ]},
+
+    { stem:"A glass lens (n = 1.52) is coated with a thin transparent film (n = 1.38) to reduce the reflection of light of wavelength 500 nm at normal incidence.", parts:[
+      { sub:"7.7", skill:"calc", type:"num", prompt:"Calculate the minimum thickness of the film.", unit:"m", ans:9.06e-8,
+        wrong:[[1.81e-7,"Both reflections have a &pi; phase change, so they cancel. Destructive needs 2nt = (m + &frac12;)&lambda; with m = 0, giving t = &lambda;/(4n)."],[1.25e-7,"Use the film's refractive index: t = &lambda;/(4n) with n = 1.38."]],
+        exp:"Air &rarr; film (1.38) and film &rarr; glass (1.52) both reflect off a higher n, so no phase difference. Destructive: 2nt = (m + &frac12;)&lambda;, m = 0: t = &lambda;/(4n) = 500&times;10<sup>&minus;9</sup>/(4 &times; 1.38) = 9.06&times;10<sup>&minus;8</sup> m." },
+      { sub:"7.7", skill:"theory", type:"mcq", prompt:"Which reflections in this coating undergo a phase change of &pi;?",
+        opts:[ {t:"Both: at the air&ndash;film surface and at the film&ndash;glass surface", ok:true},
+               {t:"Only the reflection at the air&ndash;film surface", mis:"The film&ndash;glass reflection is also from lower to higher n (1.38 to 1.52)."},
+               {t:"Neither", mis:"Light reflecting off a higher refractive index always gains a &pi; phase change."} ],
+        exp:"Both reflections go from lower to higher n, so both get &pi;. Their phase difference is zero." } ]},
+
+    { stem:"A soap film (n = 1.40) with air on both sides is lit normally by light of wavelength 600 nm. It appears dark in reflected light.", parts:[
+      { sub:"7.7", skill:"calc", type:"num", prompt:"Calculate the minimum non-zero thickness of the film.", unit:"m", ans:2.14e-7,
+        wrong:[[1.07e-7,"Only the top reflection has a &pi; change, so dark needs 2nt = m&lambda;. The minimum non-zero m is 1: t = &lambda;/(2n)."],[3.0e-7,"Use the film's n: t = &lambda;/(2n)."]],
+        exp:"Phase difference &pi;. Dark: 2nt = m&lambda;. m = 1: t = &lambda;/(2n) = 600&times;10<sup>&minus;9</sup>/(2 &times; 1.40) = 2.14&times;10<sup>&minus;7</sup> m." },
+      { sub:"7.7", skill:"calc", type:"num", prompt:"Calculate the next possible thickness for which the film looks dark.", unit:"m", ans:4.29e-7,
+        wrong:[[3.21e-7,"Dark here is 2nt = m&lambda;, so the next one is m = 2, not m + &frac12;."]],
+        exp:"m = 2: t = 2&lambda;/(2n) = &lambda;/n = 4.29&times;10<sup>&minus;7</sup> m." } ]},
+
+    { stem:"A thin oil film (n = 1.45) floats on water (n = 1.33). Viewed from above at normal incidence, it looks bright for light of wavelength 480 nm.", parts:[
+      { sub:"7.7", skill:"calc", type:"num", prompt:"Calculate the minimum thickness of the oil film.", unit:"m", ans:8.28e-8,
+        wrong:[[1.66e-7,"Only the top reflection (air &rarr; oil) changes phase; oil &rarr; water does not. Bright needs 2nt = (m + &frac12;)&lambda;, m = 0."],[9.02e-8,"Use the oil's refractive index, 1.45."]],
+        exp:"Phase difference &pi;. Bright: 2nt = (m + &frac12;)&lambda;, m = 0: t = &lambda;/(4n) = 480&times;10<sup>&minus;9</sup>/(4 &times; 1.45) = 8.28&times;10<sup>&minus;8</sup> m." } ]},
+
+    { stem:"Light passes through a single slit 0.30 mm wide onto a screen 2.0 m away. The central bright fringe is 8.0 mm wide.", parts:[
+      { sub:"7.8", skill:"calc", type:"num", prompt:"Calculate the wavelength.", unit:"m", ans:6.0e-7,
+        wrong:[[1.2e-6,"The central width is 2&lambda;D/a. You left out the 2."],[3.0e-7,"The half-width (to the first dark) is 4.0 mm, and it equals &lambda;D/a."]],
+        exp:"w = 2&lambda;D/a, so &lambda; = wa/(2D) = (8.0&times;10<sup>&minus;3</sup>)(0.30&times;10<sup>&minus;3</sup>)/(2 &times; 2.0) = 6.0&times;10<sup>&minus;7</sup> m." },
+      { sub:"7.8", skill:"calc", type:"num", prompt:"Calculate the distance of the third dark fringe from the centre.", unit:"m", ans:1.2e-2,
+        wrong:[[8.0e-3,"For a single slit the 3rd dark fringe has m = 3, not m = 2. Single slit: order number = fringe count."],[1.4e-2,"Single-slit dark fringes are at m&lambda;D/a, with no &frac12;."]],
+        exp:"&lambda;D/a = 4.0 mm. 3rd dark: m = 3, y = 3 &times; 4.0 = 12 mm." },
+      { sub:"7.8", skill:"theory", type:"mcq", prompt:"The slit is made narrower. What happens to the central maximum?",
+        opts:[ {t:"It becomes wider", ok:true}, {t:"It becomes narrower", mis:"w = 2&lambda;D/a: a smaller a gives a larger w."}, {t:"It stays the same", mis:"w depends on a: w &prop; 1/a."} ],
+        exp:"A narrower slit diffracts the light more, so the pattern spreads out." } ]},
+
+    { stem:"Light of wavelength 500 nm falls normally on a diffraction grating with 800 lines per mm.", parts:[
+      { sub:"7.9", skill:"calc", type:"num", prompt:"Calculate the angle of the second-order maximum.", unit:"&deg;", ans:53.1,
+        wrong:[[23.6,"That is the first order. Second order: m = 2."],[0.927,"That is in radians. Give &theta; in degrees."]],
+        exp:"d = 1/(8.0&times;10<sup>5</sup>) = 1.25&times;10<sup>&minus;6</sup> m. sin &theta; = 2&lambda;/d = 0.80, &theta; = 53.1&deg;." },
+      { sub:"7.9", skill:"theory", type:"mcq", prompt:"Can a fourth-order maximum be seen?",
+        opts:[ {t:"No, because it would need sin &theta; = 1.6, which is impossible", ok:true},
+               {t:"Yes, at a larger angle than the second order", mis:"sin &theta; = 4&lambda;/d = 1.6 &gt; 1, so there is no such angle."},
+               {t:"Yes, but it is very faint", mis:"It does not exist at all: d/&lambda; = 2.5, so m<sub>max</sub> = 2."} ],
+        exp:"m<sub>max</sub> = whole part of d/&lambda; = 2." },
+      { sub:"7.9", skill:"calc", type:"num", prompt:"How many bright fringes can be seen in total?", unit:"", ans:5,
+        wrong:[[2,"2 is the highest order on one side. Total = 2m<sub>max</sub> + 1."],[3,"Count both sides plus the central maximum: 2(2) + 1."],[4,"Remember the central (m = 0) maximum: 2(2) + 1 = 5."],[7,"Round d/&lambda; = 2.5 down to 2, not up to 3. Then 2(2) + 1 = 5."]],
+        exp:"m<sub>max</sub> = 2. Total = 2(2) + 1 = 5." } ]},
+
+    { stem:"Light of wavelength 566 nm is incident normally on a grating. The third-order maximum is at 15.7&deg;.", parts:[
+      { sub:"7.9", skill:"calc", type:"num", prompt:"Calculate the number of lines per metre on the grating.", unit:"m<sup>&minus;1</sup>", ans:1.594e5,
+        wrong:[[4.78e5,"You used m = 1. The third order has m = 3."],[6.27e-6,"That is d. N = 1/d."]],
+        exp:"d = m&lambda;/sin &theta; = 3(566&times;10<sup>&minus;9</sup>)/sin 15.7&deg; = 6.27&times;10<sup>&minus;6</sup> m. N = 1/d = 1.59&times;10<sup>5</sup> m<sup>&minus;1</sup>." } ]}
+  ],
+
+  practice: [
+    { stem:"An object is 25 cm from a concave mirror. An inverted image with magnification 0.8 is formed.", parts:[
+      { sub:"7.1", skill:"calc", type:"num", prompt:"Calculate the focal length.", unit:"cm", ans:11.1,
+        wrong:[[-100,"Inverted means M = &minus;0.8, so v = +0.8u = 20 cm (real)."]],
+        exp:"v = 0.8 &times; 25 = 20 cm. 1/f = 1/25 + 1/20, f = 11.1 cm." } ]},
+    { stem:"A concave mirror of focal length 15 cm forms an image of an object 30 cm away.", parts:[
+      { sub:"7.1", skill:"theory", type:"mcq", prompt:"Describe the image.",
+        opts:[ {t:"Real, inverted, same size, at 30 cm", ok:true}, {t:"Virtual, upright, magnified", mis:"The object is outside F, so the image is real."}, {t:"Real, inverted, diminished, between F and C", mis:"The object is at C (u = 2f), so the image is also at C, same size."} ],
+        exp:"u = 2f = R: the image is at C, real, inverted and the same size." } ]},
+    { stem:"A fly is inside a ball of amber (n = 1.70) of radius 12 cm. To an observer outside, the fly appears 2.0 cm from the surface.", parts:[
+      { sub:"7.2", skill:"calc", type:"num", prompt:"Calculate the actual depth of the fly below the surface.", unit:"cm", ans:3.04,
+        wrong:[[3.85,"Seen from the fly, the surface is concave: R = &minus;12 cm. The image is virtual: v = &minus;2.0 cm."]],
+        exp:"1.70/u + 1.00/(&minus;2.0) = (1.00 &minus; 1.70)/(&minus;12) = 0.0583. 1.70/u = 0.5583, u = 3.04 cm." } ]},
+    { stem:"A coin is embedded 20 cm inside a glass sphere (n = 1.5) of radius 30 cm, measured from the near surface.", parts:[
+      { sub:"7.2", skill:"calc", type:"num", prompt:"Calculate the image distance. Include the sign.", unit:"cm", ans:-17.1,
+        wrong:[[-10.9,"Seen from inside, the surface is concave: R = &minus;30 cm."]],
+        exp:"1.5/20 + 1/v = (1 &minus; 1.5)/(&minus;30) = 0.0167. 1/v = 0.0167 &minus; 0.075, v = &minus;17.1 cm." } ]},
+    { stem:"A converging lens of crown glass (n = 1.52) has equal radii on both sides and focal length 25 cm.", parts:[
+      { sub:"7.3", skill:"calc", type:"num", prompt:"Calculate the radius of curvature of each face.", unit:"cm", ans:26,
+        wrong:[[13,"Both faces contribute: 1/f = (n &minus; 1)(2/R), so R = 2(n &minus; 1)f."]],
+        exp:"1/25 = 0.52 &times; (2/R), R = 2 &times; 0.52 &times; 25 = 26 cm." } ]},
+    { stem:"An object is 35 cm from a lens. The image is 7.0 cm from the lens, on the same side as the object.", parts:[
+      { sub:"7.3", skill:"calc", type:"num", prompt:"Calculate the focal length. Include the sign.", unit:"cm", ans:-8.75,
+        wrong:[[5.83,"An image on the same side as the object is virtual: v = &minus;7.0 cm."]],
+        exp:"1/f = 1/35 + 1/(&minus;7.0) = &minus;0.114, f = &minus;8.75 cm: a diverging lens." } ]},
+    { stem:"A plane wave passes through a narrow gap about one wavelength wide.", parts:[
+      { sub:"7.4", skill:"theory", type:"mcq", prompt:"What shape are the wavefronts after the gap?",
+        opts:[ {t:"Circular, spreading out from the gap", ok:true}, {t:"Plane, the same width as the gap", mis:"Only a few wavelets pass a narrow gap, so the wave spreads out."}, {t:"Plane, but with a shorter wavelength", mis:"Diffraction does not change the wavelength."} ],
+        exp:"The gap acts almost like a single point source of wavelets." } ]},
+    { stem:"Two sources vibrate in antiphase (&pi; out of phase).", parts:[
+      { sub:"7.5", skill:"theory", type:"mcq", prompt:"At a point where the path difference is 2&lambda;, the interference is",
+        opts:[ {t:"destructive", ok:true}, {t:"constructive", mis:"For antiphase sources the conditions swap: m&lambda; gives destructive."}, {t:"neither", mis:"Antiphase sources with a whole-number path difference give complete cancellation."} ],
+        exp:"Antiphase: bright at (m + &frac12;)&lambda;, dark at m&lambda;." } ]},
+    { stem:"Light of wavelength 546 nm passes through slits 0.25 mm apart onto a screen 1.2 m away.", parts:[
+      { sub:"7.6", skill:"calc", type:"num", prompt:"Calculate the distance between the first-order and the fourth-order minima on the same side.", unit:"m", ans:7.86e-3,
+        wrong:[[5.24e-3,"First-order and fourth-order minima have m = 1 and m = 4: 3 fringe spacings apart, not 2."]],
+        exp:"&lambda;D/d = 2.62 mm. (4 + &frac12;) &minus; (1 + &frac12;) = 3 spacings: 3 &times; 2.62 = 7.86 mm." } ]},
+    { stem:"Blue light passes through slits 0.050 mm apart onto a screen 1.5 m away. The third dark fringe is 33.8 mm from the centre.", parts:[
+      { sub:"7.6", skill:"calc", type:"num", prompt:"Calculate the wavelength.", unit:"m", ans:4.51e-7,
+        wrong:[[3.22e-7,"The 3rd dark fringe has m = 2, so y = 2.5&lambda;D/d, not 3.5&lambda;D/d."],[3.76e-7,"Dark fringes are at (m + &frac12;)&lambda;D/d; the 3rd dark is 2.5&lambda;D/d."]],
+        exp:"33.8&times;10<sup>&minus;3</sup> = 2.5&lambda;(1.5)/(0.050&times;10<sup>&minus;3</sup>), &lambda; = 4.51&times;10<sup>&minus;7</sup> m." },
+      { sub:"7.6", skill:"theory", type:"mcq", prompt:"Which fringe is at y = 4.5&lambda;D/d?",
+        opts:[ {t:"The fifth dark fringe (m = 4)", ok:true}, {t:"The fourth dark fringe", mis:"4th dark has m = 3: y = 3.5&lambda;D/d."}, {t:"The fourth-order bright fringe", mis:"Bright fringes are at whole numbers of &lambda;D/d."} ],
+        exp:"(m + &frac12;) = 4.5 gives m = 4, which is the 5th dark fringe (and the 4th-order minimum)." } ]},
+    { stem:"A thin film coats a glass lens (n = 1.56) to stop reflection of red light at 735 nm. The film has n = 1.29.", parts:[
+      { sub:"7.7", skill:"calc", type:"num", prompt:"Calculate the minimum thickness.", unit:"m", ans:1.42e-7,
+        wrong:[[2.85e-7,"Both reflections change phase, so destructive needs t = &lambda;/(4n)."]],
+        exp:"No phase difference. Destructive: t = &lambda;/(4n) = 735&times;10<sup>&minus;9</sup>/(4 &times; 1.29) = 1.42&times;10<sup>&minus;7</sup> m." } ]},
+    { stem:"A thin oil film (n = 1.18) floats on water (n = 1.33).", parts:[
+      { sub:"7.7", skill:"calc", type:"num", prompt:"Calculate the minimum thickness that strongly reflects green light of 522 nm.", unit:"m", ans:2.21e-7,
+        wrong:[[1.11e-7,"Here both reflections go to a higher n (air &rarr; oil &rarr; water), so bright needs 2nt = m&lambda; with m = 1."]],
+        exp:"Both reflections change phase: no phase difference. Bright: 2nt = m&lambda;, m = 1: t = &lambda;/(2n) = 2.21&times;10<sup>&minus;7</sup> m." } ]},
+    { stem:"Light of wavelength 580 nm passes through a slit 0.30 mm wide onto a screen 2.0 m away.", parts:[
+      { sub:"7.8", skill:"calc", type:"num", prompt:"Calculate the angle of the third minimum.", unit:"&deg;", ans:0.332,
+        wrong:[[0.111,"Third minimum: m = 3."]],
+        exp:"sin &theta; = 3&lambda;/a = 3(580&times;10<sup>&minus;9</sup>)/(0.30&times;10<sup>&minus;3</sup>) = 5.8&times;10<sup>&minus;3</sup>, &theta; = 0.332&deg;." } ]},
+    { stem:"With 500 nm light, a single slit gives a central maximum 10 cm wide on a screen.", parts:[
+      { sub:"7.8", skill:"calc", type:"num", prompt:"Calculate the width with 650 nm light.", unit:"cm", ans:13,
+        wrong:[[7.69,"w &prop; &lambda;, so a longer wavelength gives a wider maximum."]],
+        exp:"w &prop; &lambda;: w = 10 &times; 650/500 = 13 cm." } ]},
+    { stem:"A grating 0.025 m long has 20 000 slits. Light of 590 nm falls on it.", parts:[
+      { sub:"7.9", skill:"calc", type:"num", prompt:"Calculate the angle of the first-order maximum.", unit:"&deg;", ans:28.2,
+        wrong:[[0.492,"That is in radians. Give &theta; in degrees."]],
+        exp:"N = 8.0&times;10<sup>5</sup> m<sup>&minus;1</sup>, d = 1.25&times;10<sup>&minus;6</sup> m. sin &theta; = 0.472, &theta; = 28.2&deg;." } ]},
+    { stem:"A grating with 5700 lines per cm is lit by 650 nm light.", parts:[
+      { sub:"7.9", skill:"calc", type:"num", prompt:"Calculate the maximum number of bright fringes observed.", unit:"", ans:5,
+        wrong:[[2,"That is m<sub>max</sub>. Total = 2m<sub>max</sub> + 1."],[7,"d/&lambda; = 2.70, so m<sub>max</sub> = 2 (round down)."]],
+        exp:"d = 1/(5.7&times;10<sup>5</sup>) = 1.75&times;10<sup>&minus;6</sup> m. d/&lambda; = 2.70, m<sub>max</sub> = 2. Total = 5." },
+      { sub:"7.9", skill:"theory", type:"mcq", prompt:"The highest order is found by",
+        opts:[ {t:"rounding d/&lambda; down to a whole number", ok:true}, {t:"rounding d/&lambda; to the nearest whole number", mis:"If d/&lambda; = 2.7, the 3rd order would need sin &theta; &gt; 1. Always round down."}, {t:"using sin &theta; = 0", mis:"sin &theta; = 0 gives the central maximum, m = 0."} ],
+        exp:"sin &theta; &le; 1 means m &le; d/&lambda;." } ]}
+  ]
+};
+
 const CH3 = {
   id: 3, title: "Electric Current and Direct-Current Circuits", open: true,
   subtopics: [
@@ -1425,7 +1733,7 @@ CH3,
 { id:4, title:"Magnetism", open:true, noDiag:true },
 CH5,
 CH6,
-{ id:7, title:"Optics", open:true },
+CH7,
 { id:8, title:"Wave Properties of Particle", open:true },
 { id:9, title:"Nuclear and Particle Physics", open:true }
 ];
@@ -3929,6 +4237,302 @@ const DOT = (x,y) => `<circle cx="${x}" cy="${y}" r="3" fill="${INK}"/>`;
 const PL = (pts,c=INK,sw=1.5) => `<polyline points="${pts}" fill="none" stroke="${c}" stroke-width="${sw}"/>`;
 const AXES = (x0,y0,w,h,xl,yl) => L(x0,y0,x0+w,y0,INK,1.4) + L(x0,y0,x0,y0-h,INK,1.4) + `<path d="M${x0+w},${y0} l-7,-3.5 l0,7 z M${x0},${y0-h} l-3.5,7 l7,0 z" fill="${INK}"/>` + T(x0+w+4,y0+15,xl,{s:12,i:1,a:"end"}) + T(x0-6,y0-h+10,yl,{s:12,i:1,a:"end"});
 
+/* ===== Chapter 7: Optics ===== */
+const C7 = THEORY[7];
+const RAY = (x1,y1,x2,y2,c=RED) => L(x1,y1,x2,y2,c,1.6) + (() => { const mx=(x1+x2)/2, my=(y1+y2)/2, a=Math.atan2(y2-y1,x2-x1); return `<path d="M${mx+5*Math.cos(a)},${my+5*Math.sin(a)} L${mx-5*Math.cos(a)-4*Math.sin(a)},${my-5*Math.sin(a)+4*Math.cos(a)} L${mx-5*Math.cos(a)+4*Math.sin(a)},${my-5*Math.sin(a)-4*Math.cos(a)} z" fill="${c}"/>`; })();
+const DASH = (x1,y1,x2,y2,c=RED) => L(x1,y1,x2,y2,c,1.2,"4 3");
+const OBJ = (x,y0,h,c=INK,dash) => L(x,y0,x,y0-h,c,2.4,dash?"4 3":null) + `<path d="M${x},${y0-h+(h>0?0:0)} l-5,${h>0?9:-9} l10,0 z" fill="${c}"${dash?' fill-opacity=".6"':""}/>`;
+const AXIS = (x1,x2,y) => L(x1,y,x2,y,MUT,1,"6 4");
+const PT = (x,y,lab) => DOT(x,y) + T(x,y+16,lab,{s:11,c:MUT});
+
+/* animated ray helpers: rays draw in order (--d = start time), then the image fades in */
+const AH = (x1,y1,x2,y2,c) => RAY(x1,y1,x2,y2,c).slice(L(x1,y1,x2,y2,c,1.6).length);
+const AR = (x1,y1,x2,y2,d,c=RED) => `<line class="ar" x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${c}" stroke-width="1.8" style="--len:${Math.hypot(x2-x1,y2-y1).toFixed(1)};--d:${d}s"/>` + `<g class="fade" style="--d:${(d+0.45).toFixed(2)}s">${AH(x1,y1,x2,y2,c)}</g>`;
+const FD = (html,d) => `<g class="fade" style="--d:${d}s">${html}</g>`;
+const figA = (svg, cap) => `<figure class="tfig">${svg.replace('class="tsvg"','class="tsvg anim"')}<button class="replay" type="button">&#8635; Replay</button><figcaption>${cap}</figcaption></figure>`;
+const f7_concave = S(360, 210, (() => { const y=110, mx=320; let o = AXIS(20,340,y);
+  o += P(`M${mx},40 Q${mx+18},${y} ${mx},180`,INK,3) + PT(260,y,"F") + PT(200,y,"C") + PT(mx,y,"P");
+  o += OBJ(140,y,40) + T(140,128,"object",{s:11});
+  o += AR(140,70,320,70,0.3) + AR(320,70,200,150,1.2);
+  o += AR(140,70,320,130,2.3) + AR(320,130,170,130,3.2);
+  o += FD(OBJ(230,y,-20,BLU) + T(232,160,"image",{s:11,c:BLU}), 4.1);
+  return o; })());
+const f7_convex = S(360, 200, (() => { const y=110, mx=200; let o = AXIS(20,340,y);
+  o += P(`M${mx},40 Q${mx-18},${y} ${mx},180`,INK,3) + PT(260,y,"F") + PT(320,y,"C");
+  o += OBJ(80,y,40) + T(80,128,"object",{s:11});
+  o += AR(80,70,200,70,0.3) + AR(200,70,140,30,1.2) + FD(DASH(200,70,260,110),2.0);
+  o += AR(80,70,197,89.5,2.7) + AR(197,89.5,120,76.6,3.6) + FD(DASH(197,89.5,320,110),4.4);
+  o += FD(OBJ(240,y,13.3,BLU,1) + T(252,92,"image",{s:11,c:BLU,a:"start"}) + T(180,194,"virtual, upright, diminished",{s:11,c:MUT}), 5.1);
+  return o; })());
+const f7_refr = S(360, 190, (() => { const y=100; let o = AXIS(20,340,y);
+  o += `<path d="M200,20 Q170,${y} 200,180 L340,180 L340,20 z" fill="#dbeaf7" stroke="${INK}" stroke-width="1.6"/>` + T(110,40,"n&#8321; (air)",{s:12}) + T(290,40,"n&#8322; (glass)",{s:12});
+  o += DOT(60,y) + T(60,y+18,"O",{s:12,b:1});
+  o += AR(60,y,184,60,0.3) + AR(184,60,310,y,1.2) + AR(60,y,184,140,2.2) + AR(184,140,310,y,3.1);
+  o += FD(DOT(310,y) + T(310,y+18,"I",{s:12,b:1,c:BLU}), 4.0);
+  o += L(60,160,186,160,MUT,1) + T(123,174,"u",{s:12,i:1}) + L(186,170,310,170,MUT,1) + T(250,184,"v",{s:12,i:1});
+  return o; })());
+const LENSCX = (x,y,h=70) => `<path d="M${x},${y-h} Q${x+16},${y} ${x},${y+h} Q${x-16},${y} ${x},${y-h} z" fill="#dbeaf7" stroke="${INK}" stroke-width="1.6"/>`;
+const LENSCC = (x,y,h=70) => `<path d="M${x-10},${y-h} L${x+10},${y-h} Q${x+1},${y} ${x+10},${y+h} L${x-10},${y+h} Q${x-1},${y} ${x-10},${y-h} z" fill="#dbeaf7" stroke="${INK}" stroke-width="1.6"/>`;
+const f7_lens = S(360, 210, (() => { const y=105; let o = AXIS(10,350,y) + LENSCX(180,y);
+  o += PT(120,y,"F") + PT(240,y,"F") + PT(60,y,"2F") + PT(300,y,"2F");
+  o += OBJ(60,y,40) + T(60,190,"object at 2F",{s:11});
+  o += AR(60,65,180,65,0.3) + AR(180,65,330,165,1.2);
+  o += AR(60,65,180,105,2.3) + AR(180,105,300,145,3.2);
+  o += FD(OBJ(300,y,-40,BLU) + T(300,190,"image at 2F",{s:11,c:BLU}) + T(180,202,"real, inverted, same size",{s:11,c:MUT}), 4.1);
+  return o; })());
+const f7_lensc = S(360, 190, (() => { const y=105; let o = AXIS(10,350,y) + LENSCC(200,y);
+  o += PT(140,y,"F") + PT(260,y,"F") + OBJ(80,y,40) + T(80,124,"object",{s:11});
+  o += AR(80,65,200,65,0.3) + AR(200,65,290,5,1.2) + FD(DASH(200,65,140,105),2.0);
+  o += AR(80,65,200,105,2.7) + AR(200,105,320,145,3.6);
+  o += FD(OBJ(160,y,13.3,BLU,1) + T(160,84,"image",{s:11,c:BLU}) + T(200,186,"virtual, upright, diminished",{s:11,c:MUT}), 4.5);
+  return o; })());
+const f7_huy = S(380, 200, (() => { let o = "";
+  o += L(40,20,40,180,BLU,2.4) + T(40,196,"wavefront",{s:11,c:BLU});
+  [35,65,95,125,155].forEach(y => { o += DOT(40,y) + P(`M40,${y-30} A30,30 0 0 1 40,${y+30}`,MUT,1,0); });
+  o += L(70,20,70,180,BLU,2.4,"6 3") + T(76,196,"new wavefront",{s:11,c:BLU,a:"start"}) + A(90,100,120,100,INK,1.6);
+  o += L(220,20,220,80,INK,4) + L(220,120,220,180,INK,4) + [190,200,210].map(x => L(x,30,x,170,BLU,1.6)).join("");
+  [20,40,60,80].forEach(r => o += P(`M220,${100-r} A${r},${r} 0 0 1 220,${100+r}`,BLU,1.6));
+  o += T(290,196,"spreading at a narrow slit",{s:11,c:MUT});
+  return o; })());
+const f7_super = S(360, 190, (() => { const W = (x0,y0,amp,ph,c) => P((() => { let d=""; for(let i=0;i<=40;i++){ const t=i/40; d += (i?" L":"M")+`${(x0+t*90).toFixed(1)},${(y0-amp*Math.sin(4*Math.PI*t+ph)).toFixed(1)}`; } return d; })(),c,1.8);
+  let o = W(20,35,14,0,BLU) + W(20,75,14,0,RED) + T(65,108,"+",{s:16,b:1}) + T(160,20,"in phase: constructive",{s:12,b:1,c:FLD,a:"start"}) + W(160,55,28,0,FLD);
+  o += W(20,125,14,0,BLU) + W(20,160,14,Math.PI,RED) + T(160,110,"antiphase: destructive",{s:12,b:1,c:RED,a:"start"}) + L(160,145,250,145,RED,1.8);
+  return o; })());
+const f7_double = S(360, 220, (() => { let o = "";
+  o += `<circle cx="20" cy="110" r="5" fill="#f0c36d" stroke="${INK}"/>` + T(20,96,"source",{s:10,c:MUT}) + L(70,20,70,98,INK,3) + L(70,104,70,116,INK,3) + L(70,122,70,200,INK,3) + T(60,94,"S&#8321;",{s:11,a:"end"}) + T(60,134,"S&#8322;",{s:11,a:"end"});
+  o += L(300,20,300,200,INK,2) + T(300,214,"screen",{s:11,c:MUT});
+  for(let k=-4;k<=4;k++){ const yy=110+k*20; o += `<rect x="306" y="${yy-5}" width="24" height="10" fill="${k===0?"#f5b041":"#f8c471"}" opacity="${1-Math.abs(k)*0.15}"/>`; }
+  o += L(70,101,300,150,MUT,1) + L(70,119,300,150,MUT,1) + DOT(300,150) + T(290,148,"P",{s:11,a:"end"});
+  o += L(70,212,300,212,MUT,1) + T(185,208,"D",{s:12,i:1}) + L(336,110,336,150,BLU,1) + T(342,134,"y",{s:12,i:1,c:BLU,a:"start"}) + T(80,112,"d",{s:12,i:1,a:"start"});
+  return o; })());
+const f7_film = S(360, 190, `<rect x="20" y="70" width="320" height="50" fill="#dbeaf7" stroke="${INK}"/>` + T(30,64,"air (n = 1.00)",{s:11,a:"start"}) + T(30,100,"film (n)",{s:11,a:"start"}) + T(30,140,"air or glass below",{s:11,a:"start"})
+  + RAY(100,10,150,70,RED) + RAY(150,70,200,10,RED) + RAY(150,70,180,120,RED) + RAY(180,120,210,70,RED) + RAY(210,70,260,10,RED)
+  + T(196,26,"ray 1",{s:11,c:RED,a:"end"}) + T(262,26,"ray 2",{s:11,c:RED,a:"start"}) + T(150,86,"phase change &#960;",{s:10.5,c:BLU,a:"end"})
+  + L(320,70,320,120,MUT,1) + T(328,99,"t",{s:12,i:1,a:"start"}) + T(180,174,"ray 2 travels an extra 2nt inside the film",{s:11,c:MUT}));
+const f7_single = S(360, 200, (() => { let o = L(30,20,30,92,INK,4) + L(30,108,30,180,INK,4) + T(22,104,"a",{s:12,i:1,a:"end"}) + L(320,20,320,180,INK,2) + L(30,100,320,100,MUT,1,"4 3");
+  let d=""; for(let i=0;i<=200;i++){ const yy=-1+i/100; const b=Math.PI*yy*3.2; const I = Math.abs(b)<1e-6?1:Math.pow(Math.sin(b)/b,2); d += (i?" L":"M")+`${(250 - 70*I).toFixed(1)},${(100+yy*80).toFixed(1)}`; } o += P(d,BLU,2);
+  o += L(250,20,250,180,MUT,1) + T(208,30,"intensity",{s:10.5,c:MUT}) + T(300,104,"central max",{s:10,c:BLU,a:"end"}).replace('y="104"','y="94"');
+  return o + T(175,196,"central maximum is twice as wide as the others",{s:11,c:MUT}); })());
+const f7_grating = S(360, 210, (() => { let o = L(60,20,60,190,INK,2,"2 4") + T(56,200,"grating",{s:10.5,c:MUT});
+  for(let k=-2;k<=2;k++){ const th = Math.asin(k*0.3); const x=60+250*Math.cos(th), y=105-250*Math.sin(th)*0.62; o += A(60,105,x,y,k===0?INK:RED,1.6) + T(x+6,y+4,`m = ${k}`,{s:11,a:"start",c:k===0?INK:RED}); }
+  o += A(10,105,56,105,FLD,2) + T(20,96,"light",{s:10,c:FLD}) + P("M120,105 A60,60 0 0 0 117,85",INK,1.2) + T(126,92,"&#952;",{s:12,i:1,a:"start"});
+  return o; })());
+
+C7[0].html = `
+<p>A <b>spherical mirror</b> is part of a sphere. A <b>concave</b> mirror curves inwards (like the inside of a spoon) and makes light converge. A <b>convex</b> mirror bulges outwards and makes light spread out.</p>
+<h4>Key points</h4>
+<ul><li><b>Pole P:</b> the centre of the mirror's surface.</li>
+<li><b>Centre of curvature C:</b> the centre of the sphere the mirror is part of. R is its distance from P.</li>
+<li><b>Focal point F:</b> where rays parallel to the axis meet after reflection (concave), or appear to come from (convex). F is halfway between P and C, so:</li></ul>
+${fx("R=2f||\\dfrac1f=\\dfrac1u+\\dfrac1v||M=\\dfrac{h_i}{h_o}=-\\dfrac{v}{u}", "R = 2f &nbsp;&nbsp; 1/f = 1/u + 1/v &nbsp;&nbsp; M = h<sub>i</sub>/h<sub>o</sub> = &minus;v/u")}
+<h4>Ray diagrams</h4>
+<p>To find an image, draw at least two of these rays from the top of the object:</p>
+<ol><li>A ray <b>parallel to the axis</b> reflects <b>through F</b> (concave), or as if it came from F (convex).</li>
+<li>A ray <b>through F</b> (or heading towards F, for convex) reflects <b>parallel to the axis</b>.</li>
+<li>A ray <b>through C</b> (or heading towards C) reflects straight back along itself.</li></ol>
+${figA(f7_concave, "Figure 7.1: Concave mirror with the object beyond C. The image is real, inverted and diminished, between F and C.")}
+${figA(f7_convex, "Figure 7.2: Convex mirror. The reflected rays spread out and only appear to come from behind the mirror, so the image is virtual. It is always upright and diminished.")}
+<h4>Sign convention (real object)</h4>
+<table class="cmp"><tr><th>Quantity</th><th>Positive (+)</th><th>Negative (&minus;)</th></tr>
+<tr><td>f and R</td><td>concave mirror</td><td>convex mirror</td></tr>
+<tr><td>v</td><td>real image (in front of the mirror)</td><td>virtual image (behind the mirror)</td></tr>
+<tr><td>M</td><td>upright image</td><td>inverted image</td></tr></table>
+<p>The size of |M| tells you whether the image is magnified (|M| &gt; 1) or diminished (|M| &lt; 1).</p>
+${ex("mirror equation", `<div class="exq"><div class="exh">Question</div><p>For each mirror, find the position of the image and its magnification, and describe the image.</p><ol class="parts"><li><span class="pl">(a)</span> A concave mirror of focal length 10 cm, with an object 30 cm in front of it.</li><li><span class="pl">(b)</span> A convex mirror of focal length 20 cm, with an object 30 cm in front of it.</li></ol></div><div class="exh">Solution</div><div class="pl2">(a)</div><p>Concave mirror, so f = +10 cm.</p><div class="calc"><div>1/v = 1/f &minus; 1/u</div><div>1/v = 1/10 &minus; 1/30</div><div><b>v = +15 cm</b></div></div><div class="calc"><div>M = &minus;v/u</div><div>M = &minus;15/30</div><div><b>M = &minus;0.5</b></div></div><p>The image is <b>real</b> (v positive), <b>inverted</b> (M negative) and <b>diminished</b> (|M| &lt; 1).</p><div class="pl2">(b)</div><p>Convex mirror, so f = &minus;20 cm.</p><div class="calc"><div>1/v = 1/f &minus; 1/u</div><div>1/v = &minus;1/20 &minus; 1/30</div><div><b>v = &minus;12 cm</b></div></div><div class="calc"><div>M = &minus;v/u</div><div>M = &minus;(&minus;12)/30</div><div><b>M = +0.4</b></div></div><p>The image is <b>virtual</b> (behind the mirror), <b>upright</b> and <b>diminished</b>.</p>`)}
+${trap(`Forgetting to put a negative sign on f for a convex mirror.`)}`;
+
+C7[1].html = `
+<p>Light changes speed, and so bends, when it crosses a boundary between two materials. If the boundary is curved, like the surface of a glass ball or the front of your eye, it can form an image.</p>
+${figA(f7_refr, "Figure 7.3: Light from object O in air is refracted at a convex glass surface and forms an image I inside the glass.")}
+${fx("\\dfrac{n_1}{u}+\\dfrac{n_2}{v}=\\dfrac{n_2-n_1}{R}", "n<sub>1</sub>/u + n<sub>2</sub>/v = (n<sub>2</sub> &minus; n<sub>1</sub>)/R")}
+<ul><li>n<sub>1</sub> is the refractive index of the medium the <b>object</b> is in. n<sub>2</sub> is the refractive index of the medium the light <b>enters</b>.</li>
+<li><b>R is positive</b> for a <b>convex</b> surface facing the object, and <b>negative</b> for a <b>concave</b> surface.</li>
+<li><b>v positive:</b> real image, in the second medium. <b>v negative:</b> virtual image, on the same side as the object.</li>
+<li>Refractive index n = c/v is a ratio of speeds, so it has no unit.</li></ul>
+${ex("refraction at a curved surface", `<div class="exq"><div class="exh">Question</div><p>An object in air is 30 cm in front of a convex glass surface of radius of curvature 10 cm. Find the position of the image, and state whether it is real or virtual.</p><p class="given">Given: refractive index of glass = 1.5, refractive index of air = 1.0</p></div><div class="exh">Solution</div><p>The surface is convex towards the object, so R = +10 cm.</p><div class="calc"><div>n<sub>1</sub>/u + n<sub>2</sub>/v = (n<sub>2</sub> &minus; n<sub>1</sub>)/R</div><div>1.0/30 + 1.5/v = (1.5 &minus; 1.0)/10</div><div>1.5/v = 0.050 &minus; 0.033</div><div><b>v = +90 cm</b></div></div><p>v is positive, so the image is <b>real</b>, 90 cm inside the glass.</p>`)}
+${trap(`Swapping n<sub>1</sub> and n<sub>2</sub>. n<sub>1</sub> always goes with u (the object side).`)}`;
+
+C7[2].html = `
+<p>A <b>thin lens</b> refracts light at two surfaces. A <b>convex</b> (converging) lens is thicker in the middle and brings parallel rays together at a focus. A <b>concave</b> (diverging) lens is thinner in the middle and spreads them out.</p>
+${fx("\\dfrac1f=\\dfrac1u+\\dfrac1v||M=\\dfrac{h_i}{h_o}=-\\dfrac{v}{u}", "1/f = 1/u + 1/v &nbsp;&nbsp; M = &minus;v/u")}
+<h4>Ray diagrams</h4>
+<ol><li>A ray <b>parallel to the axis</b> refracts <b>through F</b> on the far side (convex), or as if from F on the near side (concave).</li>
+<li>A ray through the <b>optical centre</b> goes straight through, undeviated.</li>
+<li>A ray through F (or heading to F) leaves parallel to the axis.</li></ol>
+${figA(f7_lens, "Figure 7.4: Convex lens with the object at 2F. The image is at 2F on the other side: real, inverted and the same size.")}
+${figA(f7_lensc, "Figure 7.5: Concave lens. The rays spread out as if from a point on the object side, so the image is always virtual, upright and diminished.")}
+<p><b>Sign convention:</b> f is <b>positive</b> for a convex lens and <b>negative</b> for a concave lens. v is positive for a real image (on the far side) and negative for a virtual image (on the object side).</p>
+<h4>Lens maker's equation</h4>
+<p>The focal length depends on the shape of the lens and on the refractive indices of the lens and its surroundings:</p>
+${fx("\\dfrac1f=\\left(\\dfrac{n_{\\text{material}}}{n_{\\text{medium}}}-1\\right)\\left(\\dfrac{1}{R_1}-\\dfrac{1}{R_2}\\right)", "1/f = (n<sub>material</sub>/n<sub>medium</sub> &minus; 1)(1/R<sub>1</sub> &minus; 1/R<sub>2</sub>)")}
+<p>R<sub>1</sub> is the surface the light meets first. Use the same sign rule as for one surface: convex towards the incoming light is positive. For a biconvex lens, R<sub>1</sub> is positive and R<sub>2</sub> is negative.</p>
+<p>If the lens is put in water, n<sub>material</sub>/n<sub>medium</sub> gets closer to 1, so the lens bends light less and its <b>focal length increases</b>.</p>
+<h4>Two lenses</h4>
+<p>Find the image formed by the first lens. That image becomes the <b>object</b> for the second lens. The total magnification is M = M<sub>1</sub> &times; M<sub>2</sub>.</p>
+${ex("lens calculations", `<div class="exq"><div class="exh">Question</div><p>Answer all three parts.</p><ol class="parts"><li><span class="pl">(a)</span> A convex lens of focal length 15 cm forms an image of an object placed 20 cm from it. Find the image position and magnification.</li><li><span class="pl">(b)</span> A biconvex glass lens (n = 1.5) has radii of curvature 20 cm and 20 cm. Find its focal length in air, and in water (n = 1.33).</li><li><span class="pl">(c)</span> Two convex lenses of focal lengths 10 cm and 20 cm are 40 cm apart. An object is 15 cm in front of the first lens. Find the final image position and the total magnification.</li></ol></div><div class="exh">Solution</div><div class="pl2">(a)</div><div class="calc"><div>1/v = 1/f &minus; 1/u</div><div>1/v = 1/15 &minus; 1/20</div><div><b>v = +60 cm (real)</b></div></div><div class="calc"><div>M = &minus;v/u</div><div>M = &minus;60/20</div><div><b>M = &minus;3</b></div></div><div class="pl2">(b)</div><p>For a biconvex lens, R<sub>1</sub> = +20 cm and R<sub>2</sub> = &minus;20 cm. In air:</p><div class="calc"><div>1/f = (1.5/1.0 &minus; 1)(1/20 &minus; 1/(&minus;20))</div><div>1/f = 0.5 &times; 0.10</div><div><b>f = 20 cm</b></div></div><p>In water:</p><div class="calc"><div>1/f = (1.5/1.33 &minus; 1)(0.10)</div><div>1/f = 0.128 &times; 0.10</div><div><b>f = 78 cm</b></div></div><div class="pl2">(c)</div><p>Lens 1:</p><div class="calc"><div>1/v<sub>1</sub> = 1/10 &minus; 1/15</div><div><b>v<sub>1</sub> = 30 cm</b></div></div><p>This image is the object for lens 2:</p><div class="calc"><div>u<sub>2</sub> = 40 &minus; 30</div><div><b>u<sub>2</sub> = 10 cm</b></div></div><div class="calc"><div>1/v<sub>2</sub> = 1/20 &minus; 1/10</div><div><b>v<sub>2</sub> = &minus;20 cm (virtual, 20 cm in front of lens 2)</b></div></div><div class="calc"><div>M = M<sub>1</sub> &times; M<sub>2</sub></div><div>M = (&minus;30/15) &times; (&minus;(&minus;20)/10)</div><div><b>M = &minus;4</b></div></div>`)}
+${trap(`In a two-lens problem, using the distance from the first lens as u for the second lens. Measure u<sub>2</sub> from the <b>second</b> lens.`)}`;
+
+C7[3].html = `
+<p>So far we treated light as rays. To explain interference and diffraction, we need to treat light as a <b>wave</b>. A <b>wavefront</b> is a line (or surface) joining points that are in phase, such as all the crests. Rays are always perpendicular to wavefronts.</p>
+<h4>Huygens's principle</h4>
+<p>Every point on a wavefront acts as a source of <b>secondary spherical wavelets</b> that spread out at the speed of the wave. A short time later, the new wavefront is the surface that is <b>tangent to all these wavelets</b> (their envelope).</p>
+${fig(f7_huy, "Figure 7.6: Left: wavelets from points on a plane wavefront build the next plane wavefront. Right: at a narrow slit, only a few wavelets get through, so the wave spreads out in circles.")}
+<ul><li>A <b>plane</b> wavefront in open space stays plane, because the wavelets build a straight envelope.</li>
+<li>A <b>spherical</b> wavefront from a point source stays spherical and grows.</li>
+<li>At a <b>narrow slit</b>, the wavefront is cut down to a short section. Its wavelets spread out on the other side, so the light bends round the edges. This is <b>diffraction</b>, and it is most noticeable when the slit width is close to the wavelength.</li></ul>
+<p>Huygens's principle explains reflection, refraction, diffraction and interference.</p>
+${trap(`Thinking only the centre of the wavefront produces new waves. Every point on it is a source of wavelets.`)}`;
+
+C7[4].html = `
+<p>When two waves meet, they overlap. The <b>principle of superposition</b> says the resulting displacement at any point is the sum of the individual displacements. This overlapping of waves is called <b>interference</b>.</p>
+${fig(f7_super, "Figure 7.7: Two waves in phase add to a bigger wave (constructive). Two waves in antiphase cancel (destructive).")}
+<h4>Coherence</h4>
+<p>Two sources are <b>coherent</b> if they have the <b>same frequency</b> (and so wavelength) and a <b>constant phase difference</b>. Two separate light bulbs are not coherent, because their light is emitted in random bursts. In the lab we make coherent sources by splitting the light from one source, for example with two slits.</p>
+<h4>Conditions for an observable interference pattern</h4>
+<ul><li>The sources must be <b>coherent</b>.</li>
+<li>They should have about the <b>same amplitude</b>, so the dark fringes are really dark.</li>
+<li>The light should be <b>monochromatic</b> (one wavelength).</li>
+<li>The slit separation must be small compared with the distance to the screen.</li></ul>
+<h4>Constructive and destructive interference</h4>
+<p>What happens at a point depends on the <b>path difference</b>: how much further one wave has travelled than the other. A path difference of one wavelength &lambda; is a phase difference of 2&pi;.</p>
+<table class="cmp"><tr><th>Sources</th><th>Constructive (bright)</th><th>Destructive (dark)</th></tr>
+<tr><td>In phase</td><td>path difference = m&lambda;</td><td>path difference = (m + &frac12;)&lambda;</td></tr>
+<tr><td>Antiphase</td><td>path difference = (m + &frac12;)&lambda;</td><td>path difference = m&lambda;</td></tr></table>
+${fx("\\text{phase difference}=\\dfrac{2\\pi}{\\lambda}\\times\\text{path difference}", "phase difference = (2&pi;/&lambda;) &times; path difference")}
+<p>Here m = 0, 1, 2, ... For antiphase sources everything is swapped, because the waves already start half a cycle apart.</p>
+${trap(`Using the in-phase conditions for antiphase sources. Check how the sources start before deciding which condition applies.`)}`;
+
+C7[5].html = `
+<p>In <b>Young's double-slit experiment</b>, light from one source passes through two narrow slits close together. The two slits act as <b>coherent sources</b>, and their light overlaps on a screen to form a pattern of bright and dark <b>fringes</b>.</p>
+${fig(f7_double, "Figure 7.8: Young's double-slit experiment. Light from S&#8321; and S&#8322; overlaps on the screen, giving equally spaced bright and dark fringes.")}
+<ul><li>At the centre of the screen, both paths are equal, so the path difference is zero and there is a <b>bright</b> central fringe (m = 0).</li>
+<li>Moving away from the centre, the path difference grows. Bright fringes appear where it is m&lambda;, and dark fringes where it is (m + &frac12;)&lambda;.</li></ul>
+${fx("\\text{bright: } y_m=\\dfrac{m\\lambda D}{d}||\\text{dark: } y_m=\\dfrac{\\left(m+\\frac12\\right)\\lambda D}{d}||\\Delta y=\\dfrac{\\lambda D}{d}", "bright: y<sub>m</sub> = m&lambda;D/d &nbsp;&nbsp; dark: y<sub>m</sub> = (m + &frac12;)&lambda;D/d &nbsp;&nbsp; &Delta;y = &lambda;D/d")}
+<h4>Order number m: match the fringe to m before you calculate</h4>
+<p>The <b>order number</b> m is not always the same as the number you get by counting fringes from the centre. For a double slit, the count and m agree for bright fringes but <b>not for dark fringes</b>.</p>
+<table class="cmp"><tr><th>Fringe named in the question</th><th>Order number m</th><th>Distance from centre</th></tr>
+<tr><td>Central bright</td><td>m = 0</td><td>y = 0</td></tr>
+<tr><td>1st bright (next to the centre)</td><td>m = 1</td><td>y = 1 &times; &lambda;D/d</td></tr>
+<tr><td>n<sup>th</sup> bright, or n<sup>th</sup>-order bright</td><td>m = n</td><td>y = n&lambda;D/d</td></tr>
+<tr><td>1st dark</td><td><b>m = 0</b></td><td>y = &frac12;&lambda;D/d</td></tr>
+<tr><td>2nd dark</td><td><b>m = 1</b></td><td>y = 1&frac12;&lambda;D/d</td></tr>
+<tr><td>n<sup>th</sup> dark</td><td><b>m = n &minus; 1</b></td><td>y = (n &minus; &frac12;)&lambda;D/d</td></tr>
+<tr><td>n<sup>th</sup>-<b>order</b> dark (or n<sup>th</sup>-order minimum)</td><td><b>m = n</b></td><td>y = (n + &frac12;)&lambda;D/d</td></tr></table>
+<div class="trap"><b>Read the wording.</b> "The <b>third dark fringe</b>" means m = 2. "The <b>third-order dark fringe</b>" means m = 3. Exam questions use both, so underline which one is asked before you substitute.</div>
+${ex("order numbers in a double slit", `<div class="exq"><div class="exh">Question</div><p>Light of wavelength 500 nm passes through two slits 0.25 mm apart onto a screen 1.5 m away.</p><ol class="parts"><li><span class="pl">(a)</span> Calculate the distance of the fourth dark fringe from the centre.</li><li><span class="pl">(b)</span> Calculate the distance between the third bright fringe and the second dark fringe on the same side.</li><li><span class="pl">(c)</span> Calculate the distance of the second-order dark fringe from the centre.</li></ol></div><div class="exh">Solution</div><div class="calc"><div>&lambda;D/d = (500 &times; 10<sup>&minus;9</sup>)(1.5) / (0.25 &times; 10<sup>&minus;3</sup>)</div><div>&lambda;D/d = 3.0 &times; 10<sup>&minus;3</sup> m</div></div><div class="pl2">(a) Fourth dark fringe: m = 3</div><div class="calc"><div>y = (m + &frac12;)&lambda;D/d</div><div>y = (3 + &frac12;)(3.0 &times; 10<sup>&minus;3</sup>)</div><div><b>y = 1.05 &times; 10<sup>&minus;2</sup> m</b></div></div><div class="pl2">(b) Third bright: m = 3. Second dark: m = 1</div><div class="calc"><div>y<sub>bright</sub> = 3(3.0 &times; 10<sup>&minus;3</sup>) = 9.0 &times; 10<sup>&minus;3</sup> m</div><div>y<sub>dark</sub> = (1 + &frac12;)(3.0 &times; 10<sup>&minus;3</sup>) = 4.5 &times; 10<sup>&minus;3</sup> m</div><div>&Delta;y = 9.0 &times; 10<sup>&minus;3</sup> &minus; 4.5 &times; 10<sup>&minus;3</sup></div><div><b>&Delta;y = 4.5 &times; 10<sup>&minus;3</sup> m</b></div></div><div class="pl2">(c) Second-order dark: m = 2</div><div class="calc"><div>y = (2 + &frac12;)(3.0 &times; 10<sup>&minus;3</sup>)</div><div><b>y = 7.5 &times; 10<sup>&minus;3</sup> m</b></div></div>`)}
+<p>If the two fringes are on <b>opposite</b> sides of the centre, add the two distances instead of subtracting.</p>
+<p>&Delta;y is the <b>fringe separation</b>: the distance between neighbouring bright (or dark) fringes. The fringes are equally spaced.</p>
+<h4>Changing the pattern</h4>
+<table class="cmp"><tr><th>Change</th><th>Effect on &Delta;y</th></tr>
+<tr><td>Longer wavelength (e.g. red instead of blue)</td><td>increases</td></tr>
+<tr><td>Screen further away (larger D)</td><td>increases</td></tr>
+<tr><td>Slits closer together (smaller d)</td><td>increases</td></tr>
+<tr><td>White light instead of one colour</td><td>central fringe white, others coloured</td></tr></table>
+${ex("fringe separation", `<div class="exq"><div class="exh">Question</div><p>In a Young&#39;s double-slit experiment, light of wavelength 600 nm passes through two slits 0.30 mm apart. The screen is 1.5 m from the slits. Calculate the fringe separation.</p></div><div class="exh">Solution</div><div class="calc"><div>&Delta;y = &lambda;D/d</div><div>&Delta;y = (600 &times; 10<sup>&minus;9</sup>)(1.5) / (0.30 &times; 10<sup>&minus;3</sup>)</div><div><b>&Delta;y = 3.0 &times; 10<sup>&minus;3</sup> m (3.0 mm)</b></div></div>`)}
+${trap(`Mixing up d (the slit separation, usually in mm) and D (the screen distance, usually in m). Convert both to metres.`)}`;
+
+C7[6].html = `
+<p>The colours on a soap bubble or an oil film on a wet road come from <b>thin-film interference</b>. Light reflects from both the top and the bottom surfaces of the film, and the two reflected rays interfere.</p>
+${fig(f7_film, "Figure 7.9: Ray 1 reflects from the top surface. Ray 2 enters the film, reflects from the bottom surface and comes back out. The two rays interfere.")}
+<h4>Phase change on reflection</h4>
+<ul><li>Light reflecting off a medium with a <b>higher</b> refractive index gets a phase change of <b>&pi;</b> (the same as an extra half wavelength).</li>
+<li>Light reflecting off a medium with a <b>lower</b> refractive index gets <b>no</b> phase change.</li></ul>
+<p>For a soap film in air: ray 1 reflects at air &rarr; soap (higher n), so it gets a phase change of &pi;. Ray 2 reflects at soap &rarr; air (lower n), so it gets none. The two rays therefore start out of step by &pi;.</p>
+<h4>Path difference</h4>
+<p>At normal incidence, ray 2 travels down and back up through the film, an extra distance 2t. Inside the film the wavelength is shorter (&lambda;/n), so the effective path difference is <b>2nt</b>.</p>
+<table class="cmp"><tr><th>Relative phase of the two reflected rays</th><th>Constructive (bright)</th><th>Destructive (dark)</th></tr>
+<tr><td>No phase difference (e.g. air &ndash; MgF<sub>2</sub> &ndash; glass: <b>non-reflective coating</b>)</td><td>2nt = m&lambda;</td><td>2nt = (m + &frac12;)&lambda;</td></tr>
+<tr><td>Phase difference &pi; (e.g. soap film in air: <b>reflective coating</b>)</td><td>2nt = (m + &frac12;)&lambda;</td><td>2nt = m&lambda;</td></tr></table>
+<h4>Applications</h4>
+<ul><li><b>Anti-reflective coatings</b> on spectacles, camera lenses and solar panels: the thickness is chosen so that reflected light interferes <b>destructively</b>. Less light is reflected, so more is transmitted.</li>
+<li><b>Reflective coatings</b>, such as heat-reflecting tinted glass: the thickness is chosen so that reflected light interferes <b>constructively</b>.</li></ul>
+${ex("coating thickness", `<div class="exq"><div class="exh">Question</div><p>A thin coating of magnesium fluoride (n = 1.38) is put on a glass lens (n = 1.5) to stop light of wavelength 550 nm being reflected. Calculate the minimum thickness of the coating.</p></div><div class="exh">Solution</div><p>Both reflections (air &rarr; coating, coating &rarr; glass) are off a higher refractive index, so there is no relative phase change. For destructive interference with the thinnest coating, 2nt = &frac12;&lambda;:</p><div class="calc"><div>t = &lambda;/4n</div><div>t = 550 / (4 &times; 1.38)</div><div><b>t = 99.6 nm (about 100 nm)</b></div></div>`)}
+${trap(`Forgetting to check the phase changes first. Decide which row of the table to use before writing any equation.`)}`;
+
+C7[7].html = `
+<p><b>Diffraction</b> is the spreading of waves as they pass through an opening or around the edge of an obstacle. With light, it is easiest to see when the opening is very narrow, close to the wavelength.</p>
+${fig(f7_single, "Figure 7.10: Single-slit diffraction. There is a wide, bright central maximum, with weaker maxima on each side.")}
+<h4>Why there are dark fringes</h4>
+<p>Think of the slit of width a as divided into two halves. For a point on the screen where light from the top edge and the bottom edge differs in path by &lambda;, every wavelet from the top half has a partner in the bottom half that is &lambda;/2 behind. They cancel in pairs, so that point is <b>dark</b>. This gives the first minimum at a sin &theta; = &lambda;.</p>
+${fx("\\text{dark: } y_m=\\dfrac{m\\lambda D}{a}||\\text{bright: } y_m=\\dfrac{\\left(m+\\frac12\\right)\\lambda D}{a}||\\text{width of central max}=\\dfrac{2\\lambda D}{a}", "dark: y<sub>m</sub> = m&lambda;D/a &nbsp;&nbsp; bright: y<sub>m</sub> = (m + &frac12;)&lambda;D/a &nbsp;&nbsp; central max width = 2&lambda;D/a")}
+<h4>Order number m for a single slit</h4>
+<p>For a single slit the order number <b>is</b> the fringe count, for both dark and bright fringes. The central maximum has no m of its own: it stretches from the first dark fringe on one side to the first dark fringe on the other.</p>
+<table class="cmp"><tr><th>Fringe</th><th>m</th><th>Distance from centre</th></tr>
+<tr><td>1st dark</td><td>m = 1</td><td>y = &lambda;D/a</td></tr>
+<tr><td>n<sup>th</sup> dark</td><td>m = n</td><td>y = n&lambda;D/a</td></tr>
+<tr><td>1st bright (beside the central maximum)</td><td>m = 1</td><td>y = 1&frac12;&lambda;D/a</td></tr>
+<tr><td>n<sup>th</sup> bright</td><td>m = n</td><td>y = (n + &frac12;)&lambda;D/a</td></tr>
+<tr><td>Central maximum</td><td>no m</td><td>width = 2&lambda;D/a</td></tr></table>
+<div class="trap"><b>Compare with the double slit:</b> there the 1st dark fringe has m = 0, here it has m = 1. And here m&lambda; gives <b>dark</b>, not bright.</div>
+${ex("order numbers in a single slit", `<div class="exq"><div class="exh">Question</div><p>Light of wavelength 600 nm passes through a single slit 0.20 mm wide onto a screen 2.0 m away. Calculate the distance from the centre to</p><ol class="parts"><li><span class="pl">(a)</span> the third dark fringe.</li><li><span class="pl">(b)</span> the second bright fringe.</li></ol></div><div class="exh">Solution</div><div class="calc"><div>&lambda;D/a = (600 &times; 10<sup>&minus;9</sup>)(2.0) / (0.20 &times; 10<sup>&minus;3</sup>)</div><div>&lambda;D/a = 6.0 &times; 10<sup>&minus;3</sup> m</div></div><div class="pl2">(a) Third dark: m = 3</div><div class="calc"><div>y = m&lambda;D/a</div><div>y = 3(6.0 &times; 10<sup>&minus;3</sup>)</div><div><b>y = 1.8 &times; 10<sup>&minus;2</sup> m</b></div></div><div class="pl2">(b) Second bright: m = 2</div><div class="calc"><div>y = (m + &frac12;)&lambda;D/a</div><div>y = (2 + &frac12;)(6.0 &times; 10<sup>&minus;3</sup>)</div><div><b>y = 1.5 &times; 10<sup>&minus;2</sup> m</b></div></div>`)}
+<ul><li>The central maximum is the <b>widest</b> and <b>brightest</b>, about <b>twice</b> as wide as the others.</li>
+<li>A <b>narrower slit</b> (smaller a) gives a <b>wider</b> pattern. The light spreads out more.</li>
+<li>A <b>longer wavelength</b> also gives a wider pattern.</li></ul>
+${ex("single slit", `<div class="exq"><div class="exh">Question</div><p>Light of wavelength 500 nm passes through a single slit 0.10 mm wide onto a screen 2.0 m away.</p><ol class="parts"><li><span class="pl">(a)</span> Calculate the distance from the centre of the pattern to the first dark fringe.</li><li><span class="pl">(b)</span> Calculate the width of the central bright fringe.</li></ol></div><div class="exh">Solution</div><div class="pl2">(a)</div><div class="calc"><div>y<sub>1</sub> = &lambda;D/a</div><div>y<sub>1</sub> = (500 &times; 10<sup>&minus;9</sup>)(2.0) / (0.10 &times; 10<sup>&minus;3</sup>)</div><div><b>y<sub>1</sub> = 0.010 m</b></div></div><div class="pl2">(b)</div><div class="calc"><div>width = 2y<sub>1</sub></div><div>width = 2 &times; 0.010</div><div><b>width = 0.020 m (2.0 cm)</b></div></div>`)}
+${trap(`Using the double-slit idea that m&lambda; gives a bright fringe. For a single slit, m&lambda;D/a gives the <b>dark</b> fringes.`)}`;
+
+C7[8].html = `
+<p>A <b>diffraction grating</b> is a plate with a very large number of equally spaced parallel slits, often hundreds per millimetre. Light diffracts through every slit and the waves from all the slits interfere, giving very <b>sharp, bright</b> maxima at particular angles.</p>
+${fig(f7_grating, "Figure 7.11: A diffraction grating sends bright maxima in a few sharp directions, labelled by the order m.")}
+${fx("d\\sin\\theta=m\\lambda||d=\\dfrac1N", "d sin &theta; = m&lambda; &nbsp;&nbsp; d = 1/N")}
+<ul><li>d is the distance between neighbouring slits. If there are N lines per metre, d = 1/N.</li>
+<li>m = 0 is the straight-through (zero-order) maximum. m = 1, 2, ... are the first, second, ... orders, on both sides.</li>
+<li>Since sin &theta; cannot exceed 1, the highest order you can see is the largest whole number m &le; d/&lambda;.</li>
+<li>More lines per mm (smaller d) spreads the maxima further apart, but gives fewer orders.</li>
+<li>Different wavelengths come out at different angles, so a grating splits white light into a spectrum. A CD shows this effect.</li></ul>
+${ex("diffraction grating", `<div class="exq"><div class="exh">Question</div><p>Light of wavelength 600 nm falls normally on a diffraction grating with 500 lines per mm.</p><ol class="parts"><li><span class="pl">(a)</span> Calculate the grating spacing.</li><li><span class="pl">(b)</span> Calculate the angle of the first-order maximum.</li><li><span class="pl">(c)</span> Find the highest order that can be seen.</li></ol></div><div class="exh">Solution</div><div class="pl2">(a)</div><div class="calc"><div>d = 1/N</div><div>d = 1/(500 &times; 10<sup>3</sup>)</div><div><b>d = 2.0 &times; 10<sup>&minus;6</sup> m</b></div></div><div class="pl2">(b)</div><div class="calc"><div>sin &theta;<sub>1</sub> = &lambda;/d</div><div>sin &theta;<sub>1</sub> = (600 &times; 10<sup>&minus;9</sup>) / (2.0 &times; 10<sup>&minus;6</sup>)</div><div>sin &theta;<sub>1</sub> = 0.30</div><div><b>&theta;<sub>1</sub> = 17.5&deg;</b></div></div><div class="pl2">(c)</div><p>sin &theta; cannot be more than 1, so m&lambda; &le; d:</p><div class="calc"><div>m &le; d/&lambda;</div><div>m &le; (2.0 &times; 10<sup>&minus;6</sup>) / (600 &times; 10<sup>&minus;9</sup>) = 3.3</div><div><b>highest order m = 3</b></div></div>`)}
+<h4>Order number m for a grating, and counting the fringes</h4>
+<table class="cmp"><tr><th>Bright maximum</th><th>m</th></tr>
+<tr><td>Central (straight through)</td><td>m = 0</td></tr>
+<tr><td>First order, on each side</td><td>m = 1</td></tr>
+<tr><td>n<sup>th</sup> order, on each side</td><td>m = n</td></tr></table>
+<ul><li><b>Highest order:</b> m<sub>max</sub> = the whole-number part of d/&lambda;. Always round <b>down</b>.</li>
+<li><b>Total number of bright fringes seen</b> = 2m<sub>max</sub> + 1: m<sub>max</sub> on each side plus the central one.</li>
+<li>If d/&lambda; is exactly a whole number, that order would be at 90&deg; and is not seen, so subtract 1 from m<sub>max</sub>.</li></ul>
+${ex("highest order and number of fringes", `<div class="exq"><div class="exh">Question</div><p>Light of wavelength 550 nm falls normally on a grating with 600 lines per mm. Find the highest order and the total number of bright fringes seen.</p></div><div class="exh">Solution</div><div class="calc"><div>d = 1/(600 &times; 10<sup>3</sup>)</div><div>d = 1.67 &times; 10<sup>&minus;6</sup> m</div><div>d/&lambda; = (1.67 &times; 10<sup>&minus;6</sup>) / (550 &times; 10<sup>&minus;9</sup>)</div><div>d/&lambda; = 3.03</div><div><b>m<sub>max</sub> = 3</b></div><div>number of bright fringes = 2(3) + 1</div><div><b>number of bright fringes = 7</b></div></div>`)}
+${trap(`Rounding the highest order up. If d/&lambda; = 3.3, the third order exists but the fourth does not.`)}`;
+
+})();
+(function(){
+const INK="#1b2232", MUT="#5b6476", RED="#c0392b", BLU="#2a6aa3", FLD="#1d7448";
+const DEFS = `<defs>${[INK,RED,BLU,FLD,MUT].map(c => `<marker id="m${c.slice(1)}" markerWidth="9" markerHeight="9" refX="7.5" refY="4.5" orient="auto" markerUnits="userSpaceOnUse"><path d="M0,0 L9,4.5 L0,9 z" fill="${c}"/></marker>`).join("")}</defs>`;
+const S = (w, h, body) => `<svg class="tsvg" viewBox="0 0 ${w} ${h}" width="${w}" xmlns="http://www.w3.org/2000/svg" font-family="system-ui,sans-serif">${DEFS}${body}</svg>`;
+const A = (x1,y1,x2,y2,c=INK,sw=2) => `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${c}" stroke-width="${sw}" marker-end="url(#m${c.slice(1)})"/>`;
+const L = (x1,y1,x2,y2,c=INK,sw=1.5,dash) => `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${c}" stroke-width="${sw}"${dash?` stroke-dasharray="${dash}"`:""}/>`;
+const T = (x,y,t,o={}) => `<text x="${x}" y="${y}" font-size="${o.s||13}" fill="${o.c||INK}" text-anchor="${o.a||"middle"}"${o.b?' font-weight="700"':""}${o.i?' font-style="italic"':""}>${t}</text>`;
+const Q = (x,y,s,r=13) => `<circle cx="${x}" cy="${y}" r="${r}" fill="${s==="+"?RED:BLU}"/>` + T(x, y+5, s==="+"?"+":"&#8722;", {c:"#fff", s:r>10?17:12, b:1});
+const P = (d,c=FLD,sw=1.6,mk) => `<path d="${d}" fill="none" stroke="${c}" stroke-width="${sw}"${mk?` marker-end="url(#m${c.slice(1)})"`:""}/>`;
+const tri = (x,y,c=FLD,dir=1) => `<path d="M${x-4*dir},${y-4} L${x+4*dir},${y} L${x-4*dir},${y+4} z" fill="${c}"/>`;
+const RES = (x,y,lab) => `<rect x="${x-18}" y="${y-7}" width="36" height="14" fill="#fff" stroke="${INK}" stroke-width="1.6"/>` + (lab?T(x,y-13,lab,{s:12}):"");
+const CAPV = (x,y,lab) => `<rect x="${x-16}" y="${y-6}" width="32" height="12" fill="#fff"/>${L(x-15,y-5,x+15,y-5,INK,2.5)}${L(x-15,y+5,x+15,y+5,INK,2.5)}` + (lab?T(x+22,y+4,lab,{s:12,a:"start"}):"");
+const fig = (svgStr, cap) => `<figure class="tfig">${svgStr}<figcaption>${cap}</figcaption></figure>`;
+const ex = (title, body) => `<div class="ex"><b>Worked example: ${title}</b>${body}</div>`;
+const trap = body => `<div class="trap"><b>Common mistake.</b> ${body}</div>`;
+const fx = (tex, html) => `<div class="formula" data-tex="${tex}">${html}</div>`;
+function expPath(x0, y0, w, h, kind){ // kind: "rise" or "decay"; tau at w/5
+  const pts = []; for(let i=0;i<=40;i++){ const t = i/40*5; const v = kind==="rise" ? 1-Math.exp(-t) : Math.exp(-t);
+    pts.push(`${(x0 + i/40*w).toFixed(1)},${(y0 - v*h).toFixed(1)}`); }
+  return "M" + pts.join(" L");
+}
+function graph(x0, y0, w, h, kind, ylab, title, mark){
+  const tauX = x0 + w/5, v = kind==="rise" ? 0.632 : 0.368, yv = y0 - v*h;
+  return L(x0,y0,x0+w+8,y0,INK,1.4) + L(x0,y0,x0,y0-h-12,INK,1.4) + T(x0+w+6,y0+14,"t",{s:12,i:1}) + T(x0-6,y0-h-14,ylab,{s:12,a:"end",i:1})
+    + P(expPath(x0,y0,w,h,kind), BLU, 2)
+    + L(x0, yv, tauX, yv, MUT, 1, "3 3") + L(tauX, yv, tauX, y0, MUT, 1, "3 3") + T(tauX, y0+14, "&#964;", {s:12,c:MUT})
+    + T(x0-4, yv+4, mark, {s:11,c:MUT,a:"end"})
+    + (kind==="rise" ? L(x0,y0-h,x0+w,y0-h,MUT,1,"2 4") : "")
+    + T(x0 + w/2 + 4, y0 - h - 30, title, {s:11,b:1});
+}
+
+const RESV = (x,y,lab) => `<rect x="${x-7}" y="${y-18}" width="14" height="36" fill="#fff" stroke="${INK}" stroke-width="1.6"/>` + (lab?T(x+12,y+4,lab,{s:12,a:"start"}):"");
+const BATV = (x,y,lab) => `<rect x="${x-16}" y="${y-8}" width="32" height="16" fill="#fff"/>${L(x-15,y-5,x+15,y-5,INK,1.8)}${L(x-8,y+5,x+8,y+5,INK,4)}` + (lab?T(x+20,y+4,lab,{s:12,a:"start"}):"");
+const BAT = (x,y,lab,ly) => `<rect x="${x-8}" y="${y-16}" width="16" height="32" fill="#fff"/>${L(x-5,y-15,x-5,y+15,INK,1.8)}${L(x+5,y-8,x+5,y+8,INK,4)}` + (lab?T(x,y+(ly||30),lab,{s:12}):"");
+const GAL = (x,y) => `<circle cx="${x}" cy="${y}" r="11" fill="#fff" stroke="${INK}" stroke-width="1.6"/>` + T(x,y+4.5,"G",{s:12,b:1});
+const MET = (x,y,t) => `<circle cx="${x}" cy="${y}" r="11" fill="#fff" stroke="${INK}" stroke-width="1.6"/>` + T(x,y+4.5,t,{s:12,b:1});
+const DOT = (x,y) => `<circle cx="${x}" cy="${y}" r="3" fill="${INK}"/>`;
+const PL = (pts,c=INK,sw=1.5) => `<polyline points="${pts}" fill="none" stroke="${c}" stroke-width="${sw}"/>`;
+const AXES = (x0,y0,w,h,xl,yl) => L(x0,y0,x0+w,y0,INK,1.4) + L(x0,y0,x0,y0-h,INK,1.4) + `<path d="M${x0+w},${y0} l-7,-3.5 l0,7 z M${x0},${y0-h} l-3.5,7 l7,0 z" fill="${INK}"/>` + T(x0+w+4,y0+15,xl,{s:12,i:1,a:"end"}) + T(x0-6,y0-h+10,yl,{s:12,i:1,a:"end"});
+
 /* ===== Chapter 8: Wave properties of particle ===== */
 const C8 = THEORY[8];
 const f8_dual = S(360, 190, (() => { let o = "";
@@ -4323,6 +4927,19 @@ addQ(9,"9.3",
 );
 addQ(9,"9.4",
   Qz("C2","A meson is made of an up quark and an anti-down quark. Its charge is","+e",[["0","Anti-down has charge +&#8531;e, not &minus;&#8531;e."],["&minus;e","Up is +&#8532;e and anti-down is +&#8531;e."],["+2e","+&#8532;e + &#8531;e = +1e."]],"+&#8532;e + &#8531;e = +e (this is the pion &pi;<sup>+</sup>).")
+);
+
+/* Order-number emphasis (Ch7) */
+addQ(7,"7.6",
+  Qz("C2","In a double-slit pattern, what order number m is used for the <b>third dark fringe</b>?","m = 2",[["m = 3","For a double slit the first dark fringe has m = 0, so the third dark fringe has m = 2."],["m = 2.5","m is a whole number. The &frac12; is already in (m + &frac12;)."],["m = 4","Count from m = 0 for the first dark fringe."]],"Dark fringes: 1st dark m = 0, 2nd dark m = 1, 3rd dark m = 2. Then y = (2 + &frac12;)&lambda;D/d."),
+  Qz("C2","In a double-slit pattern, the <b>third-order dark fringe</b> is at","y = 3.5&lambda;D/d",[["y = 2.5&lambda;D/d","That is the third dark fringe (m = 2). Third-ORDER means m = 3."],["y = 3&lambda;D/d","That is the third bright fringe."],["y = 1.5&lambda;D/d","That is m = 1."]],"Third-order means m = 3, so y = (3 + &frac12;)&lambda;D/d = 3.5&lambda;D/d."),
+  Qz("C2","The fifth bright fringe and the second dark fringe are on opposite sides of the centre. The distance between them is","6.5&lambda;D/d",[["3.5&lambda;D/d","On opposite sides you add the distances: 5 + 1.5."],["7.5&lambda;D/d","The second dark fringe has m = 1, so it is at 1.5&lambda;D/d, not 2.5."],["5&lambda;D/d","Include the distance of the dark fringe on the other side."]],"5th bright: 5&lambda;D/d. 2nd dark (m = 1): 1.5&lambda;D/d. Opposite sides: 5 + 1.5 = 6.5&lambda;D/d.")
+);
+addQ(7,"7.8",
+  Qz("C2","In single-slit diffraction, the <b>second dark fringe</b> is at","y = 2&lambda;D/a",[["y = 1.5&lambda;D/a","For a single slit the dark fringes are y = m&lambda;D/a with m starting at 1."],["y = 2.5&lambda;D/a","That is the second bright fringe."],["y = &lambda;D/a","That is the first dark fringe."]],"Single slit: the order number equals the fringe count. 2nd dark: m = 2, y = 2&lambda;D/a.")
+);
+addQ(7,"7.9",
+  Qz("C2","For a grating, d/&lambda; = 4.6. How many bright fringes can be seen in total?","9",[["4","4 is the highest order on one side. Count both sides and the central maximum."],["5","Round down: m<sub>max</sub> = 4, not 5."],["11","m<sub>max</sub> = 4, so 2(4) + 1 = 9."]],"m<sub>max</sub> = 4 (round down). Total = 2m<sub>max</sub> + 1 = 9.")
 );
 
 })();
