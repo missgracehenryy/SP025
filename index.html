@@ -220,12 +220,17 @@ figure.tfig figcaption{font-size:13px;color:var(--muted);margin-top:6px;line-hei
 .note h4{margin:18px 0 6px;color:var(--brand)}
 .note ol{padding-left:22px}.note ol li{margin:4px 0}
 .ex p,.trap p{margin:6px 0}
+.homebtn{margin-left:auto;margin-right:56px;align-self:center;background:rgba(255,255,255,.14);color:#fff;border:1px solid rgba(255,255,255,.45);border-radius:999px;padding:6px 14px;font:600 13.5px system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;cursor:pointer}
+.top .brand{white-space:nowrap}.homebtn{white-space:nowrap}
+@media(max-width:420px){.top .sub{font-size:11.5px;line-height:1.2}.top .wrap{gap:8px}}
+.homebtn:hover{background:rgba(255,255,255,.26)}
+@media(max-width:420px){.homebtn{margin-right:46px;padding:5px 11px;font-size:12.5px}}
 </style>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
 <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js" onload="window.renderTex&&renderTex()"></script>
 </head>
 <body>
-<header class="top"><div class="wrap"><div class="brand">SP025 Physics</div><div class="sub">with @missgracehenry</div><span id="hcat"></span></div></header>
+<header class="top"><div class="wrap"><div class="brand">SP025 Physics</div><div class="sub">with @missgracehenry</div><button id="homebtn" class="homebtn" style="display:none" aria-label="Back to home">&#8592; Home</button><span id="hcat"></span></div></header>
 <main class="wrap" id="app"></main>
 
 <script>
@@ -3287,11 +3292,11 @@ ${fx("\\dfrac{dN}{dt}=-\\lambda N||N=N_0e^{-\\lambda t}||A=\\lambda N=A_0e^{-\\l
 <h4>Half-life</h4>
 ${fig(f9_decay, "Figure 9.4: Exponential decay. In every half-life, the number of undecayed nuclei halves.")}
 <p>The <b>half-life T<sub>&frac12;</sub></b> is the time taken for the number of undecayed nuclei (or the activity) to fall to <b>half</b> its initial value. Putting N = N<sub>0</sub>/2 into the decay law gives:</p>
-${fx("T_{1/2}=\\dfrac{\\ln2}{\\lambda}||N=N_0\\left(\\tfrac12\\right)^n", "T<sub>&frac12;</sub> = ln 2/&lambda; &nbsp;&nbsp; N = N<sub>0</sub>(&frac12;)<sup>n</sup>")}
-<p>After n half-lives, the fraction left is (&frac12;)<sup>n</sup>: a half, then a quarter, then an eighth.</p>
+${fx("T_{1/2}=\\dfrac{\\ln2}{\\lambda}=\\dfrac{0.693}{\\lambda}", "T<sub>&frac12;</sub> = ln 2/&lambda; = 0.693/&lambda;")}
+<p>The half-life is constant for a given nuclide: it does not depend on how many nuclei are left. A longer half-life means a smaller decay constant and a slower decay. In every half-life the number of undecayed nuclei halves: N<sub>0</sub> &rarr; N<sub>0</sub>/2 &rarr; N<sub>0</sub>/4 &rarr; N<sub>0</sub>/8.</p>
 ${ex("iodine-131", `<p>Iodine-131 has a half-life of 8.0 days. A sample contains 2.0 &times; 10<sup>20</sup> nuclei.</p>
 <p>&lambda; = ln 2/(8.0 &times; 24 &times; 3600) = <b>1.0 &times; 10<sup>&minus;6</sup> s<sup>&minus;1</sup></b>. Activity: A = &lambda;N = <b>2.0 &times; 10<sup>14</sup> Bq</b>.</p>
-<p>After 24 days (3 half-lives), the activity is (&frac12;)<sup>3</sup> of this: <b>2.5 &times; 10<sup>13</sup> Bq</b>.</p>`)}
+<p>After 24 days: A = A<sub>0</sub>e<sup>&minus;&lambda;t</sup> = (2.0 &times; 10<sup>14</sup>)e<sup>&minus;(1.0 &times; 10<sup>&minus;6</sup>)(24 &times; 24 &times; 3600)</sup> = <b>2.5 &times; 10<sup>13</sup> Bq</b>. (24 days is three half-lives, so the activity has halved three times: 2.0 &rarr; 1.0 &rarr; 0.5 &rarr; 0.25 &times; 10<sup>14</sup> Bq.)</p>`)}
 ${trap(`Using the half-life in days with &lambda; in s<sup>&minus;1</sup>. Keep the time units the same throughout.`)}`;
 
 C9[2].html = `
@@ -3323,7 +3328,7 @@ ${fig(f9_tracks, "Figure 9.7: Tracks in a detector with a magnetic field. Opposi
 <h4>Why such high energies?</h4>
 <p>A nucleus is about 10<sup>&minus;15</sup> to 10<sup>&minus;14</sup> m across (r = r<sub>0</sub>A<sup>1/3</sup>, with r<sub>0</sub> about 1.2 &times; 10<sup>&minus;15</sup> m). To see detail this small, the probing particles need a de Broglie wavelength &lambda; = h/p about this size or smaller. A short wavelength needs a <b>large momentum</b>, which means a <b>very high energy</b>.</p>
 ${ex("energy needed to probe a nucleon", `<p>For &lambda; = 1.0 &times; 10<sup>&minus;15</sup> m: p = h/&lambda; = 6.63 &times; 10<sup>&minus;34</sup>/1.0 &times; 10<sup>&minus;15</sup> = 6.6 &times; 10<sup>&minus;19</sup> kg m s<sup>&minus;1</sup>.</p>
-<p>At these speeds, the energy is about pc = (6.6 &times; 10<sup>&minus;19</sup>)(3.0 &times; 10<sup>8</sup>) = 2.0 &times; 10<sup>&minus;10</sup> J, which is about <b>1.2 GeV</b>. Only large accelerators can reach this.</p>`)}
+<p>This is an enormous momentum for a particle. A proton would need over a thousand million electron-volts (GeV) of energy to reach it, which only large accelerators can provide.</p>`)}
 ${trap(`Saying the magnetic field speeds the particle up. The magnetic force is perpendicular to the motion, so it only changes the direction. The electric field does the accelerating.`)}`;
 
 C9[3].html = `
@@ -3860,7 +3865,9 @@ function renderTex(){
   });
 }
 window.renderTex = renderTex;
-try{ new MutationObserver(() => renderTex()).observe(document.getElementById("app"), {childList:true, subtree:true}); }catch(e){}
+function syncHomeBtn(){ const b = document.getElementById("homebtn"); if(b) b.style.display = document.getElementById("f-name") ? "none" : ""; }
+try{ new MutationObserver(() => { renderTex(); syncHomeBtn(); }).observe(document.getElementById("app"), {childList:true, subtree:true}); }catch(e){}
+try{ document.getElementById("homebtn").onclick = () => { if(typeof flushQueue === "function") flushQueue(); renderHome(); window.scrollTo(0,0); }; }catch(e){}
 
 try{ document.getElementById("hcat").innerHTML = CAT.sit("head"); }catch(e){}
 try{ applyCats(); }catch(e){}
