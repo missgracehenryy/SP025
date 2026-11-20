@@ -1415,6 +1415,10 @@ function gradePart(p, resp){
 function answered(p, r){ return p.type==="mcq" ? r!=null : (r!=null && String(r).trim()!==""); }
 
 function send(payload){
+  payload.token = getTok(payload.matric);
+  return api(payload).then(r => { if(r.auth === false) authFailed(); return r.preview ? {ok:false, preview:true} : r; });
+}
+function sendOld(payload){
   return new Promise(res => {
     if(!HAS_BACKEND){ res({ok:false, preview:true}); return; }
     if(GAS){
@@ -1469,13 +1473,17 @@ function renderHome(){
   <section class="card">
     <h1>Find out what you really understand</h1>
     <p class="muted"><b>Every Tuesday:</b> do the <b>Theory lesson</b> for that week's chapter (definitions and concepts). <b>After the tutorial:</b> take the <b>Diagnostic</b> to find out which calculations and skills need work, then get targeted notes and practice.</p>
-    <p class="muted small">Your progress is saved automatically on this device, so you can stop and continue later. Use the same phone or laptop, and type your matric number the same way each time.</p>
+    ${HAS_BACKEND ? "" : `<p class="muted small">Your progress is saved automatically on this device, so you can stop and continue later.</p>`}
     <p class="muted small">Have a calculator and paper ready. Type numerical answers to 3 significant figures in SI units. Say honestly when you are guessing.</p>
     <div class="grid3">
       <label>Full name<input id="f-name" value="${esc(s.name)}" autocomplete="name"></label>
       <label>Matric no.<input id="f-matric" value="${esc(s.matric)}"></label>
       <label>Tutorial group<input id="f-group" value="${esc(s.group)}"></label>
+      ${HAS_BACKEND ? `<label id="pinrow" style="${s.matric && getTok(s.matric) ? "display:none" : ""}">4-digit PIN<input id="f-pin" type="password" inputmode="numeric" pattern="[0-9]*" maxlength="4" autocomplete="off"></label>` : ""}
     </div>
+    ${HAS_BACKEND ? `<p class="muted small" id="pinhelp">${s.matric && getTok(s.matric)
+      ? `Signed in as <b>${esc(s.matric)}</b> on this device. Your work is saved online, so you can continue on your phone, iPad or laptop. <a href="#" id="signout">Sign out</a> (do this on shared computers).`
+      : `<b>First time:</b> fill in everything and choose any 4-digit PIN. Remember it. <b>On another phone, iPad or laptop:</b> type your matric number and the same PIN, then tap Sign in to get all your work back.<br><button class="btn sm" id="signin" style="margin-top:8px">Sign in</button>`}</p>` : ""}
     <p id="f-err" class="err"></p>
     ${HAS_BACKEND ? "" : `<div class="preview">Preview mode. Results are only saved when this page runs from the lecturer's Google link.</div>`}
   </section>
@@ -1489,11 +1497,39 @@ function renderHome(){
           : `<span class="cs">Not open yet</span>`}</div>`).join("")}
   </div>
   ${s.matric ? historyHTML() : ""}
-  <div class="nap">${CAT.sleep()}<p class="muted small">Need a break? Your answers are saved on this device, so you can continue later.</p></div>`;
-  app.querySelectorAll("[data-go]").forEach(b => b.onclick = () => {
+  <div class="nap">${CAT.sleep()}<p class="muted small">Need a break? Your answers are saved as you go, so you can continue later${HAS_BACKEND ? " on any device" : ""}.</p></div>`;
+  const homeGen = state.homeGen = (state.homeGen||0) + 1;
+  const pinVis = () => { const r = $("#pinrow"); if(r) r.style.display = getTok($("#f-matric").value.trim().toUpperCase()) ? "none" : ""; };
+  if($("#f-matric")) $("#f-matric").oninput = pinVis;
+  if($("#signout")) $("#signout").onclick = async e => { e.preventDefault();
+    $("#pinhelp").innerHTML = `<span class="muted">Saving and signing out...</span>`;
+    await withTimeout(flushQueue(), 8000);
+    const m = s.matric; ["prog","hist","queue"].forEach(k => { try{ localStorage.removeItem("sp025_"+k+"_"+m); }catch(err){} });
+    setTok(m, ""); saveStudent({name:"",matric:"",group:""}); state.student = null; renderHome(); };
+  if(signedIn()) withTimeout(pull(), 8000).then(ch => { if(ch === true && state.homeGen === homeGen && $("#f-name")) renderHome(); });
+  let busy = false;
+  async function ready(){
+    const err = $("#f-err"); err.textContent = "";
     const st = { name:$("#f-name").value.trim(), matric:$("#f-matric").value.trim().toUpperCase(), group:$("#f-group").value.trim().toUpperCase() };
-    if(!st.name || !st.matric){ $("#f-err").textContent = "Please enter your full name and matric number first."; (st.name?$("#f-matric"):$("#f-name")).focus(); return; }
+    if(!st.matric){ err.textContent = "Please enter your matric number first."; $("#f-matric").focus(); return; }
+    if(HAS_BACKEND && !getTok(st.matric)){
+      const pin = ($("#f-pin") ? $("#f-pin").value : "").trim();
+      if(!/^\d{4}$/.test(pin)){ err.textContent = "Type your 4-digit PIN. First time? Choose any 4 digits and remember them."; $("#f-pin").focus(); return; }
+      busy = true; err.innerHTML = `<span class="muted">Checking your PIN...</span>`;
+      const r = await api({action:"auth", matric:st.matric, pin, name:st.name, group:st.group});
+      busy = false;
+      if(!r.ok){ err.textContent = r.offline ? "Could not connect. Check your internet and try again." : (r.error || "Sign-in failed."); if(r.needName) $("#f-name").focus(); return; }
+      setTok(st.matric, r.token);
+      if(!st.name) st.name = r.name || ""; if(!st.group) st.group = r.group || "";
+    }
+    if(!st.name){ err.textContent = "Please enter your full name."; $("#f-name").focus(); return; }
     saveStudent(st); state.student = st;
+    if(signedIn()){ busy = true; err.innerHTML = `<span class="muted">Loading your saved work...</span>`; await withTimeout(pull(), 6000); busy = false; err.textContent = ""; }
+    return true;
+  }
+  if($("#signin")) $("#signin").onclick = async () => { if(busy) return; if(await ready()) renderHome(); };
+  app.querySelectorAll("[data-go]").forEach(b => b.onclick = async () => {
+    if(busy || !(await ready())) return;
     const ch = CHAPTERS.find(c => String(c.id) === b.dataset.id), go = b.dataset.go;
     if(go.endsWith("-new")){ if(!confirm("Clear your unfinished attempt and start again?")) return; setProg(go.startsWith("theory")?"theory":"diag", ch.id, null); }
     if(go.startsWith("theory")) startTheory(ch); else startDiagnostic(ch);
@@ -1537,13 +1573,71 @@ const HIST_MAX = 60;
 function mkey(kind){ const st = state.student || loadStudent() || {}; return "sp025_"+kind+"_"+String(st.matric||"anon").toUpperCase(); }
 function lsGet(k, d){ try{ const v = localStorage.getItem(k); return v ? JSON.parse(v) : d; }catch(e){ return d; } }
 function lsSet(k, v){ try{ localStorage.setItem(k, JSON.stringify(v)); return true; }catch(e){ return false; } }
-function getProg(){ return lsGet(mkey("prog"), {theory:{}, diag:{}}); }
-function setProg(kind, chId, snap){ const P = getProg(); P[kind] = P[kind] || {}; if(snap) P[kind][chId] = snap; else delete P[kind][chId]; lsSet(mkey("prog"), P); }
-function getHist(){ return lsGet(mkey("hist"), []); }
-function addHist(entry){
-  let H = getHist(); H.unshift(entry); H = H.slice(0, HIST_MAX);
-  while(H.length && !lsSet(mkey("hist"), H)) H.pop();
+function rawProg(){ const P = lsGet(mkey("prog"), {}); P.theory = P.theory || {}; P.diag = P.diag || {}; return P; }
+function getProg(){ const P = rawProg(), out = {theory:{}, diag:{}};
+  ["theory","diag"].forEach(k => Object.keys(P[k]).forEach(c => { if(P[k][c] && !P[k][c].del) out[k][c] = P[k][c]; })); return out; }
+function setProg(kind, chId, snap){
+  const P = rawProg(); const v = snap ? Object.assign(snap, {savedAt: Date.now()}) : {del:true, savedAt: Date.now()};
+  P[kind][chId] = v; lsSet(mkey("prog"), P); queuePut("prog:"+kind+":"+chId, v);
 }
+function getHist(){ return lsGet(mkey("hist"), []); }
+function storeHist(H){ H.sort((a,b) => b.at - a.at); H = H.slice(0, HIST_MAX); while(H.length && !lsSet(mkey("hist"), H)) H.pop(); }
+function addHist(entry){ const H = getHist(); H.unshift(entry); storeHist(H); queuePut("hist:"+entry.at, entry); }
+
+/* ---------- Online sync (PIN sign-in) ---------- */
+function tokKey(m){ return "sp025_tok_" + String(m||"").toUpperCase(); }
+function getTok(m){ try{ return localStorage.getItem(tokKey(m)) || ""; }catch(e){ return ""; } }
+function setTok(m, t){ try{ if(t) localStorage.setItem(tokKey(m), t); else localStorage.removeItem(tokKey(m)); }catch(e){} }
+function api(payload){
+  return new Promise(res => {
+    if(GAS){ google.script.run.withSuccessHandler(r => res(r || {ok:false})).withFailureHandler(e => res({ok:false, offline:true, error:String(e && e.message || e)})).api(payload); return; }
+    if(!ON_WEB_HOST){ res({ok:false, preview:true}); return; }
+    const attempt = n => fetch(EXEC_URL, { method:"POST", body: JSON.stringify(payload), headers:{ "Content-Type":"text/plain;charset=utf-8" }, credentials:"omit", redirect:"follow" })
+      .then(r => r.json()).then(res)
+      .catch(() => n > 0 ? setTimeout(() => attempt(n-1), 1500) : res({ok:false, offline:true, error:"no internet connection or server busy"}));
+    attempt(1);
+  });
+}
+function signedIn(){ const st = state.student; return !!(HAS_BACKEND && st && st.matric && getTok(st.matric)); }
+function authFailed(){ const st = state.student; if(st) setTok(st.matric, ""); }
+let flushTimer = null, flushing = false;
+function queuePut(key, value){
+  if(!signedIn()) return;
+  const q = lsGet(mkey("queue"), {}); q[key] = JSON.stringify(value); lsSet(mkey("queue"), q);
+  clearTimeout(flushTimer); flushTimer = setTimeout(flushQueue, 1200);
+}
+async function flushQueue(){
+  if(flushing || !signedIn()) return; flushing = true;
+  try{
+    const st = state.student, qk = mkey("queue");
+    for(const key of Object.keys(lsGet(qk, {}))){
+      const data = lsGet(qk, {})[key]; if(data == null) continue;
+      const r = await api({action:"put", matric:st.matric, token:getTok(st.matric), key, data});
+      if(r.ok){ const q = lsGet(qk, {}); if(q[key] === data){ delete q[key]; lsSet(qk, q); } }
+      else { if(r.auth === false) authFailed(); break; }
+    }
+  } finally { flushing = false; }
+}
+document.addEventListener("visibilitychange", () => { if(document.visibilityState === "hidden") flushQueue(); });
+async function pull(){
+  if(!signedIn()) return false;
+  const st = state.student;
+  const r = await api({action:"load", matric:st.matric, token:getTok(st.matric)});
+  if(!r.ok){ if(r.auth === false) authFailed(); return false; }
+  let changed = false;
+  const P = rawProg(), H = getHist(), have = new Set(H.map(h => h.at)), onServer = {};
+  (r.items || []).forEach(it => { let v; try{ v = JSON.parse(it.data); }catch(e){ return; } onServer[it.key] = v;
+    const m = /^prog:(theory|diag):(\d+)$/.exec(it.key);
+    if(m){ const cur = P[m[1]][m[2]]; if(!cur || (v.savedAt||0) > (cur.savedAt||0)){ P[m[1]][m[2]] = v; changed = true; } }
+    else if(/^hist:/.test(it.key) && !have.has(v.at)){ H.push(v); have.add(v.at); changed = true; } });
+  lsSet(mkey("prog"), P); if(changed) storeHist(H);
+  ["theory","diag"].forEach(k => Object.keys(P[k]).forEach(c => { const sv = onServer["prog:"+k+":"+c];
+    if(!sv || (P[k][c].savedAt||0) > (sv.savedAt||0)) queuePut("prog:"+k+":"+c, P[k][c]); }));
+  getHist().forEach(h => { if(!onServer["hist:"+h.at]) queuePut("hist:"+h.at, h); });
+  flushQueue();
+  return changed;
+}
+function withTimeout(p, ms){ return Promise.race([p, new Promise(r => setTimeout(() => r("timeout"), ms))]); }
 function permOf(shuffled, orig){ return shuffled.map(o => orig.indexOf(o)); }
 /* theory snapshot */
 function theorySnap(){
@@ -1551,7 +1645,8 @@ function theorySnap(){
   return { ch: ch.id, idx: T.idx, startedAt: T.startedAt, ans: T.ans,
     secs: T.secs.map((s,si) => {
       const base = (THEORY[ch.id]||[]).find(x => x.sub === s.sub);
-      if(!base || s.review) return { sub:s.sub, full:s };
+      if(s.review) return { sub:s.sub, symqs:s.qs };
+      if(!base) return { sub:s.sub, full:s };
       return { sub:s.sub, perms: s.qs.map((q,qi) => permOf(q.opts, base.qs[qi].opts)) };
     }) };
 }
@@ -1559,6 +1654,7 @@ function theoryFromSnap(snap){
   try{
     const secs = snap.secs.map(s => {
       if(s.full) return s.full;
+      if(s.symqs){ const sym = symbolsSection(snap.ch)[0]; return Object.assign({}, sym, {qs: s.symqs}); }
       const base = THEORY[snap.ch].find(x => x.sub === s.sub);
       return Object.assign({}, base, { qs: s.perms.map((perm,qi) => { const oq = base.qs[qi];
         if(!oq || perm.some(j => j < 0 || !oq.opts[j])) throw 0;
@@ -1598,7 +1694,7 @@ function openAttempt(h){
 }
 function historyHTML(){
   const H = getHist(); if(!H.length) return "";
-  return `<h2 class="sec">My past attempts <span class="muted small">(saved on this device)</span></h2>
+  return `<h2 class="sec">My past attempts</h2>
   <section class="card hist">${H.map((h,k) => { const ch = CHAPTERS.find(c => c.id===h.ch) || {title:""};
     return `<div class="hrow"><div><b>${h.type==="Theory"?"Theory lesson":"Diagnostic"}</b>, Chapter ${h.ch}<div class="muted small">${esc(ch.title)} · ${fmtDate(h.at)}</div></div>
       <span class="hs">${h.score}/${h.total}</span><button class="btn sm ghost" data-hist="${k}">Open</button></div>`; }).join("")}</section>`;
