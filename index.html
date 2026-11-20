@@ -1635,6 +1635,9 @@ function renderHome(){
 
 
 
+/* Diagnostic length follows tutorial hours in the planner (about 3 questions per hour).
+   Chapter 2 has 4 tutorial hours, so three overlapping questions are left out (2.1 mixed network, 2.2 single-step tau, 2.3 connected-battery repeat). */
+CHAPTERS[1].diagnostic = CHAPTERS[1].diagnostic.filter((q,i) => ![2,4,8].includes(i));
 /* ---------- Richer lessons with figures ---------- */
 (function(){
 const INK="#1b2232", MUT="#5b6476", RED="#c0392b", BLU="#2a6aa3", FLD="#1d7448";
