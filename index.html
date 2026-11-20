@@ -242,6 +242,13 @@ svg.anim.play .fade{animation:fadeIn .5s ease var(--d) forwards}
 @keyframes fadeIn{to{opacity:1}}
 .replay{display:block;margin:6px auto 0;background:none;border:1px solid var(--line);border-radius:999px;padding:4px 12px;font:600 12.5px system-ui,-apple-system,sans-serif;color:var(--brand2);cursor:pointer}
 @media (prefers-reduced-motion:reduce){svg.anim .ar{stroke-dashoffset:0!important;animation:none!important}svg.anim .fade{opacity:1!important;animation:none!important}}
+.due{border:1px solid var(--line);border-left:5px solid var(--brand2);background:rgba(255,255,255,.75);border-radius:10px;padding:12px 14px;margin:14px 0}
+.due.ok{border-left-color:#1d7448}.due.late{border-left-color:#ad2a20;background:rgba(251,232,229,.75)}
+.dueh{font-weight:700;color:var(--brand);margin-bottom:2px}.due.late .dueh{color:#ad2a20}.due.ok .dueh{color:#1d7448}
+.duel{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+.due .btn small{display:block;font-weight:400;font-size:12px;opacity:.9;margin-top:2px}
+.btn.late{border-color:#ad2a20!important;color:#ad2a20}.btn.late small{color:#ad2a20}
+.btn.done small{color:#1d7448}
 </style>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
 <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js" onload="window.renderTex&&renderTex()"></script>
@@ -1558,10 +1565,11 @@ function renderHome(){
   state.student = s.matric ? s : state.student;
   const prog = s.matric ? getProg() : {theory:{}, diag:{}};
   const nParts = ch => ch.diagnostic.reduce((t,q)=>t+q.parts.length,0);
+  const doneSet = s.matric ? doneLessons() : new Set(), t0 = today0();
   app.innerHTML = `
   <section class="card">
     <h1>Find out what you really understand</h1>
-    <p class="muted"><b>Every Tuesday:</b> do that week's <b>lesson</b>. It replaces the 1-hour lecture: concepts, definitions, figures and worked examples. <b>After the tutorial:</b> take the <b>Diagnostic</b> to find out which calculations and skills need work, then get targeted notes and practice.</p>
+    <p class="muted"><b>Lessons</b> replace the lecture: concepts, definitions, figures and worked examples. <b>Finish each chapter's lessons before it starts in class</b> (the due date is shown on each lesson). <b>Diagnostics</b> are at your own pace: after the tutorials, take the <b>Diagnostic</b> to find out which calculations and skills need work, then get targeted notes and practice.</p>
     ${HAS_BACKEND ? "" : `<p class="muted small">Your progress is saved automatically on this device, so you can stop and continue later.</p>`}
     <p class="muted small">Have a calculator and paper ready. Type numerical answers to 3 significant figures in SI units. Say honestly when you are guessing.</p>
     <div class="grid3">
@@ -1576,15 +1584,17 @@ function renderHome(){
     <p id="f-err" class="err"></p>
     ${HAS_BACKEND ? "" : `<div class="preview">Preview mode. Results are only saved when this page runs from the lecturer's Google link.</div>`}
   </section>
+  ${s.matric ? dueBoxHTML() : ""}
   <h2 class="sec">SP025 chapters</h2>
   <div class="chapters">
     ${CHAPTERS.map(c => `<div class="chap ${c.open?"":"locked"}">
         <span class="num">${c.id}</span><span class="ct">${esc(c.title)}</span>
         ${c.open ? `<span class="acts">
-          ${WEEKS.filter(w => w.ch === c.id && THEORY[c.id]).map(w => { const pg = prog.theory[100+w.wk];
-            return pg ? `<button class="btn sm" data-go="theory" data-id="${c.id}" data-wk="${w.wk}">Continue Week ${w.wk} lesson<small>Part ${pg.idx+1} of ${pg.secs.length}</small></button><button class="btn sm ghost" data-go="theory-new" data-id="${c.id}" data-wk="${w.wk}">Restart Week ${w.wk}<small>Clears your unfinished lesson</small></button>`
-              : `<button class="btn sm ghost" data-go="theory" data-id="${c.id}" data-wk="${w.wk}">Week ${w.wk} lesson &middot; ${w.date}<small>${w.subs.join(", ")} &middot; ${lessonQs(w)} questions</small></button>`; }).join("")}
-          ${c.diagnostic ? (prog.diag[c.id] ? `<button class="btn sm" data-go="diag" data-id="${c.id}">Continue diagnostic<small>Question ${prog.diag[c.id].i+1} of ${prog.diag[c.id].answers.length}</small></button><button class="btn sm ghost" data-go="diag-new" data-id="${c.id}">Start diagnostic again<small>Clears your unfinished attempt</small></button>` : `<button class="btn sm" data-go="diag" data-id="${c.id}">Diagnostic<small>${nParts(c)} questions, ~30 min</small></button>`) : `<span class="cs">Diagnostic coming soon</span>`}</span>`
+          ${WEEKS.filter(w => w.ch === c.id && THEORY[c.id]).map(w => { const pg = prog.theory[100+w.wk], d = startOf(c.id), isDone = doneSet.has(w.wk), late = d && d < t0 && !isDone;
+            const due = isDone ? "&#10003; Done" : (d ? (late ? `Overdue (was due before ${fmtDay(d)})` : `Finish before ${fmtDay(d)}`) : `${lessonQs(w)} questions`);
+            return pg ? `<button class="btn sm ${late?"late":""}" data-go="theory" data-id="${c.id}" data-wk="${w.wk}">Continue Lesson ${w.n}<small>Part ${pg.idx+1} of ${pg.secs.length} &middot; ${due}</small></button><button class="btn sm ghost" data-go="theory-new" data-id="${c.id}" data-wk="${w.wk}">Restart Lesson ${w.n}<small>Clears your unfinished lesson</small></button>`
+              : `<button class="btn sm ghost ${late?"late":""} ${isDone?"done":""}" data-go="theory" data-id="${c.id}" data-wk="${w.wk}">Lesson ${w.n} &middot; ${w.subs.join(", ")}<small>${due}</small></button>`; }).join("")}
+          ${c.diagnostic ? (prog.diag[c.id] ? `<button class="btn sm" data-go="diag" data-id="${c.id}">Continue diagnostic<small>Question ${prog.diag[c.id].i+1} of ${prog.diag[c.id].answers.length}</small></button><button class="btn sm ghost" data-go="diag-new" data-id="${c.id}">Start diagnostic again<small>Clears your unfinished attempt</small></button>` : `<button class="btn sm" data-go="diag" data-id="${c.id}">Diagnostic<small>${nParts(c)} questions &middot; at your own pace</small></button>`) : `<span class="cs">Diagnostic coming soon</span>`}</span>`
           : `<span class="cs">Not open yet</span>`}</div>`).join("")}
   </div>
   ${s.matric ? historyHTML() : ""}
@@ -3618,25 +3628,55 @@ function historyHTML(){
   const H = getHist(); if(!H.length) return "";
   return `<h2 class="sec">My past attempts</h2>
   <section class="card hist">${H.map((h,k) => { const ch = CHAPTERS.find(c => c.id===h.ch) || {title:""};
-    return `<div class="hrow"><div><b>${h.type==="Theory"?(h.wk?`Week ${h.wk} lesson`:"Theory lesson"):"Diagnostic"}</b>, Chapter ${h.ch}<div class="muted small">${esc(ch.title)} · ${fmtDate(h.at)}</div></div>
+    return `<div class="hrow"><div><b>${h.type==="Theory"?((weekOf(h.wk)||{}).n?`Lesson ${weekOf(h.wk).n}`:"Lesson"):"Diagnostic"}</b>, Chapter ${h.ch}<div class="muted small">${esc(ch.title)} · ${fmtDate(h.at)}</div></div>
       <span class="hs">${h.score}/${h.total}</span><button class="btn sm ghost" data-hist="${k}">Open</button></div>`; }).join("")}</section>`;
 }
 
 /* ---------- Symbols and units ---------- */
 const SYMQ_N = 6;
-/* Weekly lessons, following the SP025 2026/2027 planner (one 1-hour lecture per week, Tuesday) */
+/* Lessons: each replaces one 1-hour lecture (number per chapter follows the SP025 planner).
+   wk is only an internal id (used for saved progress). Students see "Lesson n". */
 const WEEKS = [
-  {wk:1, date:"17 Nov", ch:1, subs:["1.1","1.2"]}, {wk:2, date:"24 Nov", ch:1, subs:["1.3","1.4"]},
-  {wk:3, date:"1 Dec", ch:2, subs:["2.1"]}, {wk:4, date:"8 Dec", ch:2, subs:["2.2","2.3"]},
-  {wk:5, date:"15 Dec", ch:3, subs:["3.1","3.2","3.3","3.4"]}, {wk:6, date:"22 Dec", ch:3, subs:["3.5","3.6","3.7","3.8","3.9"]},
-  {wk:7, date:"5 Jan", ch:4, subs:["4.1","4.2","4.3"]}, {wk:8, date:"12 Jan", ch:4, subs:["4.4","4.5","4.6"]},
-  {wk:9, date:"19 Jan", ch:5, subs:["5.1","5.2"]}, {wk:10, date:"26 Jan", ch:5, subs:["5.3","5.4","5.5"]},
-  {wk:11, date:"2 Feb", ch:6, subs:["6.1","6.2"]}, {wk:12, date:"16 Feb", ch:6, subs:["6.3","6.4"]},
-  {wk:13, date:"23 Feb", ch:7, subs:["7.1","7.2","7.3"]}, {wk:14, date:"2 Mar", ch:7, subs:["7.4","7.5","7.6"]}, {wk:15, date:"16 Mar", ch:7, subs:["7.7","7.8","7.9"]},
-  {wk:16, date:"23 Mar", ch:8, subs:["8.1","8.2"]},
-  {wk:17, date:"30 Mar", ch:9, subs:["9.1","9.2"]}, {wk:18, date:"6 Apr", ch:9, subs:["9.3","9.4"]}
+  {wk:1, ch:1, n:1, subs:["1.1","1.2"]}, {wk:2, ch:1, n:2, subs:["1.3","1.4"]},
+  {wk:3, ch:2, n:1, subs:["2.1"]}, {wk:4, ch:2, n:2, subs:["2.2","2.3"]},
+  {wk:5, ch:3, n:1, subs:["3.1","3.2","3.3","3.4"]}, {wk:6, ch:3, n:2, subs:["3.5","3.6","3.7","3.8","3.9"]},
+  {wk:7, ch:4, n:1, subs:["4.1","4.2","4.3"]}, {wk:8, ch:4, n:2, subs:["4.4","4.5","4.6"]},
+  {wk:9, ch:5, n:1, subs:["5.1","5.2"]}, {wk:10, ch:5, n:2, subs:["5.3","5.4","5.5"]},
+  {wk:11, ch:6, n:1, subs:["6.1","6.2"]}, {wk:12, ch:6, n:2, subs:["6.3","6.4"]},
+  {wk:13, ch:7, n:1, subs:["7.1","7.2","7.3"]}, {wk:14, ch:7, n:2, subs:["7.4","7.5","7.6"]}, {wk:15, ch:7, n:3, subs:["7.7","7.8","7.9"]},
+  {wk:16, ch:8, n:1, subs:["8.1","8.2"]},
+  {wk:17, ch:9, n:1, subs:["9.1","9.2"]}, {wk:18, ch:9, n:2, subs:["9.3","9.4"]}
 ];
 const weekOf = wk => WEEKS.find(w => w.wk === wk);
+/* Chapter start dates, set by the lecturer in the Settings tab of the Sheet */
+let SETTINGS = { starts:{} };
+try{ SETTINGS = JSON.parse(localStorage.getItem("sp025_settings")) || SETTINGS; }catch(e){}
+async function loadSettings(){
+  if(!HAS_BACKEND) return;
+  const r = await api({action:"settings"});
+  if(!r || !r.ok) return;
+  const changed = JSON.stringify(r.starts||{}) !== JSON.stringify(SETTINGS.starts||{});
+  SETTINGS = { starts: r.starts || {} };
+  try{ localStorage.setItem("sp025_settings", JSON.stringify(SETTINGS)); }catch(e){}
+  if(changed && document.getElementById("f-name")) renderHome();
+}
+function startOf(ch){ const v = (SETTINGS.starts||{})[ch]; if(!v) return null; const [y,m,d] = v.split("-").map(Number); return new Date(y, m-1, d); }
+function today0(){ const t = new Date(); return new Date(t.getFullYear(), t.getMonth(), t.getDate()); }
+function fmtDay(d){ try{ return d.toLocaleDateString("en-GB",{weekday:"short", day:"numeric", month:"short"}); }catch(e){ return ""; } }
+function doneLessons(){ const S = new Set(); try{ getHist().forEach(h => { if(h.type==="Theory" && h.wk) S.add(h.wk); }); }catch(e){} return S; }
+function dueBoxHTML(){
+  const t = today0(), done = doneLessons(), chs = CHAPTERS.filter(c => startOf(c.id));
+  if(!chs.length) return "";
+  const overdue = WEEKS.filter(w => { const d = startOf(w.ch); return d && d < t && !done.has(w.wk); });
+  const next = chs.filter(c => startOf(c.id) >= t).sort((a,b) => startOf(a.id) - startOf(b.id))[0];
+  let h = "";
+  if(next){ const ls = WEEKS.filter(w => w.ch === next.id), all = ls.every(w => done.has(w.wk)), d = startOf(next.id), isToday = +d === +t;
+    h += `<div class="due ${all?"ok":""}"><div class="dueh">${all ? "&#10003; Ready for" : "Due next"}: Chapter ${next.id}, ${esc(next.title)}</div>
+      <div class="small">${all ? "You have finished all its lessons." : `Finish ${ls.length>1?"these lessons":"this lesson"} ${isToday?"<b>today</b>, before class":`before <b>${fmtDay(d)}</b>`}.`}</div>
+      <div class="duel">${ls.map(w => `<button class="btn sm ${done.has(w.wk)?"ghost":""}" data-go="theory" data-id="${w.ch}" data-wk="${w.wk}">${done.has(w.wk)?"&#10003; ":""}Lesson ${w.n}<small>${w.subs.join(", ")}</small></button>`).join("")}</div></div>`; }
+  if(overdue.length) h += `<div class="due late"><div class="dueh">Overdue</div><div class="duel">${overdue.map(w => `<button class="btn sm" data-go="theory" data-id="${w.ch}" data-wk="${w.wk}">Ch ${w.ch}, Lesson ${w.n}<small>was due before ${fmtDay(startOf(w.ch))}</small></button>`).join("")}</div></div>`;
+  return h;
+}
 const lessonSecs = L => (THEORY[L.ch]||[]).filter(s => L.subs.includes(s.sub));
 const lessonQs = L => lessonSecs(L).reduce((t,s)=>t+s.qs.length,0) + SYMQ_N;
 const UNIT_POOL = ["N","J","W","C","V","Ω","T","Hz","m","s","kg","A","F","H","Wb","m s<sup>−1</sup>","no unit"];
@@ -3692,7 +3732,7 @@ function renderTheory(keep){
   const LW = state.lesson || {wk:0};
   if(!T.reviewing && LW.wk) setProg("theory", 100+LW.wk, theorySnap());
   app.innerHTML = `
-  <div class="qhead"><span>${T.reviewing?"Reviewing":"Lesson"}: ${LW.wk?`Week ${LW.wk}, `:""}Chapter ${ch.id}</span><span>Part ${T.idx+1} of ${T.secs.length}</span></div>
+  <div class="qhead"><span>${T.reviewing?"Reviewing ":""}${LW.n?`Lesson ${LW.n}, `:"Lesson, "}Chapter ${ch.id}</span><span>Part ${T.idx+1} of ${T.secs.length}</span></div>
   ${catBar(T.idx/T.secs.length)}
   <section class="card note"><span class="tag">${sec.sub}</span><h2>${esc(sec.title)}</h2>${sec.html}${symTable(sec.sym, sec.review ? "All symbols in this lesson" : "Symbols and units")}</section>
   <h2 class="sec">Check your understanding</h2>
@@ -3721,7 +3761,7 @@ function finishTheory(review){
   <section class="card">
     ${cheer(score===total ? "Purr-fect! Every answer right." : "Lesson done. Nice work!")}
     <h1>Theory lesson complete</h1>
-    <p>${(state.lesson||{}).wk ? `Week ${state.lesson.wk} lesson, ` : ""}Chapter ${ch.id}: ${esc(ch.title)}. You got <b>${score} of ${total}</b> right first time.</p>
+    <p>${(state.lesson||{}).n ? `Lesson ${state.lesson.n}, ` : ""}Chapter ${ch.id}: ${esc(ch.title)}. You got <b>${score} of ${total}</b> right first time.</p>
     ${rows.map(r => `<div class="subrow"><div class="subline"><div class="subname"><small>${r.id}</small>${esc(r.name)}</div><b>${r.correct}/${r.total}</b></div></div>`).join("")}
     <div class="subrow"><div class="subline"><div class="subname">C1 Remember (definitions, units)</div><b>${bl.C1.c}/${bl.C1.t}</b></div></div>
     <div class="subrow"><div class="subline"><div class="subname">C2 Understand (explain, interpret)</div><b>${bl.C2.c}/${bl.C2.t}</b></div></div>
@@ -3737,7 +3777,7 @@ function finishTheory(review){
   if(wk) setProg("theory", 100+wk, null);
   T.doneAt = Date.now();
   addHist({ type:"Theory", ch: ch.id, wk, at: T.doneAt, score, total, snap: theorySnap() });
-  send({ type:"Theory", name:st.name, matric:st.matric, group:st.group, chapter: ch.id+" "+ch.title+(wk?` (Week ${wk} lesson)`:""), score, total,
+  send({ type:"Theory", name:st.name, matric:st.matric, group:st.group, chapter: ch.id+" "+ch.title+((state.lesson||{}).n?` (Lesson ${state.lesson.n})`:""), score, total,
          subtopics: rows.map(r => Object.assign({status:""}, r)),
          skills: [{name:"C1 Remember", correct:bl.C1.c, total:bl.C1.t, status:""},{name:"C2 Understand", correct:bl.C2.c, total:bl.C2.t, status:""}],
          weak:[], confidentWrong:"", misconceptions:[], minutes: Math.round((Date.now()-T.startedAt)/6000)/10 })
@@ -3971,6 +4011,7 @@ try{ document.getElementById("homebtn").onclick = () => { if(typeof flushQueue =
 
 try{ document.getElementById("hcat").innerHTML = CAT.sit("head"); }catch(e){}
 try{ applyCats(); }catch(e){}
+try{ loadSettings(); }catch(e){}
 renderHome();
 </script>
 </body>
