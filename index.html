@@ -155,7 +155,54 @@ header.top .wrap{position:relative}
 @keyframes pop{from{transform:translateY(16px);opacity:0}to{transform:none;opacity:1}}
 @media (prefers-reduced-motion:reduce){.cat *,.cat{animation:none!important;stroke-dashoffset:0!important}.cat .z{opacity:1}}
 @media(max-width:420px){.cat.head{width:36px;height:36px;right:10px}}
+
+/* background cats */
+main.wrap,header.top{position:relative;z-index:1}
+.bgcats{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden;opacity:.42}
+.bgcats svg{overflow:visible}
+.bc{fill:none;stroke:var(--brand);stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+.bc .dot{fill:var(--brand);stroke:none}
+.bc .blink{transform-box:fill-box;transform-origin:center;animation:blink 4.5s infinite}
+.bgcats .walker{position:absolute;bottom:10px;left:0;width:124px;height:72px;animation:walkx 46s linear infinite}
+.bgcats .walker .flip{width:100%;height:100%;animation:walkflip 46s steps(1) infinite}
+.bgcats .walker .bc{width:124px;height:72px;animation:bob .5s ease-in-out infinite}
+.bc .lg{transform-box:fill-box;transform-origin:50% 0}
+.bc .l1{animation:leg .5s ease-in-out infinite}.bc .l2{animation:leg .5s ease-in-out -.25s infinite}
+.bc .tl{transform-box:fill-box;transform-origin:100% 100%;animation:swish 1.6s ease-in-out infinite}
+.bc .tl2{transform-box:fill-box;transform-origin:0 100%;animation:swish 2.2s ease-in-out infinite}
+.bgcats .roller{position:absolute;top:38%;left:0;width:70px;height:70px;animation:rollx 30s ease-in-out infinite}
+.bgcats .roller .spin{width:70px;height:70px;animation:rollspin 30s ease-in-out infinite}
+.bgcats .roller .bc{width:70px;height:70px}
+.bgcats .sleeper{position:absolute;top:84px;left:8px}
+.bgcats .sleeper .cat.sleep{width:150px;height:75px}
+.bgcats .sleeper .cat .draw{stroke-dasharray:none;stroke-dashoffset:0;animation:none}
+.bgcats .players{position:absolute;right:14px;bottom:110px;display:flex;align-items:flex-end;gap:4px}
+.bgcats .players .p1 .bc,.bgcats .players .p2 .bc{width:64px;height:70px}
+.bgcats .players .p2{transform:scaleX(-1)}
+.bgcats .players .p2 .bat{animation-delay:-.9s}
+.bc .bat{transform-box:fill-box;transform-origin:0 100%;animation:bat 1.8s ease-in-out infinite}
+.bgcats .yarn{width:30px;height:30px;margin-bottom:2px;animation:yarn 1.8s ease-in-out infinite}
+.bgcats .yarn .bc{width:30px;height:30px}
+@keyframes walkx{0%{transform:translateX(-140px)}50%{transform:translateX(calc(100vw + 20px))}100%{transform:translateX(-140px)}}
+@keyframes walkflip{0%{transform:scaleX(1)}50%{transform:scaleX(-1)}}
+@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-2px)}}
+@keyframes leg{0%,100%{transform:rotate(16deg)}50%{transform:rotate(-16deg)}}
+@keyframes rollx{0%,8%{transform:translateX(-90px)}50%,58%{transform:translateX(calc(100vw + 20px))}100%{transform:translateX(-90px)}}
+@keyframes rollspin{0%,8%{transform:rotate(0)}50%,58%{transform:rotate(1440deg)}100%{transform:rotate(0)}}
+@keyframes bat{0%,40%,100%{transform:rotate(0)}55%{transform:rotate(-38deg)}70%{transform:rotate(6deg)}}
+@keyframes yarn{0%,100%{transform:translate(-14px,0) rotate(0)}25%{transform:translate(0,-16px) rotate(140deg)}50%{transform:translate(14px,0) rotate(280deg)}75%{transform:translate(0,-12px) rotate(140deg)}}
+.linkbtn{background:none;border:0;color:var(--brand2);font:inherit;font-size:13px;text-decoration:underline;cursor:pointer;margin-top:4px}
+@media (prefers-reduced-motion:reduce){.bgcats *{animation:none!important}.bgcats .walker{left:30%}.bgcats .roller{left:70%}}
+@media (max-width:560px){.bgcats .sleeper{top:auto;bottom:90px;left:4px}.bgcats .sleeper .cat.sleep{width:110px;height:55px}.bgcats .players{bottom:170px}}
+.formula.tex{display:flex;flex-wrap:wrap;align-items:center;gap:10px 30px;font-family:inherit;padding:12px 14px;overflow-x:auto}
+.formula.tex .fi{display:inline-flex;flex-wrap:wrap;align-items:center;gap:2px 8px;max-width:100%}
+.formula.tex .fe{white-space:nowrap;max-width:100%;overflow-x:auto;overflow-y:hidden;padding:2px 0}
+.formula.tex .fl{font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;font-size:14px;color:var(--muted)}
+.formula.tex .katex{font-size:1.15em}
+@media(max-width:560px){.formula.tex .katex{font-size:1.02em}.formula.tex{gap:8px 22px}.bgcats{opacity:.28}}
 </style>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js" onload="window.renderTex&&renderTex()"></script>
 </head>
 <body>
 <header class="top"><div class="wrap"><div class="brand">Fizik SP025</div><div class="sub">Weekly self-diagnosis</div><span id="hcat"></span></div></header>
@@ -236,7 +283,7 @@ const CHAPTERS = [
   subtopics: [
     { id:"1.1", name:"Coulomb's law",
       note:`<p>Two point charges exert equal and opposite forces along the line joining them. Like charges repel, unlike charges attract.</p>
-      <div class="formula">F = k q<sub>1</sub>q<sub>2</sub> / r<sup>2</sup> &nbsp;&nbsp; k = 9.0 &times; 10<sup>9</sup> N m<sup>2</sup> C<sup>&minus;2</sup></div>
+      <div class="formula" data-tex="F=\\dfrac{kq_1q_2}{r^2}||k=9.0\\times10^{9}\\ \\text{N m}^2\\,\\text{C}^{-2}">F = k q<sub>1</sub>q<sub>2</sub> / r<sup>2</sup> &nbsp;&nbsp; k = 9.0 &times; 10<sup>9</sup> N m<sup>2</sup> C<sup>&minus;2</sup></div>
       <h4>Problem-solving steps</h4>
       <ul><li>Convert first: &mu;C &times;10<sup>&minus;6</sup>, nC &times;10<sup>&minus;9</sup>, cm &times;10<sup>&minus;2</sup>.</li>
       <li>Put <b>magnitudes only</b> into the formula. Get each force's direction from the diagram (attract or repel), not from the sign of your answer.</li>
@@ -246,7 +293,7 @@ const CHAPTERS = [
       <div class="ex"><b>Worked example.</b> +4 &mu;C at x = 0 and +9 &mu;C at x = 0.50 m. Zero force where 4/x<sup>2</sup> = 9/(0.50 &minus; x)<sup>2</sup>. Square-root both sides: 2/x = 3/(0.50 &minus; x), so x = 0.20 m from the +4 &mu;C charge.</div>` },
     { id:"1.2", name:"Electric field",
       note:`<p>Electric field strength is the force per unit positive test charge. It is a vector.</p>
-      <div class="formula">E = F / q<sub>0</sub> &nbsp;&nbsp; E = kQ / r<sup>2</sup> &nbsp;&nbsp; F = qE</div>
+      <div class="formula" data-tex="E=\\dfrac{F}{q_0}||E=\\dfrac{kQ}{r^2}||F=qE">E = F / q<sub>0</sub> &nbsp;&nbsp; E = kQ / r<sup>2</sup> &nbsp;&nbsp; F = qE</div>
       <h4>Problem-solving steps</h4>
       <ul><li>Find the magnitude of each E using |Q| only.</li>
       <li>Draw each E at the point: <b>away</b> from a positive charge, <b>toward</b> a negative charge.</li>
@@ -255,7 +302,7 @@ const CHAPTERS = [
       <div class="ex"><b>Worked example.</b> +4.0 &mu;C is 0.30 m above P and &minus;6.0 &mu;C is 0.40 m to the right of P. E<sub>1</sub> = 4.0&times;10<sup>5</sup> N C<sup>&minus;1</sup> (downward, away from q<sub>1</sub>). E<sub>2</sub> = 3.375&times;10<sup>5</sup> N C<sup>&minus;1</sup> (rightward, toward q<sub>2</sub>). E = &radic;(E<sub>1</sub><sup>2</sup> + E<sub>2</sub><sup>2</sup>) = 5.23&times;10<sup>5</sup> N C<sup>&minus;1</sup>.</div>` },
     { id:"1.3", name:"Electric potential, potential energy and equipotentials",
       note:`<p>Potential is a <b>scalar</b>. Keep the sign of every charge and simply add. There are no components.</p>
-      <div class="formula">V = kQ / r &nbsp;&nbsp; U = kq<sub>1</sub>q<sub>2</sub> / r = qV &nbsp;&nbsp; &Delta;U = q&Delta;V &nbsp;&nbsp; W<sub>ext</sub> = q(V<sub>final</sub> &minus; V<sub>initial</sub>)</div>
+      <div class="formula" data-tex="V=\\dfrac{kQ}{r}||U=\\dfrac{kq_1q_2}{r}=qV||\\Delta U=q\\Delta V||W_{\\text{ext}}=q\\left(V_{\\text{final}}-V_{\\text{initial}}\\right)">V = kQ / r &nbsp;&nbsp; U = kq<sub>1</sub>q<sub>2</sub> / r = qV &nbsp;&nbsp; &Delta;U = q&Delta;V &nbsp;&nbsp; W<sub>ext</sub> = q(V<sub>final</sub> &minus; V<sub>initial</sub>)</div>
       <h4>Problem-solving steps</h4>
       <ul><li>V uses r, not r<sup>2</sup>. Put the sign of Q in.</li>
       <li>Potential energy of a system: add kq<sub>i</sub>q<sub>j</sub>/r<sub>ij</sub> for <b>every pair</b>, once each. Three charges give three pairs.</li>
@@ -264,7 +311,7 @@ const CHAPTERS = [
       <div class="ex"><b>Worked example.</b> &minus;2 &mu;C crosses a potential rise of +200 V. &Delta;U = q&Delta;V = (&minus;2&times;10<sup>&minus;6</sup>)(+200) = &minus;4.0&times;10<sup>&minus;4</sup> J. Its potential energy decreases.</div>` },
     { id:"1.4", name:"Charge in a uniform electric field",
       note:`<p>Between parallel plates E is uniform, so F and a are constant. Use the kinematics equations from Semester 1.</p>
-      <div class="formula">E = V / d &nbsp;&nbsp; a = qE / m &nbsp;&nbsp; W = qV &nbsp;&nbsp; equilibrium: qE = mg</div>
+      <div class="formula" data-tex="E=\\dfrac{V}{d}||a=\\dfrac{qE}{m}||W=qV||\\text{equilibrium: } qE=mg">E = V / d &nbsp;&nbsp; a = qE / m &nbsp;&nbsp; W = qV &nbsp;&nbsp; equilibrium: qE = mg</div>
       <h4>Problem-solving steps</h4>
       <ul><li>Convert d to metres and mass to kg (25 g = 0.025 kg). An alpha particle has q = +2e.</li>
       <li>From rest across the gap: s = &frac12;at<sup>2</sup>, v<sup>2</sup> = 2as, or qV = &frac12;mv<sup>2</sup>.</li>
@@ -413,7 +460,7 @@ const CHAPTERS = [
   id: 2, title: "Capacitors and Dielectrics", open: true,
   subtopics: [
     { id:"2.1", name:"Capacitance, series and parallel, energy stored",
-      note:`<div class="formula">C = Q / V &nbsp;&nbsp; series: 1/C<sub>eff</sub> = 1/C<sub>1</sub> + 1/C<sub>2</sub> + ... &nbsp;&nbsp; parallel: C<sub>eff</sub> = C<sub>1</sub> + C<sub>2</sub> + ... &nbsp;&nbsp; U = &frac12;QV = &frac12;CV<sup>2</sup> = Q<sup>2</sup>/2C</div>
+      note:`<div class="formula" data-tex="C=\\dfrac{Q}{V}||\\text{series: } \\dfrac{1}{C_{\\text{eff}}}=\\dfrac{1}{C_1}+\\dfrac{1}{C_2}+\\cdots||\\text{parallel: } C_{\\text{eff}}=C_1+C_2+\\cdots||U=\\tfrac12QV=\\tfrac12CV^2=\\dfrac{Q^2}{2C}">C = Q / V &nbsp;&nbsp; series: 1/C<sub>eff</sub> = 1/C<sub>1</sub> + 1/C<sub>2</sub> + ... &nbsp;&nbsp; parallel: C<sub>eff</sub> = C<sub>1</sub> + C<sub>2</sub> + ... &nbsp;&nbsp; U = &frac12;QV = &frac12;CV<sup>2</sup> = Q<sup>2</sup>/2C</div>
       <h4>Problem-solving steps</h4>
       <ul><li><b>Series:</b> every capacitor has the <b>same charge</b>. The voltages add up to the supply.</li>
       <li><b>Parallel:</b> every capacitor has the <b>same voltage</b>. The charges add up.</li>
@@ -423,7 +470,7 @@ const CHAPTERS = [
       <div class="trap"><b>Common traps:</b> the series and parallel formulas are the opposite of resistors. Remember the &frac12; in the energy formula. Convert &mu;F to F before calculating charge or energy.</div>
       <div class="ex"><b>Worked example.</b> 4 &mu;F and 6 &mu;F in series across 240 V. C<sub>eff</sub> = (4&times;6)/(4+6) = 2.4 &mu;F. Q = 2.4&times;10<sup>&minus;6</sup> &times; 240 = 5.76&times;10<sup>&minus;4</sup> C on <i>each</i>. V<sub>4</sub> = Q/4&micro;F = 144 V and V<sub>6</sub> = 96 V, which add up to 240 V.</div>` },
     { id:"2.2", name:"Charging, discharging and time constant",
-      note:`<div class="formula">&tau; = RC &nbsp;&nbsp; discharging: Q = Q<sub>0</sub>e<sup>&minus;t/RC</sup> &nbsp;&nbsp; charging: Q = Q<sub>0</sub>(1 &minus; e<sup>&minus;t/RC</sup>) &nbsp;&nbsp; I<sub>0</sub> = V<sub>0</sub>/R</div>
+      note:`<div class="formula" data-tex="\\tau=RC||\\text{discharging: } Q=Q_0e^{-t/RC}||\\text{charging: } Q=Q_0\\left(1-e^{-t/RC}\\right)||I_0=\\dfrac{V_0}{R}">&tau; = RC &nbsp;&nbsp; discharging: Q = Q<sub>0</sub>e<sup>&minus;t/RC</sup> &nbsp;&nbsp; charging: Q = Q<sub>0</sub>(1 &minus; e<sup>&minus;t/RC</sup>) &nbsp;&nbsp; I<sub>0</sub> = V<sub>0</sub>/R</div>
       <h4>Problem-solving steps</h4>
       <ul><li>Decide first: is it <b>charging</b> or <b>discharging</b>? Pick the matching equation.</li>
       <li>&tau; is in seconds: convert k&Omega;, M&Omega;, &mu;F and minutes first. Capacitors in the circuit? Use C<sub>eff</sub>.</li>
@@ -432,7 +479,7 @@ const CHAPTERS = [
       <div class="trap"><b>Meaning of &tau;:</b> the time to reach 63% of the maximum charge when charging, or to fall to 37% of the initial charge when discharging.</div>
       <div class="ex"><b>Worked example.</b> 2.50 &mu;F charged to 12 V discharges through 2.0 M&Omega;. &tau; = 5.0 s and Q<sub>0</sub> = 3.0&times;10<sup>&minus;5</sup> C. After 40 s: Q = 3.0&times;10<sup>&minus;5</sup>e<sup>&minus;8</sup> = 1.01&times;10<sup>&minus;8</sup> C.</div>` },
     { id:"2.3", name:"Capacitors with dielectrics",
-      note:`<div class="formula">C<sub>0</sub> = &epsilon;<sub>0</sub>A/d &nbsp;&nbsp; C = &epsilon;<sub>r</sub>&epsilon;<sub>0</sub>A/d &nbsp;&nbsp; &epsilon;<sub>r</sub> = C/C<sub>0</sub> = V<sub>0</sub>/V = E<sub>0</sub>/E &nbsp;&nbsp; &epsilon;<sub>0</sub> = 8.85&times;10<sup>&minus;12</sup> F m<sup>&minus;1</sup></div>
+      note:`<div class="formula" data-tex="C_0=\\dfrac{\\varepsilon_0A}{d}||C=\\dfrac{\\varepsilon_r\\varepsilon_0A}{d}||\\varepsilon_r=\\dfrac{C}{C_0}=\\dfrac{V_0}{V}=\\dfrac{E_0}{E}||\\varepsilon_0=8.85\\times10^{-12}\\ \\text{F m}^{-1}">C<sub>0</sub> = &epsilon;<sub>0</sub>A/d &nbsp;&nbsp; C = &epsilon;<sub>r</sub>&epsilon;<sub>0</sub>A/d &nbsp;&nbsp; &epsilon;<sub>r</sub> = C/C<sub>0</sub> = V<sub>0</sub>/V = E<sub>0</sub>/E &nbsp;&nbsp; &epsilon;<sub>0</sub> = 8.85&times;10<sup>&minus;12</sup> F m<sup>&minus;1</sup></div>
       <h4>Problem-solving steps</h4>
       <ul><li>Convert area: 1 cm<sup>2</sup> = 10<sup>&minus;4</sup> m<sup>2</sup> (not 10<sup>&minus;2</sup>). Separation: 1 mm = 10<sup>&minus;3</sup> m.</li>
       <li><b>Battery disconnected</b> when the dielectric goes in: Q stays the same, so V falls by &epsilon;<sub>r</sub>. Use &epsilon;<sub>r</sub> = V<sub>0</sub>/V.</li>
@@ -590,7 +637,7 @@ const THEORY = {
 1: [
   { sub:"1.1", title:"Coulomb's law",
     html:`<p><b>Coulomb's law</b> states that the magnitude of the electrostatic force between two point charges is <b>directly proportional to the product of the magnitudes of the charges</b> and <b>inversely proportional to the square of the distance</b> between them.</p>
-    <div class="formula">F = k q<sub>1</sub>q<sub>2</sub> / r<sup>2</sup> &nbsp;&nbsp; k = 1/(4&pi;&epsilon;<sub>0</sub>) = 9.0&times;10<sup>9</sup> N m<sup>2</sup> C<sup>&minus;2</sup> &nbsp;&nbsp; &epsilon;<sub>0</sub> = 8.85&times;10<sup>&minus;12</sup> C<sup>2</sup> N<sup>&minus;1</sup> m<sup>&minus;2</sup></div>
+    <div class="formula" data-tex="F=\\dfrac{kq_1q_2}{r^2}||k=\\dfrac{1}{4\\pi\\varepsilon_0}=9.0\\times10^{9}\\ \\text{N m}^2\\,\\text{C}^{-2}||\\varepsilon_0=8.85\\times10^{-12}\\ \\text{C}^2\\,\\text{N}^{-1}\\,\\text{m}^{-2}">F = k q<sub>1</sub>q<sub>2</sub> / r<sup>2</sup> &nbsp;&nbsp; k = 1/(4&pi;&epsilon;<sub>0</sub>) = 9.0&times;10<sup>9</sup> N m<sup>2</sup> C<sup>&minus;2</sup> &nbsp;&nbsp; &epsilon;<sub>0</sub> = 8.85&times;10<sup>&minus;12</sup> C<sup>2</sup> N<sup>&minus;1</sup> m<sup>&minus;2</sup></div>
     <ul><li>Like charges repel and unlike charges attract.</li>
     <li>The force acts along the line joining the two charges.</li>
     <li>The two charges exert <b>equal and opposite</b> forces on each other (Newton's third law), even when the charges are different sizes.</li>
@@ -614,7 +661,7 @@ const THEORY = {
   { sub:"1.2", title:"Electric field",
     html:`<p>An <b>electric field</b> is a region around a charge in which another charge experiences an electric force.</p>
     <p><b>Electric field strength</b> at a point is the electric force per unit <b>positive</b> test charge placed at that point. It is a vector, with unit N C<sup>&minus;1</sup> (equal to V m<sup>&minus;1</sup>).</p>
-    <div class="formula">E = F / q<sub>0</sub> &nbsp;&nbsp; point charge: E = kQ / r<sup>2</sup></div>
+    <div class="formula" data-tex="E=\\dfrac{F}{q_0}||\\text{point charge: } E=\\dfrac{kQ}{r^2}">E = F / q<sub>0</sub> &nbsp;&nbsp; point charge: E = kQ / r<sup>2</sup></div>
     <h4>Electric field lines</h4>
     <ul><li>Start on positive charges and end on negative charges.</li>
     <li>Never cross, because the field has only one direction at any point.</li>
@@ -637,7 +684,7 @@ const THEORY = {
 
   { sub:"1.3", title:"Electric potential, potential energy and equipotentials",
     html:`<p><b>Electric potential</b> at a point is the work done by an external force in bringing a unit positive charge from infinity to that point. It is a <b>scalar</b>, with unit volt (V = J C<sup>&minus;1</sup>).</p>
-    <div class="formula">V = kQ / r &nbsp;&nbsp; U = qV = kq<sub>1</sub>q<sub>2</sub> / r &nbsp;&nbsp; W = q&Delta;V</div>
+    <div class="formula" data-tex="V=\\dfrac{kQ}{r}||U=qV=\\dfrac{kq_1q_2}{r}||W=q\\Delta V">V = kQ / r &nbsp;&nbsp; U = qV = kq<sub>1</sub>q<sub>2</sub> / r &nbsp;&nbsp; W = q&Delta;V</div>
     <ul><li><b>Potential difference</b> between two points is the work done per unit charge in moving a charge from one point to the other.</li>
     <li><b>Electric potential energy</b> of a charge at a point is the work done in bringing that charge from infinity to the point.</li>
     <li>Potentials from several charges are added algebraically, with signs. There are no components.</li></ul>
@@ -662,7 +709,7 @@ const THEORY = {
 
   { sub:"1.4", title:"Charge in a uniform electric field",
     html:`<p>Between two parallel charged plates the field is uniform, and its strength depends on the potential difference and the separation.</p>
-    <div class="formula">E = V / d &nbsp;&nbsp; F = qE &nbsp;&nbsp; a = qE / m</div>
+    <div class="formula" data-tex="E=\\dfrac{V}{d}||F=qE||a=\\dfrac{qE}{m}">E = V / d &nbsp;&nbsp; F = qE &nbsp;&nbsp; a = qE / m</div>
     <ul><li>The force on a charge is the same everywhere between the plates.</li>
     <li>Positive charges accelerate in the direction of E. Electrons accelerate opposite to E, towards the positive plate.</li>
     <li>A proton and an electron feel forces of the same size (same |q|), but the electron's acceleration is about 1800 times bigger because its mass is much smaller.</li>
@@ -683,14 +730,14 @@ const THEORY = {
   { sub:"2.1", title:"Capacitance, series and parallel, energy stored",
     html:`<p>A <b>capacitor</b> is a device that stores electric charge, and so stores electric potential energy. It consists of two conductors separated by a small air gap or a thin insulator, called a <b>dielectric</b>.</p>
     <p><b>Capacitance</b> is defined as the ratio of the charge on either plate to the potential difference between the plates. It is a scalar with SI unit the <b>farad</b> (F = C V<sup>&minus;1</sup>).</p>
-    <div class="formula">C = Q / V</div>
+    <div class="formula" data-tex="C=\\dfrac{Q}{V}">C = Q / V</div>
     <ul><li><b>1 farad</b> is the capacitance when 1 coulomb of charge is stored on each plate with a potential difference of 1 volt.</li>
     <li>A capacitor's capacitance does not change unless it is designed to be variable.</li>
     <li><b>Series:</b> each capacitor carries the same charge Q. The voltages add up.</li>
     <li><b>Parallel:</b> each capacitor has the same voltage V. The charges add up.</li></ul>
     <h4>Energy stored</h4>
     <p>Work must be done to push extra charge onto the plates against the growing potential difference. That work is stored as electric potential energy.</p>
-    <div class="formula">U = &frac12;QV = &frac12;CV<sup>2</sup> = Q<sup>2</sup>/2C</div>`,
+    <div class="formula" data-tex="U=\\tfrac12QV=\\tfrac12CV^2=\\dfrac{Q^2}{2C}">U = &frac12;QV = &frac12;CV<sup>2</sup> = Q<sup>2</sup>/2C</div>`,
     qs:[
       { bloom:"C1", prompt:"Define capacitance.",
         opts:[ {t:"The ratio of the charge on either plate to the potential difference between the plates", ok:true}, {t:"The product of the charge on a plate and the potential difference", mis:"Q &times; V is related to energy. Capacitance is Q divided by V."}, {t:"The total charge stored on both plates per second", mis:"Capacitance has nothing to do with time. It is charge per unit potential difference."} ],
@@ -714,7 +761,7 @@ const THEORY = {
     <ul><li>At the start, the voltage across the capacitor is at its maximum, so the current I<sub>0</sub> = V<sub>0</sub>/R is at its maximum.</li>
     <li>As charge flows off the plates, the voltage falls, and so does the current, until both reach zero.</li></ul>
     <h4>Time constant</h4>
-    <div class="formula">&tau; = RC &nbsp;&nbsp; charging: Q = Q<sub>0</sub>(1 &minus; e<sup>&minus;t/RC</sup>) &nbsp;&nbsp; discharging: Q = Q<sub>0</sub>e<sup>&minus;t/RC</sup></div>
+    <div class="formula" data-tex="\\tau=RC||\\text{charging: } Q=Q_0\\left(1-e^{-t/RC}\\right)||\\text{discharging: } Q=Q_0e^{-t/RC}">&tau; = RC &nbsp;&nbsp; charging: Q = Q<sub>0</sub>(1 &minus; e<sup>&minus;t/RC</sup>) &nbsp;&nbsp; discharging: Q = Q<sub>0</sub>e<sup>&minus;t/RC</sup></div>
     <ul><li>&tau; is a scalar with SI unit the <b>second</b>. It measures how quickly the capacitor charges or discharges.</li>
     <li><b>Charging:</b> &tau; is the time for the charge to reach 63% of its maximum value.</li>
     <li><b>Discharging:</b> &tau; is the time for the charge to fall to 37% of its initial value.</li>
@@ -735,9 +782,9 @@ const THEORY = {
 
   { sub:"2.3", title:"Capacitors with dielectrics",
     html:`<p>The capacitance of a parallel-plate capacitor is <b>proportional to the plate area</b>, <b>inversely proportional to the plate separation</b>, and depends on the dielectric between the plates.</p>
-    <div class="formula">air: C<sub>0</sub> = &epsilon;<sub>0</sub>A / d &nbsp;&nbsp; with dielectric: C = &epsilon;<sub>r</sub>&epsilon;<sub>0</sub>A / d = &epsilon;<sub>r</sub>C<sub>0</sub></div>
+    <div class="formula" data-tex="\\text{air: } C_0=\\dfrac{\\varepsilon_0A}{d}||\\text{with dielectric: } C=\\dfrac{\\varepsilon_r\\varepsilon_0A}{d}=\\varepsilon_rC_0">air: C<sub>0</sub> = &epsilon;<sub>0</sub>A / d &nbsp;&nbsp; with dielectric: C = &epsilon;<sub>r</sub>&epsilon;<sub>0</sub>A / d = &epsilon;<sub>r</sub>C<sub>0</sub></div>
     <p>A <b>dielectric</b> is a non-conducting (insulating) material placed between the plates. The <b>dielectric constant</b> &epsilon;<sub>r</sub> is the ratio of the permittivity of the material to the permittivity of free space. It has no unit and is always greater than 1.</p>
-    <div class="formula">&epsilon;<sub>r</sub> = &epsilon;/&epsilon;<sub>0</sub> = C/C<sub>0</sub> = V<sub>0</sub>/V = E<sub>0</sub>/E</div>
+    <div class="formula" data-tex="\\varepsilon_r=\\dfrac{\\varepsilon}{\\varepsilon_0}=\\dfrac{C}{C_0}=\\dfrac{V_0}{V}=\\dfrac{E_0}{E}">&epsilon;<sub>r</sub> = &epsilon;/&epsilon;<sub>0</sub> = C/C<sub>0</sub> = V<sub>0</sub>/V = E<sub>0</sub>/E</div>
     <h4>Advantages of a dielectric</h4>
     <ul><li>Increases the capacitance.</li><li>Increases the maximum operating voltage.</li><li>Gives mechanical support, so the plates can be closer without touching.</li></ul>
     <h4>How it works</h4>
@@ -826,7 +873,7 @@ THEORY[3] = [
   { sub:"3.1", title:"Electric current",
     html:`<p><b>Microscopic model:</b> a metal contains free electrons that act as charge carriers. With no electric field, they move randomly in all directions, so there is no net flow. When a potential difference is applied, the field E pushes them (F = eE) so they drift slowly along the conductor, <b>opposite</b> to E, with a small average speed called the <b>drift velocity</b>, v<sub>d</sub>.</p>
     <p><b>Electric current</b> is defined as the <b>rate of flow of charge</b>. It is a scalar with SI unit the ampere (A).</p>
-    <div class="formula">I = dQ/dt &nbsp;&nbsp; Q = ne</div>
+    <div class="formula" data-tex="I=\\dfrac{dQ}{dt}||Q=ne">I = dQ/dt &nbsp;&nbsp; Q = ne</div>
     <ul><li><b>1 ampere</b> is a flow of 1 coulomb of charge past a point in 1 second.</li>
     <li>Current flows only while there is a potential difference.</li>
     <li>Conventional current flows from + to −. Electrons flow the opposite way, from − to +.</li>
@@ -848,7 +895,7 @@ THEORY[3] = [
 
   { sub:"3.2", title:"Ohm's law and resistivity",
     html:`<p><b>Ohm's law:</b> the potential difference across a conductor is <b>directly proportional</b> to the current flowing through it, <b>provided its temperature and other physical conditions stay constant</b>.</p>
-    <div class="formula">V = IR &nbsp;&nbsp; R = ρl / A &nbsp;&nbsp; ρ = RA / l</div>
+    <div class="formula" data-tex="V=IR||R=\\dfrac{\\rho l}{A}||\\rho=\\dfrac{RA}{l}">V = IR &nbsp;&nbsp; R = ρl / A &nbsp;&nbsp; ρ = RA / l</div>
     <ul><li><b>Resistance</b> is the ratio of the potential difference across a component to the current through it. Unit: ohm (Ω).</li>
     <li>Conductors that obey Ohm's law are called <b>ohmic</b>. Their V–I graph is a straight line through the origin.</li>
     <li>R is directly proportional to length l and inversely proportional to cross-sectional area A.</li>
@@ -871,7 +918,7 @@ THEORY[3] = [
 
   { sub:"3.3", title:"Variation of resistance with temperature",
     html:`<p>The resistance of a <b>metal increases with temperature</b>. As the temperature rises, the metal ions vibrate with larger amplitude, so the free electrons collide with them more often. This hinders the drift of the electrons, so the resistance increases.</p>
-    <div class="formula">R = R<sub>0</sub>[1 + α(T − T<sub>0</sub>)] &nbsp;&nbsp; ρ = ρ<sub>0</sub>[1 + α(T − T<sub>0</sub>)]</div>
+    <div class="formula" data-tex="R=R_0\\left[1+\\alpha\\left(T-T_0\\right)\\right]||\\rho=\\rho_0\\left[1+\\alpha\\left(T-T_0\\right)\\right]">R = R<sub>0</sub>[1 + α(T − T<sub>0</sub>)] &nbsp;&nbsp; ρ = ρ<sub>0</sub>[1 + α(T − T<sub>0</sub>)]</div>
     <ul><li>α is the <b>temperature coefficient of resistivity</b>: the fractional increase in resistivity per degree rise in temperature. It is usually quoted at 20 °C.</li>
     <li>Unit of α: °C<sup>−1</sup> (equivalent to K<sup>−1</sup>).</li></ul>`,
     sym:[["R<sub>0</sub>","Resistance at the reference temperature T<sub>0</sub>","Ω"],["R","Resistance at temperature T","Ω"],["T, T<sub>0</sub>","Final and reference (initial) temperature","°C"],["α","Temperature coefficient of resistivity","°C<sup>−1</sup>"],["ρ<sub>0</sub>","Resistivity at the reference temperature","Ω m"]],
@@ -886,7 +933,7 @@ THEORY[3] = [
     html:`<p><b>Electromotive force (emf), ε</b>: the energy supplied by the source to each unit charge that flows through the whole circuit (external and internal resistances).</p>
     <p><b>Terminal potential difference, V</b>: the work done in moving a unit charge through the external resistance only.</p>
     <p><b>Internal resistance, r</b>: the resistance of the chemicals inside the battery, between its terminals.</p>
-    <div class="formula">V = ε − Ir &nbsp;&nbsp; ε = V + Ir &nbsp;&nbsp; I = ε / (R + r)</div>
+    <div class="formula" data-tex="V=\\varepsilon-Ir||\\varepsilon=V+Ir||I=\\dfrac{\\varepsilon}{R+r}">V = ε − Ir &nbsp;&nbsp; ε = V + Ir &nbsp;&nbsp; I = ε / (R + r)</div>
     <ul><li>When current flows, part of the emf is used to drive current through r (a "lost volt" Ir), so V &lt; ε.</li>
     <li>V = ε only when <b>no current</b> flows (an open circuit).</li>
     <li>The smaller r is, the more current and power the source can deliver.</li>
@@ -918,7 +965,7 @@ THEORY[3] = [
   { sub:"3.6", title:"Kirchhoff's rules",
     html:`<p><b>First rule (junction rule):</b> the sum of the currents entering any junction equals the sum of the currents leaving it. This follows from <b>conservation of charge</b>.</p>
     <p><b>Second rule (loop rule):</b> in any closed loop, the sum of the emfs equals the sum of the IR products. This follows from <b>conservation of energy</b>.</p>
-    <div class="formula">ΣI<sub>in</sub> = ΣI<sub>out</sub> &nbsp;&nbsp; Σε = ΣIR</div>
+    <div class="formula" data-tex="\\Sigma I_{\\text{in}}=\\Sigma I_{\\text{out}}||\\Sigma\\varepsilon=\\Sigma IR">ΣI<sub>in</sub> = ΣI<sub>out</sub> &nbsp;&nbsp; Σε = ΣIR</div>
     <ul><li>Choose a direction for each current and for travelling around each loop.</li>
     <li>If a current comes out <b>negative</b>, its actual direction is opposite to the one you assumed.</li></ul>`,
     sym:[["ΣI<sub>in</sub>, ΣI<sub>out</sub>","Total current entering and leaving a junction","A"],["Σε","Sum of emfs around a loop","V"],["ΣIR","Sum of potential drops across resistors in a loop","V"]],
@@ -931,7 +978,7 @@ THEORY[3] = [
 
   { sub:"3.7", title:"Electrical energy and power",
     html:`<p><b>Electrical energy</b> is the energy transferred by charge passing through a device. <b>Power</b> is the rate of energy transfer.</p>
-    <div class="formula">W = IVt &nbsp;&nbsp; P = W/t = IV = I<sup>2</sup>R = V<sup>2</sup>/R</div>
+    <div class="formula" data-tex="W=IVt||P=\\dfrac{W}{t}=IV=I^2R=\\dfrac{V^2}{R}">W = IVt &nbsp;&nbsp; P = W/t = IV = I<sup>2</sup>R = V<sup>2</sup>/R</div>
     <ul><li>For a resistor, I<sup>2</sup>R and V<sup>2</sup>/R give the rate at which heat is produced (power loss).</li>
     <li>Units: energy in joules (J), power in watts (W = J s<sup>−1</sup>).</li></ul>`,
     sym:[["W","Electrical energy transferred","J"],["P","Electrical power","W"],["t","Time","s"]],
@@ -943,7 +990,7 @@ THEORY[3] = [
 
   { sub:"3.8", title:"Potential divider",
     html:`<p>A potential divider uses resistors <b>in series</b> to provide a fraction of the supply voltage. The same current passes through each resistor, so the supply voltage is shared <b>in proportion to the resistances</b>.</p>
-    <div class="formula">V<sub>1</sub> = [R<sub>1</sub> / (R<sub>1</sub> + R<sub>2</sub> + ... + R<sub>n</sub>)] V</div>
+    <div class="formula" data-tex="V_1=\\left(\\dfrac{R_1}{R_1+R_2+\\cdots+R_n}\\right)V">V<sub>1</sub> = [R<sub>1</sub> / (R<sub>1</sub> + R<sub>2</sub> + ... + R<sub>n</sub>)] V</div>
     <ul><li>The larger resistor takes the larger share of the voltage.</li>
     <li>Connecting a meter or load across one resistor puts it in parallel, which lowers that part's resistance and so reduces the output voltage.</li></ul>`,
     sym:[["V","Supply (input) voltage","V"],["V<sub>1</sub>","Output voltage across R<sub>1</sub>","V"],["R<sub>1</sub>, R<sub>2</sub>","Resistances in series","Ω"]],
@@ -960,7 +1007,7 @@ THEORY[3] = [
     <ul><li>A steady current flows through a uniform resistance wire AB, so the potential drop along it is <b>proportional to length</b>: V = kl.</li>
     <li>The jockey is moved along the wire until the galvanometer reads <b>zero</b>. This is the balance point, and the length is the <b>balance length</b>.</li>
     <li>At balance <b>no current is drawn</b> from the cell being tested, so its full emf is measured, with no Ir drop.</li></ul>
-    <div class="formula">V ∝ l &nbsp;&nbsp; ε<sub>1</sub>/ε<sub>2</sub> = l<sub>1</sub>/l<sub>2</sub></div>`,
+    <div class="formula" data-tex="V\\propto l||\\dfrac{\\varepsilon_1}{\\varepsilon_2}=\\dfrac{l_1}{l_2}">V ∝ l &nbsp;&nbsp; ε<sub>1</sub>/ε<sub>2</sub> = l<sub>1</sub>/l<sub>2</sub></div>`,
     sym:[["l","Balance length on the potentiometer wire","m"],["k","Potential drop per unit length of the wire","V m<sup>−1</sup>"],["ε<sub>1</sub>, ε<sub>2</sub>","Emfs being compared","V"]],
     qs:[
       Q("C1","A potentiometer is used to","measure the unknown emf of a cell",[["measure power","A wattmeter, or I and V together, gives power."],["measure current","An ammeter measures current."],["measure the energy lost in a circuit","That is not what a potentiometer does."]],"It compares an unknown voltage with a known potential drop along a uniform wire."),
@@ -990,7 +1037,7 @@ THEORY[4] = [
 
   { sub:"4.2", title:"Magnetic field produced by a current-carrying conductor",
     html:`<p><b>Right-hand grip rule:</b> grip the conductor with your right hand. The <b>thumb</b> points along the <b>current</b>, and the <b>curled fingers</b> show the direction of the <b>magnetic field</b>. For a coil or solenoid, curl your fingers with the current and your thumb gives the field direction, which marks the north end.</p>
-    <div class="formula">straight wire: B = μ<sub>0</sub>I / 2πr &nbsp;&nbsp; centre of coil: B = μ<sub>0</sub>NI / 2R &nbsp;&nbsp; solenoid centre: B = μ<sub>0</sub>nI &nbsp;&nbsp; solenoid end: B = ½μ<sub>0</sub>nI</div>
+    <div class="formula" data-tex="\\text{straight wire: } B=\\dfrac{\\mu_0I}{2\\pi r}||\\text{centre of coil: } B=\\dfrac{\\mu_0NI}{2R}||\\text{solenoid centre: } B=\\mu_0nI||\\text{solenoid end: } B=\\tfrac12\\mu_0nI">straight wire: B = μ<sub>0</sub>I / 2πr &nbsp;&nbsp; centre of coil: B = μ<sub>0</sub>NI / 2R &nbsp;&nbsp; solenoid centre: B = μ<sub>0</sub>nI &nbsp;&nbsp; solenoid end: B = ½μ<sub>0</sub>nI</div>
     <ul><li>Around a straight wire the field lines are concentric circles. B is inversely proportional to the distance r.</li>
     <li>Inside a long solenoid the field is uniform. At its ends it is half the value at the centre.</li>
     <li>μ<sub>0</sub> = 4π × 10<sup>−7</sup> T m A<sup>−1</sup>.</li></ul>`,
@@ -1003,7 +1050,7 @@ THEORY[4] = [
       Q("C1","The magnetic field lines around a long straight current-carrying wire are","concentric circles centred on the wire",[["straight lines parallel to the wire","The lines circle around the wire."],["straight lines spreading out from the wire","Those are electric field lines from a charged wire."],["parallel, equally spaced lines","That is the field inside a solenoid."]],"Use the grip rule: the fingers trace circles around the wire.") ] },
 
   { sub:"4.3", title:"Force on a moving charge in a uniform magnetic field",
-    html:`<div class="formula">F = qvB sin θ &nbsp;&nbsp; (perpendicular entry) qvB = mv<sup>2</sup>/r → r = mv/qB</div>
+    html:`<div class="formula" data-tex="F=qvB\\sin\\theta||\\text{(perpendicular entry) } qvB=\\dfrac{mv^2}{r}\\ \\Rightarrow\\ r=\\dfrac{mv}{qB}">F = qvB sin θ &nbsp;&nbsp; (perpendicular entry) qvB = mv<sup>2</sup>/r → r = mv/qB</div>
     <ul><li>The force is perpendicular to both v and B. Find its direction with Fleming's left-hand rule or the right-hand palm rule, and reverse it for a negative charge.</li>
     <li>If v is <b>perpendicular</b> to B, the charge moves in a <b>circle</b>. The magnetic force provides the centripetal force.</li>
     <li>If v is <b>parallel</b> to B (θ = 0), there is <b>no force</b>, and the charge moves in a straight line.</li>
@@ -1017,7 +1064,7 @@ THEORY[4] = [
       Q("C2","A charged particle moves parallel to a uniform magnetic field. The magnetic force on it is","zero",[["maximum","Maximum force is when v ⊥ B."],["equal to qvB","With θ = 0, sin θ = 0."],["along the field","When v ∥ B there is no force at all."]],"F = qvB sin 0° = 0.") ] },
 
   { sub:"4.4", title:"Force on a current-carrying conductor",
-    html:`<div class="formula">F = IlB sin θ</div>
+    html:`<div class="formula" data-tex="F=IlB\\sin\\theta">F = IlB sin θ</div>
     <ul><li><b>Fleming's left-hand rule:</b> First finger = Field, seCond finger = Current, thuMb = Motion (force).</li>
     <li>The force is greatest when the conductor is perpendicular to the field (θ = 90°), and zero when it is parallel.</li></ul>`,
     sym:[["l","Length of conductor in the field","m"],["θ","Angle between the conductor (current) and B","° or rad"]],
@@ -1027,7 +1074,7 @@ THEORY[4] = [
 
   { sub:"4.5", title:"Forces between two parallel current-carrying conductors",
     html:`<p>Each wire sits in the magnetic field of the other, so each feels a force.</p>
-    <div class="formula">F/l = μ<sub>0</sub>I<sub>1</sub>I<sub>2</sub> / 2πd</div>
+    <div class="formula" data-tex="\\dfrac{F}{l}=\\dfrac{\\mu_0I_1I_2}{2\\pi d}">F/l = μ<sub>0</sub>I<sub>1</sub>I<sub>2</sub> / 2πd</div>
     <ul><li>Currents in the <b>same direction</b> attract. Currents in <b>opposite directions</b> repel.</li>
     <li>The forces on the two wires are equal in size and opposite in direction (Newton's third law), even if the currents are different.</li></ul>`,
     sym:[["F/l","Force per unit length on each wire","N m<sup>−1</sup>"],["I<sub>1</sub>, I<sub>2</sub>","Currents in the two wires","A"],["d","Distance between the wires","m"]],
@@ -1037,7 +1084,7 @@ THEORY[4] = [
 
   { sub:"4.6", title:"Velocity selector",
     html:`<p>In a velocity selector, a uniform electric field E and a uniform magnetic field B are <b>perpendicular to each other and to the velocity</b>. The electric force qE and the magnetic force qvB point in opposite directions.</p>
-    <div class="formula">qE = qvB → v = E / B</div>
+    <div class="formula" data-tex="qE=qvB\\ \\Rightarrow\\ v=\\dfrac{E}{B}">qE = qvB → v = E / B</div>
     <ul><li>Only particles with speed v = E/B pass straight through, undeflected. This does not depend on their charge or mass.</li>
     <li>Faster particles are deflected by the magnetic force, and slower ones by the electric force. This is used in the Bainbridge mass spectrometer.</li></ul>`,
     sym:[["E","Electric field strength","V m<sup>−1</sup>"],["v","Selected speed of the particles","m s<sup>−1</sup>"]],
@@ -1050,7 +1097,7 @@ THEORY[4] = [
 THEORY[5] = [
   { sub:"5.1", title:"Magnetic flux",
     html:`<p><b>Magnetic flux</b> is the scalar product of the magnetic flux density B and the area vector A. You can picture it as the number of field lines passing through an area.</p>
-    <div class="formula">φ = B · A = BA cos θ &nbsp;&nbsp; flux linkage Φ = Nφ</div>
+    <div class="formula" data-tex="\\phi=\\vec B\\cdot\\vec A=BA\\cos\\theta||\\text{flux linkage } \\Phi=N\\phi">φ = B · A = BA cos θ &nbsp;&nbsp; flux linkage Φ = Nφ</div>
     <ul><li>θ is the angle between B and the <b>normal</b> to the surface (the area vector is perpendicular to the surface).</li>
     <li>The flux is maximum when B is perpendicular to the surface (θ = 0), and zero when B is parallel to the surface (θ = 90°).</li>
     <li>Unit: weber (Wb = T m<sup>2</sup>). It is a scalar.</li></ul>`,
@@ -1065,7 +1112,7 @@ THEORY[5] = [
     html:`<p><b>Faraday's experiment:</b> moving a magnet into or out of a coil makes a galvanometer deflect. An emf is induced only while the flux through the coil is <b>changing</b>. A magnet held still inside the coil induces nothing.</p>
     <p><b>Faraday's law:</b> the magnitude of the induced emf is directly proportional to the <b>rate of change of magnetic flux linkage</b>.</p>
     <p><b>Lenz's law:</b> the induced current always flows in a direction that <b>opposes the change</b> in flux producing it. This is the meaning of the minus sign.</p>
-    <div class="formula">ε = −N dφ/dt &nbsp;&nbsp; straight conductor: ε = Blv sin θ &nbsp;&nbsp; rotating coil: ε = NABω sin ωt</div>
+    <div class="formula" data-tex="\\varepsilon=-N\\dfrac{d\\phi}{dt}||\\text{straight conductor: } \\varepsilon=Blv\\sin\\theta||\\text{rotating coil: } \\varepsilon=NAB\\omega\\sin\\omega t">ε = −N dφ/dt &nbsp;&nbsp; straight conductor: ε = Blv sin θ &nbsp;&nbsp; rotating coil: ε = NABω sin ωt</div>
     <ul><li>The induced current direction in a moving straight conductor is given by Fleming's right-hand rule.</li>
     <li>For a rotating coil, the peak emf NABω increases with more turns, a stronger field, a larger area, or faster rotation.</li></ul>`,
     sym:[["ε","Induced emf","V"],["dφ/dt","Rate of change of magnetic flux","Wb s<sup>−1</sup>"],["l","Length of the moving conductor","m"],["v","Speed of the conductor","m s<sup>−1</sup>"],["ω","Angular velocity of the rotating coil","rad s<sup>−1</sup>"]],
@@ -1078,7 +1125,7 @@ THEORY[5] = [
 
   { sub:"5.3", title:"Self-inductance",
     html:`<p><b>Self-inductance</b> is the property of a coil by which a <b>changing current in the coil itself</b> induces an emf (a back emf) that opposes the change. The self-inductance L is the ratio of the self-induced emf to the rate of change of current.</p>
-    <div class="formula">ε = −L dI/dt &nbsp;&nbsp; L = Nφ / I &nbsp;&nbsp; L<sub>solenoid</sub> = μ<sub>0</sub>N<sup>2</sup>A / l &nbsp;&nbsp; L<sub>coil</sub> = μ<sub>0</sub>N<sup>2</sup>A / 2r</div>
+    <div class="formula" data-tex="\\varepsilon=-L\\dfrac{dI}{dt}||L=\\dfrac{N\\phi}{I}||L_{\\text{solenoid}}=\\dfrac{\\mu_0N^2A}{l}||L_{\\text{coil}}=\\dfrac{\\mu_0N^2A}{2r}">ε = −L dI/dt &nbsp;&nbsp; L = Nφ / I &nbsp;&nbsp; L<sub>solenoid</sub> = μ<sub>0</sub>N<sup>2</sup>A / l &nbsp;&nbsp; L<sub>coil</sub> = μ<sub>0</sub>N<sup>2</sup>A / 2r</div>
     <ul><li>Unit: henry (H = V s A<sup>−1</sup> = Wb A<sup>−1</sup>).</li></ul>`,
     sym:[["L","Self-inductance","H"],["dI/dt","Rate of change of current","A s<sup>−1</sup>"],["l","Length of the solenoid","m"]],
     qs:[
@@ -1086,13 +1133,13 @@ THEORY[5] = [
       Q("C1","The henry is equivalent to","V s A<sup>−1</sup>",[["V A s<sup>−1</sup>","From L = ε/(dI/dt): V ÷ (A s<sup>−1</sup>) = V s A<sup>−1</sup>."],["Wb A","L = Nφ/I gives Wb A<sup>−1</sup>."],["T m<sup>2</sup>","That is the weber."]],"L = ε/(dI/dt), so 1 H = 1 V s A<sup>−1</sup>.") ] },
 
   { sub:"5.4", title:"Energy stored in an inductor",
-    html:`<div class="formula">U = ½LI<sup>2</sup></div><p>Work is done against the back emf while the current builds up. This energy is stored in the <b>magnetic field</b> of the inductor.</p>`,
+    html:`<div class="formula" data-tex="U=\\tfrac12LI^2">U = ½LI<sup>2</sup></div><p>Work is done against the back emf while the current builds up. This energy is stored in the <b>magnetic field</b> of the inductor.</p>`,
     sym:[["U","Energy stored in the inductor","J"]],
     qs:[ Q("C2","The energy stored in a current-carrying inductor is stored in its","magnetic field",[["electric field","Capacitors store energy in electric fields."],["resistance, as heat","Heat is lost energy, not stored energy."],["insulation","The energy is in the magnetic field of the coil."]],"U = ½LI<sup>2</sup> is stored in the magnetic field.") ] },
 
   { sub:"5.5", title:"Mutual inductance",
     html:`<p><b>Mutual inductance</b> is the ratio of the emf induced in one coil to the rate of change of current in another, nearby coil.</p>
-    <div class="formula">ε<sub>2</sub> = −M dI<sub>1</sub>/dt &nbsp;&nbsp; M = μ<sub>0</sub>N<sub>1</sub>N<sub>2</sub>A / l (two coaxial solenoids)</div><ul><li>Unit: henry (H).</li></ul>`,
+    <div class="formula" data-tex="\\varepsilon_2=-M\\dfrac{dI_1}{dt}||M=\\dfrac{\\mu_0N_1N_2A}{l}\\ \\text{(two coaxial solenoids)}">ε<sub>2</sub> = −M dI<sub>1</sub>/dt &nbsp;&nbsp; M = μ<sub>0</sub>N<sub>1</sub>N<sub>2</sub>A / l (two coaxial solenoids)</div><ul><li>Unit: henry (H).</li></ul>`,
     sym:[["M","Mutual inductance","H"],["N<sub>1</sub>, N<sub>2</sub>","Number of turns in coils 1 and 2","no unit"]],
     qs:[ Q("C2","Mutual induction is the production of an emf in a solenoid due to","a changing current in a nearby solenoid",[["a changing current in the same solenoid","That is self-induction."],["a steady current in a nearby solenoid","The current must change."],["the motion of a wire in a magnetic field","That is motional emf."]],"A changing I<sub>1</sub> changes the flux linking coil 2, which induces ε<sub>2</sub>.") ] }
 ];
@@ -1102,7 +1149,7 @@ THEORY[5] = [
 THEORY[6] = [
   { sub:"6.1", title:"Alternating current",
     html:`<p><b>Alternating current (AC)</b> is a current whose magnitude and direction change periodically. Its waveform is a sine curve (sinusoidal).</p>
-    <div class="formula">V = V<sub>0</sub> sin ωt &nbsp;&nbsp; I = I<sub>0</sub> sin ωt &nbsp;&nbsp; ω = 2πf = 2π/T</div>
+    <div class="formula" data-tex="V=V_0\\sin\\omega t||I=I_0\\sin\\omega t||\\omega=2\\pi f=\\dfrac{2\\pi}{T}">V = V<sub>0</sub> sin ωt &nbsp;&nbsp; I = I<sub>0</sub> sin ωt &nbsp;&nbsp; ω = 2πf = 2π/T</div>
     <ul><li>V<sub>0</sub> and I<sub>0</sub> are the peak (maximum) values. The sign of I shows the direction of flow at that instant.</li></ul>`,
     sym:[["V","Instantaneous voltage","V"],["V<sub>0</sub>","Peak (maximum) voltage","V"],["I<sub>0</sub>","Peak (maximum) current","A"],["ω","Angular frequency","rad s<sup>−1</sup>"],["f","Frequency","Hz"],["T","Period","s"]],
     qs:[
@@ -1111,7 +1158,7 @@ THEORY[6] = [
 
   { sub:"6.2", title:"Root mean square (rms) values",
     html:`<p><b>Rms current:</b> the value of the steady direct current that produces the same power (heating) in a resistor as the alternating current. The rms voltage is defined in the same way.</p>
-    <div class="formula">I<sub>rms</sub> = I<sub>0</sub>/√2 &nbsp;&nbsp; V<sub>rms</sub> = V<sub>0</sub>/√2</div>
+    <div class="formula" data-tex="I_{\\text{rms}}=\\dfrac{I_0}{\\sqrt2}||V_{\\text{rms}}=\\dfrac{V_0}{\\sqrt2}">I<sub>rms</sub> = I<sub>0</sub>/√2 &nbsp;&nbsp; V<sub>rms</sub> = V<sub>0</sub>/√2</div>
     <ul><li>Rms values are also called the effective values. Mains ratings (e.g. 240 V) and AC meter readings are rms values.</li></ul>`,
     sym:[["I<sub>rms</sub>","Root mean square current","A"],["V<sub>rms</sub>","Root mean square voltage","V"]],
     qs:[
@@ -1124,7 +1171,7 @@ THEORY[6] = [
     <tr><td>Resistor R</td><td>I and V <b>in phase</b></td><td>R (does not depend on f)</td></tr>
     <tr><td>Capacitor C</td><td>I <b>leads</b> V by π/2</td><td>X<sub>C</sub> = 1/2πfC (decreases as f increases)</td></tr>
     <tr><td>Inductor L</td><td>V <b>leads</b> I by π/2</td><td>X<sub>L</sub> = 2πfL (increases as f increases)</td></tr></table>
-    <div class="formula">Z = √[R<sup>2</sup> + (X<sub>L</sub> − X<sub>C</sub>)<sup>2</sup>] &nbsp;&nbsp; tan φ = (X<sub>L</sub> − X<sub>C</sub>)/R</div>
+    <div class="formula" data-tex="Z=\\sqrt{R^2+\\left(X_L-X_C\\right)^2}||\\tan\\phi=\\dfrac{X_L-X_C}{R}">Z = √[R<sup>2</sup> + (X<sub>L</sub> − X<sub>C</sub>)<sup>2</sup>] &nbsp;&nbsp; tan φ = (X<sub>L</sub> − X<sub>C</sub>)/R</div>
     <ul><li><b>Impedance Z</b> is the total opposition of a circuit to alternating current. Unit: Ω.</li>
     <li><b>Resonance</b> in a series RLC circuit happens when X<sub>L</sub> = X<sub>C</sub>. Then Z is <b>minimum</b> (Z = R), the current is <b>maximum</b>, and V and I are in phase. The resonant frequency is f<sub>0</sub> = 1/(2π√LC).</li></ul>`,
     sym:[["X<sub>C</sub>","Capacitive reactance","Ω"],["X<sub>L</sub>","Inductive reactance","Ω"],["Z","Impedance","Ω"],["φ","Phase angle between the supply voltage and the current","rad (or °)"],["L","Inductance","H"],["C","Capacitance","F"],["f<sub>0</sub>","Resonant frequency","Hz"]],
@@ -1140,7 +1187,7 @@ THEORY[6] = [
         [["It shows the phase relationship between current and voltage","This is true: that is its purpose."],["The projection of a phasor on the y-axis gives the instantaneous value","This is true."],["Each phasor rotates about the origin at angular frequency ω, with length equal to the peak value","This is true."]],"A phasor diagram shows phase relationships, not a graph of voltage against time.") ] },
 
   { sub:"6.4", title:"Power and power factor",
-    html:`<div class="formula">P<sub>av</sub> = I<sub>rms</sub>V<sub>rms</sub> cos φ &nbsp;&nbsp; P = IV (instantaneous) &nbsp;&nbsp; power factor cos φ = P<sub>av</sub> / (I<sub>rms</sub>V<sub>rms</sub>) = R/Z</div>
+    html:`<div class="formula" data-tex="P_{\\text{av}}=I_{\\text{rms}}V_{\\text{rms}}\\cos\\phi||P=IV\\ \\text{(instantaneous)}||\\text{power factor } \\cos\\phi=\\dfrac{P_{\\text{av}}}{I_{\\text{rms}}V_{\\text{rms}}}=\\dfrac{R}{Z}">P<sub>av</sub> = I<sub>rms</sub>V<sub>rms</sub> cos φ &nbsp;&nbsp; P = IV (instantaneous) &nbsp;&nbsp; power factor cos φ = P<sub>av</sub> / (I<sub>rms</sub>V<sub>rms</sub>) = R/Z</div>
     <ul><li>The <b>average (real) power</b> is dissipated only in the resistance.</li>
     <li>For a <b>pure resistor</b>, φ = 0, so cos φ = 1.</li>
     <li>For a <b>pure capacitor or pure inductor</b>, φ = π/2, so cos φ = 0. <b>No average power</b> is dissipated: energy is stored and returned each cycle.</li>
@@ -1156,7 +1203,7 @@ THEORY[6] = [
 /* ---------- Chapter 7: Optics ---------- */
 THEORY[7] = [
   { sub:"7.1", title:"Reflection at a spherical surface",
-    html:`<div class="formula">R = 2f &nbsp;&nbsp; 1/f = 1/u + 1/v &nbsp;&nbsp; M = h<sub>i</sub>/h<sub>o</sub> = −v/u</div>
+    html:`<div class="formula" data-tex="R=2f||\\dfrac1f=\\dfrac1u+\\dfrac1v||M=\\dfrac{h_i}{h_o}=-\\dfrac{v}{u}">R = 2f &nbsp;&nbsp; 1/f = 1/u + 1/v &nbsp;&nbsp; M = h<sub>i</sub>/h<sub>o</sub> = −v/u</div>
     <ul><li><b>Sign convention:</b> f and R are <b>positive for a concave</b> mirror and <b>negative for a convex</b> mirror. A positive v is a real image (in front of the mirror). A negative v is a virtual image (behind the mirror).</li>
     <li><b>Magnification:</b> negative M means an <b>inverted</b> image. Positive M means an upright image. |M| &gt; 1 means magnified, and |M| &lt; 1 means diminished.</li>
     <li>A <b>convex mirror</b> always forms a virtual, upright, diminished image.</li>
@@ -1169,7 +1216,7 @@ THEORY[7] = [
       Q("C1","For a spherical mirror, the radius of curvature R and the focal length f are related by","R = 2f",[["f = 2R","The focus is halfway between the pole and C."],["R = f","C and F are different points."],["R = f/2","The focus is halfway between the pole and C, so R = 2f."]],"F is halfway between the pole and the centre of curvature.") ] },
 
   { sub:"7.2", title:"Refraction at a spherical surface",
-    html:`<div class="formula">n<sub>1</sub>/u + n<sub>2</sub>/v = (n<sub>2</sub> − n<sub>1</sub>)/R</div>
+    html:`<div class="formula" data-tex="\\dfrac{n_1}{u}+\\dfrac{n_2}{v}=\\dfrac{n_2-n_1}{R}">n<sub>1</sub>/u + n<sub>2</sub>/v = (n<sub>2</sub> − n<sub>1</sub>)/R</div>
     <ul><li>n<sub>1</sub> is the refractive index of the medium the object is in. n<sub>2</sub> is the refractive index of the medium the light enters.</li>
     <li><b>Sign convention for R:</b> positive for a <b>convex</b> surface facing the object, negative for a <b>concave</b> surface.</li>
     <li>Refractive index is a ratio of speeds, so it has no unit.</li></ul>`,
@@ -1179,7 +1226,7 @@ THEORY[7] = [
       Q("C1","The refractive index of a material has the unit","none (it is dimensionless)",[["m s<sup>−1</sup>","n = c/v is a ratio of two speeds."],["m","n is a ratio, not a length."],["degree","n is not an angle."]],"n = c/v: speed ÷ speed gives no unit.") ] },
 
   { sub:"7.3", title:"Thin lenses",
-    html:`<div class="formula">1/f = 1/u + 1/v &nbsp;&nbsp; M = h<sub>i</sub>/h<sub>o</sub> = −v/u &nbsp;&nbsp; lens maker's: 1/f = (n<sub>material</sub>/n<sub>medium</sub> − 1)(1/R<sub>1</sub> − 1/R<sub>2</sub>)</div>
+    html:`<div class="formula" data-tex="\\dfrac1f=\\dfrac1u+\\dfrac1v||M=\\dfrac{h_i}{h_o}=-\\dfrac{v}{u}||\\text{lens maker's: } \\dfrac1f=\\left(\\dfrac{n_{\\text{material}}}{n_{\\text{medium}}}-1\\right)\\left(\\dfrac{1}{R_1}-\\dfrac{1}{R_2}\\right)">1/f = 1/u + 1/v &nbsp;&nbsp; M = h<sub>i</sub>/h<sub>o</sub> = −v/u &nbsp;&nbsp; lens maker's: 1/f = (n<sub>material</sub>/n<sub>medium</sub> − 1)(1/R<sub>1</sub> − 1/R<sub>2</sub>)</div>
     <ul><li><b>Sign convention:</b> f is <b>positive for a convex</b> (converging) lens and <b>negative for a concave</b> (diverging) lens.</li>
     <li>A concave lens always forms a virtual, upright, diminished image.</li>
     <li>A convex lens with the object at 2F forms a real, inverted, same-size image at 2F.</li>
@@ -1207,7 +1254,7 @@ THEORY[7] = [
     <table class="cmp"><tr><th>Sources</th><th>Constructive (bright)</th><th>Destructive (dark)</th></tr>
     <tr><td>In phase</td><td>path difference = mλ</td><td>path difference = (m + ½)λ</td></tr>
     <tr><td>Antiphase</td><td>path difference = (m + ½)λ</td><td>path difference = mλ</td></tr></table>
-    <div class="formula">phase difference = (2π/λ) × path difference</div>`,
+    <div class="formula" data-tex="\\text{phase difference}=\\dfrac{2\\pi}{\\lambda}\\times\\text{path difference}">phase difference = (2π/λ) × path difference</div>`,
     sym:[["Δ","Path difference between the two waves","m"],["m","Order number (0, 1, 2, ...)","no unit"],["φ","Phase difference","rad"]],
     qs:[
       Q("C1","Two light sources are coherent if they emit waves of","the same wavelength with a constant phase difference",[["the same wavelength only","They must also keep a constant phase difference."],["the same amplitude only","Equal amplitude helps contrast, but coherence means a constant phase difference."],["the same amplitude and wavelength","Coherence needs a constant phase difference, not equal amplitude."]],"Coherent = same frequency and constant phase relationship."),
@@ -1216,7 +1263,7 @@ THEORY[7] = [
       Q("C2","Which pair of optical phenomena produces both bright and dark fringes on a screen?","Interference and diffraction",[["Interference and reflection","Reflection alone does not make fringes."],["Diffraction and refraction","Refraction alone does not make fringes."],["Reflection and refraction","Neither produces fringe patterns on its own."]],"Fringes come from superposition, which happens in interference and diffraction.") ] },
 
   { sub:"7.6", title:"Young's double-slit interference",
-    html:`<div class="formula">bright: y<sub>m</sub> = mλD/d &nbsp;&nbsp; dark: y<sub>m</sub> = (m + ½)λD/d &nbsp;&nbsp; fringe separation Δy = λD/d</div>
+    html:`<div class="formula" data-tex="\\text{bright: } y_m=\\dfrac{m\\lambda D}{d}||\\text{dark: } y_m=\\dfrac{\\left(m+\\frac12\\right)\\lambda D}{d}||\\text{fringe separation } \\Delta y=\\dfrac{\\lambda D}{d}">bright: y<sub>m</sub> = mλD/d &nbsp;&nbsp; dark: y<sub>m</sub> = (m + ½)λD/d &nbsp;&nbsp; fringe separation Δy = λD/d</div>
     <ul><li>The central fringe (m = 0) is bright.</li>
     <li>To <b>increase</b> the fringe separation: use a longer wavelength, move the screen further away (larger D), or <b>decrease</b> the slit separation d.</li>
     <li>Blue light (shorter λ) gives fringes closer together than red light.</li></ul>`,
@@ -1242,7 +1289,7 @@ THEORY[7] = [
 
   { sub:"7.8", title:"Diffraction by a single slit",
     html:`<p><b>Diffraction</b> is the spreading (bending) of waves as they pass through an aperture or around the edge of an obstacle. It is most noticeable when the gap is comparable to the wavelength.</p>
-    <div class="formula">dark: y<sub>m</sub> = mλD/a &nbsp;&nbsp; bright: y<sub>m</sub> = (m + ½)λD/a &nbsp;&nbsp; width of central maximum = 2λD/a</div>
+    <div class="formula" data-tex="\\text{dark: } y_m=\\dfrac{m\\lambda D}{a}||\\text{bright: } y_m=\\dfrac{\\left(m+\\frac12\\right)\\lambda D}{a}||\\text{width of central maximum}=\\dfrac{2\\lambda D}{a}">dark: y<sub>m</sub> = mλD/a &nbsp;&nbsp; bright: y<sub>m</sub> = (m + ½)λD/a &nbsp;&nbsp; width of central maximum = 2λD/a</div>
     <ul><li>The central bright fringe is the widest and brightest, about <b>twice</b> as wide as the others.</li>
     <li>A <b>narrower slit</b> (smaller a) gives a <b>wider</b> central maximum.</li></ul>`,
     sym:[["a","Width of the single slit","m"]],
@@ -1253,7 +1300,7 @@ THEORY[7] = [
 
   { sub:"7.9", title:"Diffraction grating",
     html:`<p>A <b>diffraction grating</b> has a large number of equally spaced parallel slits. Light diffracted from all the slits interferes to give sharp, bright maxima.</p>
-    <div class="formula">d sin θ = mλ &nbsp;&nbsp; d = 1/N</div>
+    <div class="formula" data-tex="d\\sin\\theta=m\\lambda||d=\\dfrac1N">d sin θ = mλ &nbsp;&nbsp; d = 1/N</div>
     <ul><li>The highest order seen is the largest whole number m ≤ d/λ (because sin θ ≤ 1).</li>
     <li><b>More lines per mm</b> (larger N, smaller d) spreads the maxima <b>further apart</b> but gives <b>fewer orders</b>.</li>
     <li>Everyday examples: a CD, muslin cloth.</li></ul>`,
@@ -1270,7 +1317,7 @@ THEORY[8] = [
   { sub:"8.1", title:"De Broglie wavelength",
     html:`<p><b>Wave–particle duality:</b> light behaves as a wave (interference, diffraction) and as a particle (photoelectric effect). In the same way, moving particles such as electrons have wave properties.</p>
     <p><b>De Broglie's hypothesis:</b> every moving particle has a wavelength associated with it, called the de Broglie wavelength.</p>
-    <div class="formula">λ = h/p = h/mv &nbsp;&nbsp; for a charge accelerated through V: λ = h/√(2meV) &nbsp;&nbsp; from kinetic energy: λ = h/√(2mK)</div>
+    <div class="formula" data-tex="\\lambda=\\dfrac{h}{p}=\\dfrac{h}{mv}||\\text{charge accelerated through } V\\text{: } \\lambda=\\dfrac{h}{\\sqrt{2meV}}||\\text{from kinetic energy: } \\lambda=\\dfrac{h}{\\sqrt{2mK}}">λ = h/p = h/mv &nbsp;&nbsp; for a charge accelerated through V: λ = h/√(2meV) &nbsp;&nbsp; from kinetic energy: λ = h/√(2mK)</div>
     <ul><li>A larger momentum gives a <b>shorter</b> wavelength.</li>
     <li>Everyday objects have huge momentum, so their λ is far too small to detect. Wave behaviour is noticeable only for very small particles.</li></ul>`,
     sym:[["λ","De Broglie wavelength","m"],["h","Planck's constant (6.63 × 10<sup>−34</sup>)","J s"],["p","Momentum of the particle","kg m s<sup>−1</sup>"],["m","Mass of the particle","kg"],["v","Speed of the particle","m s<sup>−1</sup>"],["V","Accelerating potential difference","V"],["K","Kinetic energy of the particle","J"]],
@@ -1298,7 +1345,7 @@ THEORY[9] = [
     html:`<p>A nucleus is written <b><sup>A</sup><sub>Z</sub>X</b>. A (nucleon number) is the number of protons plus neutrons. Z (proton number) is the number of protons. Neutron number = A − Z.</p>
     <p><b>Mass defect Δm:</b> the difference between the total mass of the separate nucleons and the mass of the nucleus.</p>
     <p><b>Binding energy:</b> the energy needed to separate a nucleus completely into its individual protons and neutrons. It is equal to the energy released when the nucleus forms.</p>
-    <div class="formula">Δm = Zm<sub>p</sub> + (A − Z)m<sub>n</sub> − m<sub>nucleus</sub> &nbsp;&nbsp; E<sub>B</sub> = Δmc<sup>2</sup> &nbsp;&nbsp; 1 u = 931.5 MeV/c<sup>2</sup></div>
+    <div class="formula" data-tex="\\Delta m=Zm_p+(A-Z)m_n-m_{\\text{nucleus}}||E_B=\\Delta m\\,c^2||1\\ \\text{u}=931.5\\ \\text{MeV}/c^2">Δm = Zm<sub>p</sub> + (A − Z)m<sub>n</sub> − m<sub>nucleus</sub> &nbsp;&nbsp; E<sub>B</sub> = Δmc<sup>2</sup> &nbsp;&nbsp; 1 u = 931.5 MeV/c<sup>2</sup></div>
     <ul><li><b>Binding energy per nucleon</b> = E<sub>B</sub>/A. The higher it is, the <b>more stable</b> the nucleus.</li>
     <li>The curve of E<sub>B</sub>/A against A peaks near iron-56 (≈ 8.8 MeV per nucleon). Light nuclei release energy by fusion, and heavy nuclei release energy by fission, because both processes move towards the peak.</li></ul>`,
     sym:[["A","Nucleon (mass) number","no unit"],["Z","Proton (atomic) number","no unit"],["Δm","Mass defect","kg (or u)"],["E<sub>B</sub>","Binding energy","J (or MeV)"],["c","Speed of light (3.00 × 10<sup>8</sup>)","m s<sup>−1</sup>"],["u","Atomic mass unit","— (1 u = 1.66 × 10<sup>−27</sup> kg)"],["m<sub>p</sub>, m<sub>n</sub>","Mass of a proton and mass of a neutron","kg (or u)"]],
@@ -1326,7 +1373,7 @@ THEORY[9] = [
 
   { sub:"9.3", title:"Decay law, activity and half-life",
     html:`<p><b>Decay law:</b> the rate of decay of a sample is directly proportional to the number of undecayed nuclei present.</p>
-    <div class="formula">dN/dt = −λN &nbsp;&nbsp; N = N<sub>0</sub>e<sup>−λt</sup> &nbsp;&nbsp; A = λN &nbsp;&nbsp; A = A<sub>0</sub>e<sup>−λt</sup> &nbsp;&nbsp; T<sub>½</sub> = ln 2 / λ</div>
+    <div class="formula" data-tex="\\dfrac{dN}{dt}=-\\lambda N||N=N_0e^{-\\lambda t}||A=\\lambda N||A=A_0e^{-\\lambda t}||T_{1/2}=\\dfrac{\\ln2}{\\lambda}">dN/dt = −λN &nbsp;&nbsp; N = N<sub>0</sub>e<sup>−λt</sup> &nbsp;&nbsp; A = λN &nbsp;&nbsp; A = A<sub>0</sub>e<sup>−λt</sup> &nbsp;&nbsp; T<sub>½</sub> = ln 2 / λ</div>
     <ul><li><b>Activity A:</b> the number of decays per second. Unit: becquerel (1 Bq = 1 decay per second).</li>
     <li><b>Decay constant λ:</b> the probability that a nucleus decays per unit time. Unit: s<sup>−1</sup>.</li>
     <li><b>Half-life T<sub>½</sub>:</b> the time taken for the number of undecayed nuclei (or the activity) to fall to half its initial value.</li>
@@ -1497,7 +1544,7 @@ function renderHome(){
           : `<span class="cs">Not open yet</span>`}</div>`).join("")}
   </div>
   ${s.matric ? historyHTML() : ""}
-  <div class="nap">${CAT.sleep()}<p class="muted small">Need a break? Your answers are saved as you go, so you can continue later${HAS_BACKEND ? " on any device" : ""}.</p></div>`;
+  <div class="nap">${CAT.sleep()}<p class="muted small">Need a break? Your answers are saved as you go, so you can continue later${HAS_BACKEND ? " on any device" : ""}.</p><button class="linkbtn" id="cattog">${catsOn() ? "Hide background cats" : "Show background cats"}</button></div>`;
   const homeGen = state.homeGen = (state.homeGen||0) + 1;
   const pinVis = () => { const r = $("#pinrow"); if(r) r.style.display = getTok($("#f-matric").value.trim().toUpperCase()) ? "none" : ""; };
   if($("#f-matric")) $("#f-matric").oninput = pinVis;
@@ -1535,6 +1582,7 @@ function renderHome(){
     if(go.startsWith("theory")) startTheory(ch); else startDiagnostic(ch);
   });
   app.querySelectorAll("[data-hist]").forEach(b => b.onclick = () => openAttempt(getHist()[+b.dataset.hist]));
+  if($("#cattog")) $("#cattog").onclick = toggleCats;
 }
 
 
@@ -1567,6 +1615,34 @@ const CAT = {
 function catBar(f){ const pc = Math.max(0, Math.min(100, f*100));
   return `<div class="catbar"><div class="bar"><i style="width:${pc}%"></i></div><span class="barcat" style="left:${pc}%">${CAT.sit("tiny")}</span></div>`; }
 function cheer(text){ return `<div class="cheer">${CAT.peek()}<span>${text}</span></div>`; }
+
+
+/* ---------- Background cats ---------- */
+const BG_CATS = `<div class="bgcats" aria-hidden="true">
+  <div class="walker"><div class="flip">${`WALK`}</div></div>
+  <div class="roller"><div class="spin">ROLL</div></div>
+  <div class="sleeper">SLEEP</div>
+  <div class="players"><div class="p1">PLAY</div><div class="yarn">YARN</div><div class="p2">PLAY</div></div>
+</div>`;
+function catsOn(){ try{ return localStorage.getItem("sp025_cats") !== "off"; }catch(e){ return true; } }
+function applyCats(){
+  let el = document.querySelector(".bgcats");
+  if(catsOn() && !el){ document.body.insertAdjacentHTML("afterbegin", BG_CATS.replace("WALK", `<svg class="bc" viewBox="0 0 124 72"><g class="tl"><path d="M30 33 Q14 30 13 13"/></g>
+<path d="M30 31 Q56 21 84 30 Q92 36 84 46 Q58 51 34 46 Q24 39 30 31Z"/>
+<path d="M84 27 Q83 14 95 14 Q107 14 106 27 Q105 36 95 36 Q86 36 84 27Z M86 19 L86 7 L93 14 M99 14 L105 6 L105 19"/>
+<circle class="dot" cx="100" cy="24" r="1.4"/><path d="M104 28 L106 28 M98 30 L112 28 M98 31 L112 33"/>
+<g class="lg l1"><path d="M38 45 L36 64"/></g><g class="lg l2"><path d="M47 47 L48 64"/></g>
+<g class="lg l2"><path d="M72 46 L70 64"/></g><g class="lg l1"><path d="M80 45 L82 64"/></g></svg>`).replace("ROLL", `<svg class="bc" viewBox="0 0 70 70"><circle cx="35" cy="35" r="24"/>
+<path d="M22 18 L19 8 L29 14 M41 14 L51 8 L48 18"/><path d="M25 33 Q28 35 31 33 M39 33 Q42 35 45 33 M33.5 38 L36.5 38 L35 39.5Z"/>
+<path d="M14 46 Q30 60 52 50 Q58 46 55 41"/></svg>`).replace("SLEEP", CAT.sleep()).replace(/PLAY/g, `<svg class="bc" viewBox="0 0 64 70"><g class="tl2"><path d="M44 63 Q58 61 57 47 Q56 40 50 42"/></g>
+<path d="M23 36 Q14 48 18 64 L46 64 Q50 48 41 36"/>
+<path d="M20 26 L18 12 L26 18 Q32 16 38 18 L46 12 L44 26 Q46 36 32 37 Q18 36 20 26Z"/>
+<ellipse class="dot blink" cx="27" cy="26" rx="1.6" ry="2.2"/><ellipse class="dot blink" cx="37" cy="26" rx="1.6" ry="2.2"/>
+<path d="M30.8 30 L33.2 30 L32 31.4Z M24 30 L15 28.5 M40 30 L49 28.5"/>
+<path d="M26 64 Q25 58 27 55"/><g class="bat"><path d="M38 52 Q46 46 52 44 Q56 43 56 46"/></g></svg>`).replace("YARN", `<svg class="bc" viewBox="0 0 30 30"><circle cx="15" cy="15" r="11"/><path d="M6 11 Q15 15 24 9 M5 17 Q15 22 25 15 M9 24 Q16 14 13 4 M17 26 Q22 16 21 5"/></svg>`)); }
+  else if(!catsOn() && el) el.remove();
+}
+function toggleCats(){ try{ localStorage.setItem("sp025_cats", catsOn() ? "off" : "on"); }catch(e){} applyCats(); const b = document.getElementById("cattog"); if(b) b.textContent = catsOn() ? "Hide background cats" : "Show background cats"; }
 
 /* ---------- Saved progress and past attempts (on this device) ---------- */
 const HIST_MAX = 60;
@@ -2008,7 +2084,25 @@ function finishPractice(){
     .then(m => { const el = $("#savebox"); if(el) el.innerHTML = saveBanner(m); });
 }
 
+/* ---------- Equations in professional (stacked) form, using KaTeX ---------- */
+function renderTex(){
+  if(!window.katex) return;
+  document.querySelectorAll(".formula[data-tex]:not(.tex)").forEach(el => {
+    try{
+      const parts = el.dataset.tex.split("||").map(t => {
+        const m = /^\\text\{([^}]*)\}\s*/.exec(t);
+        const label = m ? `<span class="fl">${m[1].trim()}</span>` : "";
+        const eq = m ? t.slice(m[0].length) : t;
+        return `<span class="fi">${label}<span class="fe">${katex.renderToString(eq, {throwOnError:false, output:"html"})}</span></span>`; });
+      el.innerHTML = parts.join(""); el.classList.add("tex");
+    }catch(e){}
+  });
+}
+window.renderTex = renderTex;
+try{ new MutationObserver(() => renderTex()).observe(document.getElementById("app"), {childList:true, subtree:true}); }catch(e){}
+
 try{ document.getElementById("hcat").innerHTML = CAT.sit("head"); }catch(e){}
+try{ applyCats(); }catch(e){}
 renderHome();
 </script>
 </body>
