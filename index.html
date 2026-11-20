@@ -314,6 +314,312 @@ FIG.c4 = svg(340, 140, w(20,45,320,45)+w(70,110,190,110)+w(70,45,70,110)+w(190,4
   + cap(130,45,"12 &#956;F")+cap(130,110,"12 &#956;F")+cap(255,45,"12 &#956;F")
   + `<circle cx="20" cy="45" r="4" fill="#1b2232"/><circle cx="320" cy="45" r="4" fill="#1b2232"/><text x="20" y="70" text-anchor="middle" font-size="13" font-weight="700">A</text><text x="320" y="70" text-anchor="middle" font-size="13" font-weight="700">B</text>`);
 
+function res(x, y, label, below){ return `<rect x="${x-20}" y="${y-7}" width="40" height="14" fill="#fff" stroke="#1b2232" stroke-width="1.5"/>` + (label?`<text x="${x}" y="${below?y+24:y-13}" text-anchor="middle" font-size="12" fill="#1b2232">${label}</text>`:""); }
+function batL(x, y, label, above){ return `<rect x="${x-7}" y="${y-16}" width="14" height="32" fill="#fff"/><line x1="${x+5}" y1="${y-15}" x2="${x+5}" y2="${y+15}" stroke="#1b2232" stroke-width="1.8"/><line x1="${x-5}" y1="${y-8}" x2="${x-5}" y2="${y+8}" stroke="#1b2232" stroke-width="4"/><text x="${x}" y="${above?y-22:y+32}" text-anchor="middle" font-size="12" fill="#1b2232">${label}</text>`; }
+function iarr(x, y, label, left){ return `<text x="${x}" y="${y}" text-anchor="middle" font-size="12" fill="#c0392b">${left?"&#8592; ":""}${label}${left?"":" &#8594;"}</text>`; }
+FIG.ser3 = svg(360, 225, w(30,65,150,65)+w(150,35,150,95)+w(150,35,270,35)+w(150,95,270,95)+w(270,35,270,95)+w(270,65,330,65)
+  + w(30,65,30,185)+w(330,65,330,185)+w(30,185,330,185)
+  + res(90,65,"4.0 &#937;")+res(210,35,"6.0 &#937;")+res(210,95,"3.0 &#937;",true)+bat(180,185,"12 V"));
+FIG.kirch3 = svg(360, 230, w(40,40,320,40)+w(40,115,320,115)+w(40,190,320,190)+w(40,40,40,190)+w(320,40,320,190)
+  + batL(120,40,"&#949;&#8321; = 12 V",true)+res(230,40,"2.0 &#937;")+res(180,115,"4.0 &#937;")+batL(120,190,"&#949;&#8322; = 6.0 V")+res(230,190,"2.0 &#937;",true)
+  + iarr(290,32,"I&#8321;")+iarr(270,107,"I&#8323;",true)+iarr(290,182,"I&#8322;")
+  + `<circle cx="40" cy="115" r="3.5" fill="#1b2232"/><circle cx="320" cy="115" r="3.5" fill="#1b2232"/>`);
+FIG.pot3 = svg(360, 230, w(40,40,320,40)+w(40,40,40,110)+w(320,40,320,110)
+  + bat(180,40,"&#949; = 2.0 V (driver cell)")
+  + `<line x1="40" y1="110" x2="320" y2="110" stroke="#1b2232" stroke-width="4"/>`
+  + `<text x="30" y="128" font-size="13" font-weight="700">A</text><text x="324" y="128" font-size="13" font-weight="700">B</text>`
+  + w(40,110,40,190)+w(40,190,236,190)+w(236,190,236,128)
+  + `<path d="M236,128 L230,118 L242,118 z" fill="#1b2232"/><text x="250" y="136" font-size="12" fill="#5b6476">jockey C</text>`
+  + bat(100,190,"cell under test")
+  + `<circle cx="180" cy="190" r="13" fill="#fff" stroke="#1b2232" stroke-width="1.5"/><text x="180" y="195" text-anchor="middle" font-size="13" font-weight="700">G</text>`
+  + `<text x="180" y="94" text-anchor="middle" font-size="12" fill="#5b6476">uniform wire, 100 cm, 4.0 &#937;</text>`);
+
+const CH3 = {
+  id: 3, title: "Electric Current and Direct-Current Circuits", open: true,
+  subtopics: [
+    { id:"3.1", name:"Electric current",
+      note:`<p>Current is the rate of flow of charge. In a metal the charge carriers are free electrons. With no potential difference they move randomly, so there is no net flow. A potential difference sets up a field, and the electrons drift slowly opposite to E.</p>
+      <div class="formula" data-tex="I=\\dfrac{dQ}{dt}||Q=ne||e=1.60\\times10^{-19}\\ \\text{C}">I = dQ / dt &nbsp;&nbsp; Q = ne &nbsp;&nbsp; e = 1.60 &times; 10<sup>&minus;19</sup> C</div>
+      <h4>Problem-solving steps</h4>
+      <ul><li>Convert time to seconds first (2 min = 120 s).</li>
+      <li>Charge: Q = It. Number of electrons: n = Q / e.</li>
+      <li>Conventional current flows from + to &minus; through the external circuit. Electrons flow the other way.</li></ul>
+      <div class="trap"><b>Common trap:</b> leaving time in minutes, or multiplying by e instead of dividing.</div>
+      <div class="ex"><b>Worked example.</b> 0.50 A flows for 2.0 min. Find the number of electrons.<br>Q = It<br>Q = (0.50)(120)<br>Q = 60 C<br>n = Q / e<br>n = 60 / 1.60&times;10<sup>&minus;19</sup><br>n = 3.75&times;10<sup>20</sup></div>` },
+    { id:"3.2", name:"Ohm's law and resistivity",
+      note:`<p>Ohm's law: V is proportional to I if the temperature and other physical conditions stay constant. Resistance depends on the wire's length, area and material. Resistivity depends only on the material and temperature.</p>
+      <div class="formula" data-tex="V=IR||R=\\dfrac{\\rho l}{A}||\\rho=\\dfrac{RA}{l}">V = IR &nbsp;&nbsp; R = &rho;l / A &nbsp;&nbsp; &rho; = RA / l</div>
+      <h4>Problem-solving steps</h4>
+      <ul><li>Area in m<sup>2</sup>: 1 mm<sup>2</sup> = 10<sup>&minus;6</sup> m<sup>2</sup>. From a diameter, A = &pi;(d/2)<sup>2</sup>.</li>
+      <li>Ratio questions: write R &prop; l / A and change one factor at a time. Halving the diameter makes the area &frac14;.</li></ul>
+      <div class="trap"><b>Common trap:</b> 1 mm<sup>2</sup> is 10<sup>&minus;6</sup> m<sup>2</sup>, not 10<sup>&minus;3</sup>. Stretching or cutting a wire changes R, not &rho;.</div>
+      <div class="ex"><b>Worked example.</b> 1.5 m of wire, A = 5.0&times;10<sup>&minus;8</sup> m<sup>2</sup>, carries 0.40 A at 0.20 V.<br>R = V / I<br>R = 0.20 / 0.40<br>R = 0.50 &Omega;<br>&rho; = RA / l<br>&rho; = (0.50)(5.0&times;10<sup>&minus;8</sup>) / 1.5<br>&rho; = 1.67&times;10<sup>&minus;8</sup> &Omega; m</div>` },
+    { id:"3.3", name:"Variation of resistance with temperature",
+      note:`<p>In a metal, resistance rises with temperature. The ions vibrate with greater amplitude, so the free electrons collide with them more often, and their drift is hindered.</p>
+      <div class="formula" data-tex="R=R_0\\left[1+\\alpha\\left(T-T_0\\right)\\right]||\\alpha=\\dfrac{1}{\\rho_0}\\dfrac{\\Delta\\rho}{\\Delta T}">R = R<sub>0</sub>[1 + &alpha;(T &minus; T<sub>0</sub>)] &nbsp;&nbsp; &alpha; = (1/&rho;<sub>0</sub>)(&Delta;&rho;/&Delta;T)</div>
+      <h4>Problem-solving steps</h4>
+      <ul><li>Use the temperature <b>change</b>, T &minus; T<sub>0</sub>, not T alone.</li>
+      <li>To find T: R/R<sub>0</sub> &minus; 1 = &alpha;(T &minus; T<sub>0</sub>). Then <b>add T<sub>0</sub></b> back at the end.</li></ul>
+      <div class="ex"><b>Worked example.</b> R<sub>0</sub> = 20 &Omega; at 20 &deg;C, &alpha; = 4.0&times;10<sup>&minus;3</sup> &deg;C<sup>&minus;1</sup>. Find R at 70 &deg;C.<br>R = 20[1 + (4.0&times;10<sup>&minus;3</sup>)(70 &minus; 20)]<br>R = 20 &times; 1.20<br>R = 24 &Omega;</div>` },
+    { id:"3.4", name:"Emf, internal resistance and terminal potential difference",
+      note:`<p>Emf is the energy given by the source to each unit charge passing through the external and internal resistances. Terminal p.d. is the work per unit charge through the external resistance only. When current flows, part of the emf is lost across r.</p>
+      <div class="formula" data-tex="\\varepsilon=V+Ir||I=\\dfrac{\\varepsilon}{R+r}||V=IR">&epsilon; = V + Ir &nbsp;&nbsp; I = &epsilon; / (R + r) &nbsp;&nbsp; V = IR</div>
+      <h4>Problem-solving steps</h4>
+      <ul><li>Current: divide the emf by the <b>total</b> resistance, R + r.</li>
+      <li>Terminal p.d.: V = IR or V = &epsilon; &minus; Ir. V = &epsilon; only when no current flows.</li>
+      <li>Two readings of V and I: write &epsilon; = V + Ir twice and solve for &epsilon; and r.</li></ul>
+      <div class="ex"><b>Worked example.</b> &epsilon; = 12 V, r = 1.5 &Omega;, R = 6.0 &Omega;.<br>I = &epsilon; / (R + r)<br>I = 12 / 7.5<br>I = 1.6 A<br>V = IR<br>V = (1.6)(6.0)<br>V = 9.6 V</div>` },
+    { id:"3.5", name:"Resistors in series and parallel",
+      note:`<div class="formula" data-tex="\\text{series: } R_{\\text{eff}}=R_1+R_2+\\cdots||\\text{parallel: } \\dfrac{1}{R_{\\text{eff}}}=\\dfrac{1}{R_1}+\\dfrac{1}{R_2}+\\cdots">series: R<sub>eff</sub> = R<sub>1</sub> + R<sub>2</sub> + ... &nbsp;&nbsp; parallel: 1/R<sub>eff</sub> = 1/R<sub>1</sub> + 1/R<sub>2</sub> + ...</div>
+      <h4>Problem-solving steps</h4>
+      <ul><li>Combine the parallel group first, then add the series resistors.</li>
+      <li>Total current: I = V / R<sub>eff</sub>.</li>
+      <li>Branch current: find the p.d. across the parallel group (I &times; R<sub>parallel</sub>), then divide by each branch resistance. The smaller resistance takes the larger current.</li></ul>
+      <div class="trap"><b>Common trap:</b> forgetting to take the reciprocal at the end of 1/R<sub>eff</sub>. A parallel R<sub>eff</sub> is always smaller than the smallest resistor.</div>
+      <div class="ex"><b>Worked example.</b> 3.0 &Omega; in series with (4.0 &Omega; &#8741; 12 &Omega;), across 20 V.<br>R<sub>p</sub> = (4.0 &times; 12)/(4.0 + 12)<br>R<sub>p</sub> = 3.0 &Omega;<br>R<sub>eff</sub> = 3.0 + 3.0<br>R<sub>eff</sub> = 6.0 &Omega;<br>I = 20 / 6.0<br>I = 3.33 A</div>` },
+    { id:"3.6", name:"Kirchhoff's rules",
+      note:`<p>Junction rule (conservation of charge): current in = current out. Loop rule (conservation of energy): in any closed loop, &Sigma;&epsilon; = &Sigma;IR.</p>
+      <div class="formula" data-tex="\\Sigma I_{\\text{in}}=\\Sigma I_{\\text{out}}||\\Sigma\\varepsilon=\\Sigma IR">&Sigma;I<sub>in</sub> = &Sigma;I<sub>out</sub> &nbsp;&nbsp; &Sigma;&epsilon; = &Sigma;IR</div>
+      <h4>Problem-solving steps</h4>
+      <ul><li>Mark a current in every branch. Resistors in the same branch carry the same current.</li>
+      <li>Write the junction equation.</li>
+      <li>Choose a loop direction. An emf is positive if the loop goes through it from &minus; to +. An IR term is positive if the loop goes the same way as the current.</li>
+      <li>Two loops plus one junction give three equations. Solve with EQN mode.</li>
+      <li>A negative answer means that current flows opposite to the way you drew it.</li></ul>
+      <div class="ex"><b>Worked example.</b> One loop: 12 V and 4.0 V cells oppose each other, total resistance 8.0 &Omega;.<br>&Sigma;&epsilon; = &Sigma;IR<br>12 &minus; 4.0 = I(8.0)<br>I = 1.0 A</div>` },
+    { id:"3.7", name:"Electrical energy and power",
+      note:`<div class="formula" data-tex="W=IVt||P=\\dfrac{W}{t}=IV=I^2R=\\dfrac{V^2}{R}">W = IVt &nbsp;&nbsp; P = W/t = IV = I<sup>2</sup>R = V<sup>2</sup>/R</div>
+      <h4>Problem-solving steps</h4>
+      <ul><li>Power from the source: P = &epsilon;I. Power in a resistor (heat): P = I<sup>2</sup>R.</li>
+      <li>Energy needs time in seconds: W = Pt.</li>
+      <li>In V<sup>2</sup>/R, V must be the p.d. across <b>that</b> resistor, not the emf.</li></ul>
+      <div class="ex"><b>Worked example.</b> &epsilon; = 12 V, r = 1.0 &Omega;, R = 5.0 &Omega;.<br>I = 12 / 6.0<br>I = 2.0 A<br>P<sub>R</sub> = I<sup>2</sup>R<br>P<sub>R</sub> = (2.0)<sup>2</sup>(5.0)<br>P<sub>R</sub> = 20 W</div>` },
+    { id:"3.8", name:"Potential divider",
+      note:`<p>Resistors in series carry the same current, so the supply voltage is shared in the ratio of their resistances.</p>
+      <div class="formula" data-tex="V_1=\\left(\\dfrac{R_1}{R_1+R_2+\\cdots+R_n}\\right)V">V<sub>1</sub> = [R<sub>1</sub> / (R<sub>1</sub> + R<sub>2</sub> + ... + R<sub>n</sub>)] V</div>
+      <h4>Problem-solving steps</h4>
+      <ul><li>Put the resistance you want on top, the total underneath.</li>
+      <li>A voltmeter (or load) across one resistor is in <b>parallel</b> with it. Combine them first, then use the divider equation again.</li></ul>
+      <div class="ex"><b>Worked example.</b> 2.0 k&Omega; and 6.0 k&Omega; across 12 V. Output across 6.0 k&Omega;.<br>V<sub>out</sub> = (6.0 / 8.0)(12)<br>V<sub>out</sub> = 9.0 V</div>` },
+    { id:"3.9", name:"Potentiometer",
+      note:`<p>A steady current flows through a uniform wire, so the p.d. along it is proportional to length. At balance the galvanometer reads zero, no current is drawn from the cell under test, and its emf equals the p.d. across the balance length.</p>
+      <div class="formula" data-tex="V=kl||\\dfrac{\\varepsilon_1}{\\varepsilon_2}=\\dfrac{l_1}{l_2}">V = kl &nbsp;&nbsp; &epsilon;<sub>1</sub>/&epsilon;<sub>2</sub> = l<sub>1</sub>/l<sub>2</sub></div>
+      <h4>Problem-solving steps</h4>
+      <ul><li>Find the p.d. across the whole wire AB first. If the driver has a resistor or internal resistance in series, use the divider: V<sub>AB</sub> = [R<sub>AB</sub> / (R<sub>AB</sub> + R + r)] &epsilon;.</li>
+      <li>k = V<sub>AB</sub> / L<sub>AB</sub>. Balance length l = V / k.</li></ul>
+      <div class="trap"><b>Common trap:</b> a resistor added to the driver circuit lowers V<sub>AB</sub>, so the balance length gets <b>longer</b>, not shorter.</div>
+      <div class="ex"><b>Worked example.</b> Driver 2.0 V, wire 100 cm, test cell 1.5 V.<br>k = 2.0 / 100<br>k = 0.020 V cm<sup>&minus;1</sup><br>l = 1.5 / 0.020<br>l = 75 cm</div>` }
+  ],
+
+  diagnostic: [
+    { stem:"A current of 0.25 A flows through a torch bulb for 3.0 minutes.", parts:[
+      { sub:"3.1", skill:"calc", type:"num", prompt:"Calculate the number of electrons that pass through the bulb in this time.", unit:"", ans:2.81e20,
+        wrong:[[4.69e18,"You used t = 3.0 instead of 180 s. Convert minutes to seconds."],[7.2e-18,"You multiplied the charge by e. The number of electrons is n = Q / e."],[45,"45 C is the charge. Divide by e to get the number of electrons."]],
+        exp:"Q = It = (0.25)(180) = 45 C. n = Q / e = 45 / 1.60&times;10<sup>&minus;19</sup> = 2.81&times;10<sup>20</sup>." },
+      { sub:"3.1", skill:"theory", type:"mcq", prompt:"Before the switch is closed, the free electrons in the filament are moving very fast, yet there is no current. Why?",
+        opts:[ {t:"They move randomly in all directions, so there is no net flow of charge", ok:true},
+               {t:"Free electrons only start moving when a potential difference is applied", mis:"Free electrons are always moving. A p.d. only adds a slow drift in one direction."},
+               {t:"Current is carried by positive ions, which are fixed in place", mis:"In a metal the charge carriers are free electrons. The ions only vibrate."} ],
+        exp:"Without an electric field the random motions cancel. A p.d. gives the electrons a drift velocity opposite to E, and that net flow is the current." } ]},
+
+    { stem:"A wire 2.0 m long has a cross-sectional area of 0.50 mm<sup>2</sup>. A potential difference of 1.2 V across it drives a current of 0.80 A.", parts:[
+      { sub:"3.2", skill:"calc", type:"num", prompt:"Calculate the resistivity of the material.", unit:"&Omega; m", ans:3.75e-7,
+        wrong:[[3.75e-4,"You converted mm<sup>2</sup> using 10<sup>&minus;3</sup>. 1 mm<sup>2</sup> = 10<sup>&minus;6</sup> m<sup>2</sup>."],[0.375,"You did not convert the area to m<sup>2</sup>."],[1.67e-7,"You used R = I/V. R = V/I = 1.5 &Omega;."]],
+        exp:"R = V/I = 1.2/0.80 = 1.5 &Omega;. &rho; = RA/l = (1.5)(0.50&times;10<sup>&minus;6</sup>)/2.0 = 3.75&times;10<sup>&minus;7</sup> &Omega; m." },
+      { sub:"3.2", skill:"theory", type:"mcq", prompt:"The wire is cut in half. What happens to the resistivity of each piece?",
+        opts:[ {t:"It stays the same", ok:true},
+               {t:"It is halved", mis:"The <b>resistance</b> halves, because R &prop; l. Resistivity is a property of the material, not of the shape."},
+               {t:"It doubles", mis:"Resistivity depends only on the material and temperature, so cutting the wire does not change it."} ],
+        exp:"&rho; depends on the material and temperature only. Length and area change R, not &rho;." } ]},
+
+    { stem:"Wires X and Y are made of the same metal. Y is twice as long as X and has half the diameter of X.", parts:[
+      { sub:"3.2", skill:"calc", type:"num", prompt:"Calculate the ratio R<sub>Y</sub> / R<sub>X</sub>.", unit:"", ans:8,
+        wrong:[[4,"Halving the diameter makes the area &frac14;, not &frac12;. A = &pi;d<sup>2</sup>/4."],[2,"The diameter also changed. Smaller area means larger resistance."],[0.5,"You inverted a factor. R &prop; l and R &prop; 1/A."]],
+        exp:"R &prop; l/A and A &prop; d<sup>2</sup>. R<sub>Y</sub>/R<sub>X</sub> = (2) &times; (1/(&frac12;)<sup>2</sup>) = 2 &times; 4 = 8." } ]},
+
+    { stem:"A copper coil has a resistance of 40.0 &Omega; at 20 &deg;C. The temperature coefficient of resistivity of copper is 3.9 &times; 10<sup>&minus;3</sup> &deg;C<sup>&minus;1</sup>.", parts:[
+      { sub:"3.3", skill:"calc", type:"num", prompt:"Calculate its resistance at 75 &deg;C.", unit:"&Omega;", ans:48.6,
+        wrong:[[51.7,"You used T = 75 &deg;C instead of the change, T &minus; T<sub>0</sub> = 55 &deg;C."],[8.58,"That is only the increase. Add it to R<sub>0</sub>, or use R = R<sub>0</sub>[1 + &alpha;&Delta;T]."]],
+        exp:"R = 40.0[1 + (3.9&times;10<sup>&minus;3</sup>)(75 &minus; 20)] = 40.0 &times; 1.2145 = 48.6 &Omega;." },
+      { sub:"3.3", skill:"calc", type:"num", prompt:"Calculate the temperature at which its resistance is 46.0 &Omega;.", unit:"&deg;C", ans:58.5,
+        wrong:[[38.5,"That is the temperature <b>rise</b>. Add T<sub>0</sub> = 20 &deg;C."]],
+        exp:"46.0/40.0 &minus; 1 = 0.15 = (3.9&times;10<sup>&minus;3</sup>)(T &minus; 20). T &minus; 20 = 38.5, so T = 58.5 &deg;C." },
+      { sub:"3.3", skill:"theory", type:"mcq", prompt:"Why does the resistance of the coil increase when it gets hotter?",
+        opts:[ {t:"The metal ions vibrate with greater amplitude, so free electrons collide with them more often", ok:true},
+               {t:"Fewer free electrons are available at higher temperature", mis:"The number of free electrons in a metal stays about the same. The extra collisions are the cause."},
+               {t:"The wire expands, so its cross-sectional area becomes smaller", mis:"Expansion makes the wire slightly wider, not narrower, and the effect is tiny. Ion vibration is the cause."} ],
+        exp:"More vibration means more collisions, which hinders the drift of free electrons, so resistance rises." } ]},
+
+    { stem:"A battery of emf 9.0 V and internal resistance 0.50 &Omega; is connected to a 4.0 &Omega; resistor.", parts:[
+      { sub:"3.4", skill:"calc", type:"num", prompt:"Calculate the current in the circuit.", unit:"A", ans:2.0,
+        wrong:[[2.25,"You left out the internal resistance. I = &epsilon; / (R + r)."],[18,"You used the internal resistance only."]],
+        exp:"I = &epsilon; / (R + r) = 9.0 / 4.5 = 2.0 A." },
+      { sub:"3.4", skill:"calc", type:"num", prompt:"Calculate the terminal potential difference of the battery.", unit:"V", ans:8.0,
+        wrong:[[9.0,"The terminal p.d. equals the emf only when no current flows. Subtract Ir."],[1.0,"That is the p.d. lost across the internal resistance, Ir."]],
+        exp:"V = IR = (2.0)(4.0) = 8.0 V. Check: &epsilon; &minus; Ir = 9.0 &minus; (2.0)(0.50) = 8.0 V." },
+      { sub:"3.4", skill:"theory", type:"mcq", prompt:"The 4.0 &Omega; resistor is replaced by a 2.0 &Omega; resistor. What happens to the terminal potential difference?",
+        opts:[ {t:"It decreases, because a larger current gives a larger Ir drop", ok:true},
+               {t:"It stays at 8.0 V, because the battery is the same", mis:"V = &epsilon; &minus; Ir. Smaller R means larger I, so more is lost across r."},
+               {t:"It increases, because the current increases", mis:"More current means a bigger drop across r, so less is left for the terminals."} ],
+        exp:"I = 9.0/2.5 = 3.6 A and V = 9.0 &minus; (3.6)(0.50) = 7.2 V, lower than before." } ]},
+
+    { stem:"In the circuit shown, the battery has negligible internal resistance.", fig:FIG.ser3, parts:[
+      { sub:"3.5", skill:"circuit", type:"num", prompt:"Calculate the effective resistance of the circuit.", unit:"&Omega;", ans:6.0,
+        wrong:[[13,"You added all three. The 6.0 &Omega; and 3.0 &Omega; are in parallel."],[1.33,"You put all three in parallel. The 4.0 &Omega; is in series with the parallel pair."]],
+        exp:"6.0 &#8741; 3.0 = (6.0 &times; 3.0)/(6.0 + 3.0) = 2.0 &Omega;. R<sub>eff</sub> = 4.0 + 2.0 = 6.0 &Omega;." },
+      { sub:"3.5", skill:"circuit", type:"num", prompt:"Calculate the current in the 3.0 &Omega; resistor.", unit:"A", ans:1.33,
+        wrong:[[0.667,"That is the current in the 6.0 &Omega; resistor. The smaller resistance takes the larger current."],[1.0,"The current does not split equally between unequal resistors."],[4.0,"You used the full 12 V across the 3.0 &Omega;. Part of it is across the 4.0 &Omega;."]],
+        exp:"I = 12/6.0 = 2.0 A. P.d. across the parallel pair = (2.0)(2.0) = 4.0 V. I<sub>3</sub> = 4.0/3.0 = 1.33 A." } ]},
+
+    { stem:"In the circuit shown, the cells have negligible internal resistance. The currents are drawn in the directions you should assume.", fig:FIG.kirch3, parts:[
+      { sub:"3.6", skill:"circuit", type:"num", prompt:"Use Kirchhoff's rules to calculate the current I<sub>3</sub> in the 4.0 &Omega; resistor.", unit:"A", ans:1.8,
+        wrong:[[2.4,"That is I<sub>1</sub>. Use I<sub>3</sub> = I<sub>1</sub> + I<sub>2</sub>, keeping the sign of I<sub>2</sub>."],[3.0,"You added the two emfs into one loop. Each loop contains only one cell."],[2.0,"Check your loop equations: each loop has one cell, one 2.0 &Omega; and the 4.0 &Omega;."]],
+        exp:"Junction: I<sub>3</sub> = I<sub>1</sub> + I<sub>2</sub>. Top loop: 12 = 2I<sub>1</sub> + 4I<sub>3</sub>. Bottom loop: 6 = 2I<sub>2</sub> + 4I<sub>3</sub>. Solving: I<sub>1</sub> = 2.4 A, I<sub>2</sub> = &minus;0.60 A, I<sub>3</sub> = 1.8 A." },
+      { sub:"3.6", skill:"circuit", type:"num", prompt:"Calculate I<sub>2</sub>, the current through the 6.0 V cell. Include the sign.", unit:"A", ans:-0.6,
+        wrong:[[0.6,"Keep the sign. It tells you the direction compared with the arrow."],[3.0,"You treated the bottom loop as if the 4.0 &Omega; carried no current."]],
+        exp:"From 6 = 2I<sub>2</sub> + 4(1.8): 2I<sub>2</sub> = 6 &minus; 7.2, so I<sub>2</sub> = &minus;0.60 A." },
+      { sub:"3.6", skill:"theory", type:"mcq", prompt:"What does the negative sign of I<sub>2</sub> tell you?",
+        opts:[ {t:"0.60 A flows in the opposite direction to the arrow, so it enters the 6.0 V cell at its positive terminal", ok:true},
+               {t:"There is a mistake, because current cannot be negative", mis:"A negative current is normal in Kirchhoff problems. It only means the assumed direction was wrong."},
+               {t:"The 6.0 V cell is supplying 0.60 A less than the 12 V cell", mis:"The sign is about direction, not a comparison of sizes."} ],
+        exp:"The size is 0.60 A. The minus sign means the real current is opposite to the assumed one. The 12 V cell is driving current backwards through the 6.0 V cell." } ]},
+
+    { stem:"A cell of emf 6.0 V and internal resistance 0.50 &Omega; is connected to a 2.5 &Omega; resistor.", parts:[
+      { sub:"3.7", skill:"calc", type:"num", prompt:"Calculate the power dissipated in the 2.5 &Omega; resistor.", unit:"W", ans:10,
+        wrong:[[12,"That is the total power from the cell, &epsilon;I. Use I<sup>2</sup>R for the resistor."],[14.4,"You used V<sup>2</sup>/R with the emf. The p.d. across the resistor is only 5.0 V."]],
+        exp:"I = 6.0/3.0 = 2.0 A. P = I<sup>2</sup>R = (2.0)<sup>2</sup>(2.5) = 10 W." },
+      { sub:"3.7", skill:"calc", type:"num", prompt:"Calculate the heat produced inside the cell in 5.0 minutes.", unit:"J", ans:600,
+        wrong:[[10,"You used t = 5.0. Convert minutes to seconds: 300 s."],[3000,"You used the external resistor. Heat inside the cell uses r = 0.50 &Omega;."],[3600,"That is the total energy from the cell. Inside the cell use I<sup>2</sup>rt."]],
+        exp:"W = I<sup>2</sup>rt = (2.0)<sup>2</sup>(0.50)(300) = 600 J." } ]},
+
+    { stem:"Resistors of 2.0 k&Omega; and 4.0 k&Omega; are connected in series across a 12 V supply of negligible internal resistance. The output is taken across the 4.0 k&Omega; resistor.", parts:[
+      { sub:"3.8", skill:"calc", type:"num", prompt:"Calculate the output voltage.", unit:"V", ans:8.0,
+        wrong:[[4.0,"That is the voltage across the 2.0 k&Omega; resistor."],[6.0,"The voltage is shared in the ratio of the resistances, not equally."]],
+        exp:"V<sub>out</sub> = (4.0 / 6.0)(12) = 8.0 V." },
+      { sub:"3.8", skill:"calc", type:"num", prompt:"A voltmeter of resistance 4.0 k&Omega; is connected across the output. Calculate its reading.", unit:"V", ans:6.0,
+        wrong:[[8.0,"The voltmeter is in parallel with the 4.0 k&Omega;, so the lower part now has only 2.0 k&Omega;."],[4.0,"You found the voltage across the 2.0 k&Omega; resistor."]],
+        exp:"4.0 k&Omega; &#8741; 4.0 k&Omega; = 2.0 k&Omega;. V = (2.0 / 4.0)(12) = 6.0 V." },
+      { sub:"3.8", skill:"theory", type:"mcq", prompt:"Why is the voltmeter reading lower than the output you calculated first?",
+        opts:[ {t:"The voltmeter in parallel lowers the resistance of that section, so it takes a smaller share of the 12 V", ok:true},
+               {t:"The voltmeter uses up some of the voltage", mis:"A voltmeter measures the p.d. across it. The reading drops because the combined resistance of that section drops."},
+               {t:"The current in the circuit becomes smaller", mis:"The total resistance falls, so the current actually becomes larger."} ],
+        exp:"In a divider V &prop; R. Adding a parallel resistor reduces that R, so its share of the supply falls." } ]},
+
+    { stem:"In the potentiometer shown, the driver cell has emf 2.0 V and negligible internal resistance. The wire AB is uniform, 100 cm long, with resistance 4.0 &Omega;. The cell under test has emf 1.2 V.", fig:FIG.pot3, parts:[
+      { sub:"3.9", skill:"calc", type:"num", prompt:"Calculate the balance length AC.", unit:"cm", ans:60,
+        wrong:[[40,"That is the length CB. Balance length is measured from A."],[167,"You inverted the ratio. l = (1.2 / 2.0) &times; 100 cm."]],
+        exp:"k = 2.0/100 = 0.020 V cm<sup>&minus;1</sup>. l = 1.2/0.020 = 60 cm." },
+      { sub:"3.9", skill:"calc", type:"num", prompt:"A 1.0 &Omega; resistor is now connected in series with the driver cell. Calculate the new balance length.", unit:"cm", ans:75,
+        wrong:[[60,"The extra resistor takes part of the 2.0 V, so the p.d. across AB is smaller now."],[48,"A smaller p.d. across AB means a <b>longer</b> balance length, not shorter."]],
+        exp:"V<sub>AB</sub> = (4.0/5.0)(2.0) = 1.6 V. k = 1.6/100 = 0.016 V cm<sup>&minus;1</sup>. l = 1.2/0.016 = 75 cm." },
+      { sub:"3.9", skill:"theory", type:"mcq", prompt:"At the balance point, why does the potentiometer give the true emf of the cell under test?",
+        opts:[ {t:"No current flows through the cell, so there is no Ir drop across its internal resistance", ok:true},
+               {t:"The wire has no resistance at the balance point", mis:"The wire has resistance all along. That is why V &prop; l."},
+               {t:"The galvanometer shows its largest reading at balance", mis:"At balance the galvanometer reads zero."} ],
+        exp:"With I = 0 through the cell, V = &epsilon; &minus; Ir = &epsilon;." } ]}
+  ],
+
+  practice: [
+    { stem:"A silver wire carries a steady current of 3.0 A.", parts:[
+      { sub:"3.1", skill:"calc", type:"num", prompt:"Calculate the number of electrons passing a cross-section each second.", unit:"s<sup>&minus;1</sup>", ans:1.875e19,
+        wrong:[[4.8e-19,"You multiplied by e. n = Q / e."]],
+        exp:"In 1 s, Q = 3.0 C. n = 3.0 / 1.60&times;10<sup>&minus;19</sup> = 1.88&times;10<sup>19</sup>." } ]},
+    { stem:"Every 4.0 s, 10 C of charge passes through each cross-section of a wire.", parts:[
+      { sub:"3.1", skill:"calc", type:"num", prompt:"Calculate the current.", unit:"A", ans:2.5,
+        wrong:[[40,"I = Q / t, not Q &times; t."],[0.4,"You divided t by Q. I = Q / t."]],
+        exp:"I = Q / t = 10 / 4.0 = 2.5 A." },
+      { sub:"3.1", skill:"theory", type:"mcq", prompt:"In which direction do the electrons in the wire move?",
+        opts:[ {t:"Opposite to the conventional current, from the negative terminal towards the positive terminal", ok:true},
+               {t:"The same way as the conventional current", mis:"Conventional current is the direction positive charge would move. Electrons are negative, so they move the other way."},
+               {t:"In random directions only, with no drift", mis:"With a p.d. applied, the electrons drift opposite to the field. That drift is the current."} ],
+        exp:"Current flows from + to &minus; through the external circuit. Electrons drift from &minus; to +." } ]},
+    { stem:"A nichrome wire is 0.80 m long with a diameter of 0.40 mm. Resistivity of nichrome = 1.50 &times; 10<sup>&minus;6</sup> &Omega; m.", parts:[
+      { sub:"3.2", skill:"calc", type:"num", prompt:"Calculate its resistance.", unit:"&Omega;", ans:9.55,
+        wrong:[[2.39,"You used the diameter as the radius. r = 0.20 mm."],[0.0095,"Convert 0.40 mm to 0.40&times;10<sup>&minus;3</sup> m before squaring."]],
+        exp:"A = &pi;(0.20&times;10<sup>&minus;3</sup>)<sup>2</sup> = 1.26&times;10<sup>&minus;7</sup> m<sup>2</sup>. R = &rho;l/A = (1.50&times;10<sup>&minus;6</sup>)(0.80)/(1.26&times;10<sup>&minus;7</sup>) = 9.55 &Omega;." } ]},
+    { stem:"A student plots V against I for a metal wire kept at constant temperature.", parts:[
+      { sub:"3.2", skill:"theory", type:"mcq", prompt:"Which graph shows that the wire obeys Ohm's law?",
+        opts:[ {t:"A straight line through the origin", ok:true},
+               {t:"A curve that gets steeper as I increases", mis:"A curve means R changes. Ohm's law needs V &prop; I."},
+               {t:"A straight line that does not pass through the origin", mis:"V &prop; I means the line must pass through the origin."} ],
+        exp:"Ohm's law: V &prop; I at constant temperature, so the graph is a straight line through the origin with gradient R." } ]},
+    { stem:"A tungsten wire has a resistance of 12 &Omega; at 25 &deg;C. It is heated in an oven until its resistance is 21 &Omega;. &alpha; for tungsten = 4.5 &times; 10<sup>&minus;3</sup> &deg;C<sup>&minus;1</sup>.", parts:[
+      { sub:"3.3", skill:"calc", type:"num", prompt:"Calculate the temperature of the oven.", unit:"&deg;C", ans:192,
+        wrong:[[167,"That is the temperature rise. Add the starting temperature, 25 &deg;C."],[2025,"You used R &minus; R<sub>0</sub> without dividing by R<sub>0</sub>."]],
+        exp:"21/12 &minus; 1 = 0.75 = (4.5&times;10<sup>&minus;3</sup>)(T &minus; 25). T &minus; 25 = 167, so T = 192 &deg;C." } ]},
+    { stem:"The temperature coefficient of resistivity of a metal is quoted at 20 &deg;C.", parts:[
+      { sub:"3.3", skill:"theory", type:"mcq", prompt:"What does &alpha; represent?",
+        opts:[ {t:"The fractional increase in resistivity per degree rise in temperature", ok:true},
+               {t:"The resistance of the metal at 20 &deg;C", mis:"That is R<sub>0</sub>. &alpha; is a fraction per &deg;C, with unit &deg;C<sup>&minus;1</sup>."},
+               {t:"The total increase in resistivity from 20 &deg;C to the final temperature", mis:"That is &Delta;&rho;. &alpha; is that change divided by &rho;<sub>0</sub> and by &Delta;T."} ],
+        exp:"&alpha; = (1/&rho;<sub>0</sub>)(&Delta;&rho;/&Delta;T), unit &deg;C<sup>&minus;1</sup>." } ]},
+    { stem:"The terminal p.d. of a cell is 1.45 V when it supplies 0.20 A, and 1.30 V when it supplies 0.50 A.", parts:[
+      { sub:"3.4", skill:"calc", type:"num", prompt:"Calculate the internal resistance of the cell.", unit:"&Omega;", ans:0.5,
+        wrong:[[7.25,"That is V/I, the external resistance in the first case."],[2.6,"That is V/I, the external resistance in the second case."]],
+        exp:"&epsilon; = 1.45 + 0.20r = 1.30 + 0.50r. 0.15 = 0.30r, so r = 0.50 &Omega;." },
+      { sub:"3.4", skill:"calc", type:"num", prompt:"Calculate the emf of the cell.", unit:"V", ans:1.55,
+        wrong:[[1.45,"That is a terminal p.d. The emf is larger: add Ir."]],
+        exp:"&epsilon; = 1.45 + (0.20)(0.50) = 1.55 V." } ]},
+    { stem:"A battery of emf 12 V and internal resistance 1.5 &Omega; is connected to a 6.0 &Omega; resistor.", parts:[
+      { sub:"3.4", skill:"calc", type:"num", prompt:"Calculate the terminal potential difference.", unit:"V", ans:9.6,
+        wrong:[[12,"V = &epsilon; only when no current flows."],[2.4,"That is the drop across r."]],
+        exp:"I = 12/7.5 = 1.6 A. V = IR = (1.6)(6.0) = 9.6 V." },
+      { sub:"3.4", skill:"theory", type:"mcq", prompt:"When is the terminal p.d. equal to the emf?",
+        opts:[ {t:"When no current flows from the battery", ok:true},
+               {t:"When the external resistance equals the internal resistance", mis:"Then V is only half of &epsilon;."},
+               {t:"Always, for a new battery", mis:"Even a new battery has some r, so V &lt; &epsilon; whenever current flows."} ],
+        exp:"V = &epsilon; &minus; Ir, so V = &epsilon; only when I = 0." } ]},
+    { stem:"Resistors of 2.0 &Omega;, 3.0 &Omega; and 6.0 &Omega; are connected in parallel.", parts:[
+      { sub:"3.5", skill:"circuit", type:"num", prompt:"Calculate the effective resistance.", unit:"&Omega;", ans:1.0,
+        wrong:[[11,"That is the series value."],[0.833,"Check your fractions: 1/2.0 + 1/3.0 + 1/6.0 = 3/6 + 2/6 + 1/6."]],
+        exp:"1/R = 1/2.0 + 1/3.0 + 1/6.0 = 1. R = 1.0 &Omega;." } ]},
+    { stem:"A 3.0 &Omega; resistor is in series with a parallel pair of 4.0 &Omega; and 12 &Omega;. The combination is across a 20 V battery of negligible internal resistance.", parts:[
+      { sub:"3.5", skill:"circuit", type:"num", prompt:"Calculate the current in the 12 &Omega; resistor.", unit:"A", ans:0.833,
+        wrong:[[2.5,"That is the current in the 4.0 &Omega; resistor."],[1.67,"You split the current equally."]],
+        exp:"R<sub>p</sub> = 3.0 &Omega;, R<sub>eff</sub> = 6.0 &Omega;, I = 3.33 A. V<sub>p</sub> = (3.33)(3.0) = 10 V. I<sub>12</sub> = 10/12 = 0.833 A." } ]},
+    { stem:"A single loop contains a 12 V cell and a 4.0 V cell connected so that they oppose each other, plus resistors of 2.0 &Omega; and 6.0 &Omega;. Internal resistances are negligible.", parts:[
+      { sub:"3.6", skill:"circuit", type:"num", prompt:"Calculate the current in the loop.", unit:"A", ans:1.0,
+        wrong:[[2.0,"You added the emfs. Opposing cells subtract."]],
+        exp:"&Sigma;&epsilon; = &Sigma;IR: 12 &minus; 4.0 = I(2.0 + 6.0), so I = 1.0 A." } ]},
+    { stem:"At a junction, currents of 3.0 A and 2.0 A flow in. One wire carries 1.5 A out.", parts:[
+      { sub:"3.6", skill:"calc", type:"num", prompt:"Calculate the current in the only other wire, which carries current out.", unit:"A", ans:3.5,
+        wrong:[[6.5,"Currents leaving must equal currents entering: 5.0 A in total."],[0.5,"Add the currents entering first: 3.0 + 2.0 = 5.0 A."]],
+        exp:"&Sigma;I<sub>in</sub> = &Sigma;I<sub>out</sub>: 3.0 + 2.0 = 1.5 + I, so I = 3.5 A." },
+      { sub:"3.6", skill:"theory", type:"mcq", prompt:"The junction rule is a consequence of the conservation of",
+        opts:[ {t:"charge", ok:true}, {t:"energy", mis:"Energy conservation gives the loop rule."}, {t:"current", mis:"Current itself is not the conserved quantity. Charge is."} ],
+        exp:"Charge cannot pile up at a junction, so charge in per second = charge out per second." } ]},
+    { stem:"An electric kettle is rated 2000 W, 240 V.", parts:[
+      { sub:"3.7", skill:"calc", type:"num", prompt:"Calculate the resistance of its heating element.", unit:"&Omega;", ans:28.8,
+        wrong:[[0.12,"You used P = V/R. Power is V<sup>2</sup>/R."],[8.33,"That is the current, P/V."]],
+        exp:"R = V<sup>2</sup>/P = 240<sup>2</sup>/2000 = 28.8 &Omega;." } ]},
+    { stem:"A 60 W lamp is switched on for 15 minutes.", parts:[
+      { sub:"3.7", skill:"calc", type:"num", prompt:"Calculate the electrical energy used.", unit:"J", ans:54000,
+        wrong:[[900,"Convert 15 minutes to 900 s."],[4,"Energy is P &times; t, not P / t."]],
+        exp:"W = Pt = (60)(900) = 5.4&times;10<sup>4</sup> J." } ]},
+    { stem:"Resistors of 1.0 k&Omega;, 2.0 k&Omega; and 3.0 k&Omega; are in series across a 12 V supply.", parts:[
+      { sub:"3.8", skill:"calc", type:"num", prompt:"Calculate the p.d. across the 3.0 k&Omega; resistor.", unit:"V", ans:6.0,
+        wrong:[[4.0,"The voltage is shared in proportion to resistance, not equally."],[36,"Use the fraction R/R<sub>total</sub>, not R &times; V."]],
+        exp:"V = (3.0/6.0)(12) = 6.0 V." } ]},
+    { stem:"A uniform wire AB, 100 cm long, is connected across a 6.0 V supply of negligible internal resistance.", parts:[
+      { sub:"3.8", skill:"calc", type:"num", prompt:"Calculate the p.d. between A and a point 30 cm from A.", unit:"V", ans:1.8,
+        wrong:[[4.2,"That is the p.d. across the remaining 70 cm."],[0.2,"V &prop; l: (30/100) &times; 6.0."]],
+        exp:"R &prop; l, so V = (30/100)(6.0) = 1.8 V." } ]},
+    { stem:"Two cells are compared on a potentiometer. Cell 1 (emf 1.50 V) balances at 60.0 cm and cell 2 balances at 45.0 cm.", parts:[
+      { sub:"3.9", skill:"calc", type:"num", prompt:"Calculate the emf of cell 2.", unit:"V", ans:1.125,
+        wrong:[[2.0,"You inverted the ratio. The cell with the shorter balance length has the smaller emf."]],
+        exp:"&epsilon;<sub>2</sub>/&epsilon;<sub>1</sub> = l<sub>2</sub>/l<sub>1</sub>. &epsilon;<sub>2</sub> = 1.50 &times; 45.0/60.0 = 1.13 V." },
+      { sub:"3.9", skill:"theory", type:"mcq", prompt:"Why must the driver cell's emf be greater than the emf of the cell being tested?",
+        opts:[ {t:"Otherwise the p.d. across the whole wire is too small and no balance point exists", ok:true},
+               {t:"So that a large current flows through the galvanometer", mis:"At balance no current flows through the galvanometer."},
+               {t:"So that the wire heats up and its resistance stays constant", mis:"Heating would change the resistance. The wire should stay at constant temperature."} ],
+        exp:"The test emf must be matched by the p.d. across part of the wire, so V<sub>AB</sub> must be larger." } ]},
+    { stem:"A driver cell of emf 4.0 V is connected across a uniform wire AB, 100 cm long, of resistance 8.0 &Omega;. A cell of emf 1.5 V balances at 45 cm.", parts:[
+      { sub:"3.9", skill:"calc", type:"num", prompt:"Calculate the internal resistance of the driver cell.", unit:"&Omega;", ans:1.6,
+        wrong:[[0,"If r were zero, V<sub>AB</sub> would be 4.0 V and balance would be at 37.5 cm. Find V<sub>AB</sub> from the balance length."]],
+        exp:"k = 1.5/45 V cm<sup>&minus;1</sup>, so V<sub>AB</sub> = 100k = 3.33 V. I = 3.33/8.0 = 0.417 A. 4.0 = 0.417(8.0 + r), so r = 1.6 &Omega;." } ]}
+  ]
+};
+
 /* =====================================================================
    QUESTION BANK
    A question has a stem, an optional figure and one or more parts.
@@ -666,7 +972,7 @@ const CHAPTERS = [
   ]
 },
 
-{ id:3, title:"Electric Current and Direct-Current Circuits", open:true },
+CH3,
 { id:4, title:"Magnetism", open:true },
 { id:5, title:"Electromagnetic Induction", open:true },
 { id:6, title:"Alternating Current", open:true },
